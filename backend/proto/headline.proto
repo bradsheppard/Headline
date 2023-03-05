@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "proto/article";
+
+message Article {
+        string title = 1; 
+        string summary = 2;
+}
+
+message ArticleResponse {
+        repeated Article articles = 1; 
+}
+
+message AllArticlesRequest {}
+
+service ArticleService {
+        rpc GetArticles(AllArticlesRequest) returns (ArticleResponse) {}
+}
+
