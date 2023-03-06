@@ -6,9 +6,14 @@ import (
 	"log"
 	"net"
 
-	"google.golang.org/grpc"
+	"headline/api"
+
 	pb "headline/proto"
+
+	"google.golang.org/grpc"
 )
+
+const dbPath = "test.db"
 
 var (
 	port = flag.Int("port", 50051, "The server port")
@@ -19,11 +24,15 @@ type server struct {
 }
 
 func main() {
+	api.InitDb(dbPath)
+
 	flag.Parse()
+
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
+		return
 	}
 
 	s := grpc.NewServer()
@@ -33,6 +42,6 @@ func main() {
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
+		return
 	}
 }
-

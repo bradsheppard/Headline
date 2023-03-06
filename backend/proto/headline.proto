@@ -1,19 +1,25 @@
 syntax = "proto3";
 
-option go_package = "proto/article";
+import "google/protobuf/empty.proto";
+
+option go_package = "proto/headline";
 
 message Article {
         string title = 1; 
         string summary = 2;
+        string link = 3;
 }
 
 message ArticleResponse {
         repeated Article articles = 1; 
 }
 
-message AllArticlesRequest {}
+message CreateArticleRequest {
+        repeated Article articles = 1;
+}
 
 service ArticleService {
-        rpc GetArticles(AllArticlesRequest) returns (ArticleResponse) {}
+        rpc GetArticles(google.protobuf.Empty) returns (ArticleResponse) {}
+        rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty) {}
 }
 
