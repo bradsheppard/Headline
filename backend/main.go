@@ -13,35 +13,35 @@ import (
 	"google.golang.org/grpc"
 )
 
-const dbPath = "test.db"
+const dbPath = "host=headline-postgresql user=postgres password=pass123"
 
 var (
 	port = flag.Int("port", 50051, "The server port")
 )
 
-type server struct {
-	pb.UnimplementedArticleServiceServer
-}
-
 func main() {
-	api.InitDb(dbPath)
+	err := api.InitDb(dbPath)
+
+	if err != nil {
+		log.Fatalf("Failed to connect to DB: %v", err)
+		return
+	}
 
 	flag.Parse()
-
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("Failed to listen: %v", err)
 		return
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterArticleServiceServer(s, &server{})
+	pb.RegisterArticleServiceServer(s, &api.Server{})
 
-	log.Printf("server listening at %v", lis.Addr())
+	log.Printf("Server listening at %v", lis.Addr())
 
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Fatalf("Failed to serve: %v", err)
 		return
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"headline/model"
+
 	pb "headline/proto"
 
 	"google.golang.org/grpc"
@@ -38,7 +39,7 @@ func testserver(ctx context.Context) (pb.ArticleServiceClient, func()) {
         lis := bufconn.Listen(buffer)
         
         s := grpc.NewServer()
-        pb.RegisterArticleServiceServer(s, &server{})
+        pb.RegisterArticleServiceServer(s, &Server{})
 
         go func() {
                 if err := s.Serve(lis); err != nil {

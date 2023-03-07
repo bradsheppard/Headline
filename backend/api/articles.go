@@ -2,24 +2,34 @@ package api
 
 import (
 	"context"
+	"headline/model"
 	"log"
-        "headline/model"
 
 	pb "headline/proto"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-type server struct {
+const (
+        errFormatString = "Error querying database: %v"
+        errString = "Error querying database"
+)
+
+type Server struct {
 	pb.UnimplementedArticleServiceServer
 }
 
-func (s *server) GetArticles(ctx context.Context, in *empty.Empty) (*pb.ArticleResponse, error) {
+func (s *Server) GetArticles(ctx context.Context, in *empty.Empty) (*pb.ArticleResponse, error) {
 	log.Printf("Received a request")
 
         var articles []model.Article
-        db.Find(&articles)
+        if err := db.Find(&articles).Error; err != nil {
+                log.Printf(errFormatString, err)
+                return nil, status.Error(codes.Internal, errString)
+        }
 
         var grpcArticles []*pb.Article
         for i := range(articles) {
@@ -32,7 +42,7 @@ func (s *server) GetArticles(ctx context.Context, in *empty.Empty) (*pb.ArticleR
         }, nil
 }
 
-func (s *server) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
+func (s *Server) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
         log.Printf("Creating article")
 
         var articles []model.Article
@@ -41,7 +51,10 @@ func (s *server) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest)
                 articles = append(articles, *article)
         }
 
-        db.Create(&articles)
+        if err := db.Create(&articles).Error; err != nil {
+                log.Printf(errFormatString, err)
+                return nil, status.Error(codes.Internal, errString)
+        }
 
         return &emptypb.Empty{}, nil
 }
