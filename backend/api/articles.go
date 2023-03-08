@@ -22,11 +22,11 @@ type Server struct {
 	pb.UnimplementedArticleServiceServer
 }
 
-func (s *Server) GetArticles(ctx context.Context, in *empty.Empty) (*pb.ArticleResponse, error) {
+func (s *Server) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*pb.ArticleResponse, error) {
 	log.Printf("Received a request")
 
         var articles []model.Article
-        if err := db.Find(&articles).Error; err != nil {
+        if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
                 log.Printf(errFormatString, err)
                 return nil, status.Error(codes.Internal, errString)
         }

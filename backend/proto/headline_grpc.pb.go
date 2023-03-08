@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArticleServiceClient interface {
-	GetArticles(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ArticleResponse, error)
+	GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*ArticleResponse, error)
 	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
@@ -35,7 +35,7 @@ func NewArticleServiceClient(cc grpc.ClientConnInterface) ArticleServiceClient {
 	return &articleServiceClient{cc}
 }
 
-func (c *articleServiceClient) GetArticles(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*ArticleResponse, error) {
+func (c *articleServiceClient) GetArticles(ctx context.Context, in *GetArticlesRequest, opts ...grpc.CallOption) (*ArticleResponse, error) {
 	out := new(ArticleResponse)
 	err := c.cc.Invoke(ctx, "/ArticleService/GetArticles", in, out, opts...)
 	if err != nil {
@@ -57,7 +57,7 @@ func (c *articleServiceClient) CreateArticle(ctx context.Context, in *CreateArti
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility
 type ArticleServiceServer interface {
-	GetArticles(context.Context, *empty.Empty) (*ArticleResponse, error)
+	GetArticles(context.Context, *GetArticlesRequest) (*ArticleResponse, error)
 	CreateArticle(context.Context, *CreateArticleRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
@@ -66,7 +66,7 @@ type ArticleServiceServer interface {
 type UnimplementedArticleServiceServer struct {
 }
 
-func (UnimplementedArticleServiceServer) GetArticles(context.Context, *empty.Empty) (*ArticleResponse, error) {
+func (UnimplementedArticleServiceServer) GetArticles(context.Context, *GetArticlesRequest) (*ArticleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticles not implemented")
 }
 func (UnimplementedArticleServiceServer) CreateArticle(context.Context, *CreateArticleRequest) (*empty.Empty, error) {
@@ -86,7 +86,7 @@ func RegisterArticleServiceServer(s grpc.ServiceRegistrar, srv ArticleServiceSer
 }
 
 func _ArticleService_GetArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(GetArticlesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func _ArticleService_GetArticles_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/ArticleService/GetArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).GetArticles(ctx, req.(*empty.Empty))
+		return srv.(ArticleServiceServer).GetArticles(ctx, req.(*GetArticlesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
