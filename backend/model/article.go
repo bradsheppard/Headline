@@ -13,21 +13,35 @@ type Article struct {
         UserID  int
 }
 
-func FromProto(article *pb.Article) *Article {
-        return &Article{
-                Title: article.Title,
-                Summary: article.Summary,
-                Link: article.Link,
-                UserID: int(article.UserId),
+func ToProtos(articles []Article) []*pb.Article {
+        var protoArticles []*pb.Article
+
+        for _, article := range(articles) {
+                protoArticle := &pb.Article{
+                        Title: article.Title,
+                        Summary: article.Summary,
+                        Link: article.Link,
+                        UserId: uint64(article.UserID),
+                }
+                protoArticles = append(protoArticles, protoArticle)
         }
+
+        return protoArticles
 }
 
-func ToProto(article Article) *pb.Article {
-        return &pb.Article{
-                Title: article.Title,
-                Summary: article.Summary,
-                Link: article.Link,
-                UserId: uint64(article.UserID),
+func FromProtos(protoArticles []*pb.Article) []*Article {
+        var articles []*Article
+
+        for _, protoArticle := range(protoArticles) {
+                article := &Article{
+                        Title: protoArticle.Title,
+                        Summary: protoArticle.Summary,
+                        Link: protoArticle.Link,
+                        UserID: int(protoArticle.UserId),
+                }
+                articles = append(articles, article)
         }
+
+        return articles
 }
 

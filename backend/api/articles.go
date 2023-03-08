@@ -31,11 +31,7 @@ func (s *Server) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*p
                 return nil, status.Error(codes.Internal, errString)
         }
 
-        var grpcArticles []*pb.Article
-        for i := range(articles) {
-                grpcArticle := model.ToProto(articles[i])
-                grpcArticles = append(grpcArticles, grpcArticle)
-        }
+        grpcArticles := model.ToProtos(articles)
 
 	return &pb.ArticleResponse{
                 Articles: grpcArticles,
@@ -45,11 +41,7 @@ func (s *Server) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*p
 func (s *Server) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
         log.Printf("Creating article")
 
-        var articles []model.Article
-        for i := range(in.Articles) {
-                article := model.FromProto(in.Articles[i])
-                articles = append(articles, *article)
-        }
+        articles := model.FromProtos(in.Articles)
 
         if err := db.Create(&articles).Error; err != nil {
                 log.Printf(errFormatString, err)
