@@ -3,17 +3,12 @@ package api
 import (
 	"context"
 	"log"
-	"net"
 	"os"
 	"testing"
 
 	"headline/model"
 
 	pb "headline/proto"
-
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 
 	"gorm.io/gorm"
 )
@@ -33,43 +28,6 @@ func TestMain(m *testing.M) {
         os.Exit(exitVal)
 }
 
-func testserver(ctx context.Context) (pb.ArticleServiceClient, func()) {
-        buffer := 101024 * 1024
-        lis := bufconn.Listen(buffer)
-        
-        s := grpc.NewServer()
-        pb.RegisterArticleServiceServer(s, &Server{})
-
-        go func() {
-                if err := s.Serve(lis); err != nil {
-                        log.Printf("Error serving server: %v", err)
-                }
-        }()
-
-        conn, err := grpc.DialContext(ctx, "", 
-                grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-                        return lis.Dial()
-                }), grpc.WithTransportCredentials(insecure.NewCredentials()))
-
-        if err != nil {
-                log.Printf("Error connecting to server: %v", err)
-        }
-
-        closer := func() {
-                err := lis.Close()
-
-                if err != nil {
-                        log.Printf("Error closing listener: %v", err)
-                }
-
-                s.Stop()
-        }
-
-        client := pb.NewArticleServiceClient(conn)
-
-        return client, closer
-}
-
 func equal(article1 *pb.Article, article2 *pb.Article) bool {
         return article1.Title == article2.Title && article1.Summary == article2.Summary &&
                 article1.Link == article2.Link
@@ -80,16 +38,48 @@ type expectation struct {
         err error
 }
 
+type SetupResult struct {
+        client *pb.ArticleServiceClient
+        closer func()
+}
+
+func setup(ctx context.Context) (*SetupResult, error) {
+        conn, err := GenerateTestServer(ctx)
+
+        if err != nil {
+                return nil, err
+        }
+        
+        client := pb.NewArticleServiceClient(conn.clientConn)
+        pb.RegisterArticleServiceServer(conn.server, &Server{})
+
+        go conn.startup()
+
+        return &SetupResult{
+                client: &client,
+                closer: conn.closer,
+        }, nil
+}
+
 func TestArticle_GetArticles_Empty(t *testing.T) {
         ctx := context.Background()
-        client, closer := testserver(ctx)
-        defer closer()
+        setup, err := setup(ctx)
+
+        if err != nil {
+                t.Errorf("Setup error: %v", err)
+                t.FailNow()
+        }
+
+        defer setup.closer()
+
+        client := *setup.client
 
         req := &pb.GetArticlesRequest{UserId: 999}
         articles, err := client.GetArticles(ctx, req)
 
         if err != nil {
                 t.Errorf("Error: %v", err)
+                t.FailNow()
         }
 
         expected := expectation{
@@ -117,10 +107,18 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
 
 func TestArticle_GetArticles_NotEmpty(t *testing.T) {
         ctx := context.Background()
-        client, closer := testserver(ctx)
-        defer closer()
+        setup, err := setup(ctx)
 
-        _, err := client.CreateArticle(ctx, &pb.CreateArticleRequest{
+        defer setup.closer()
+
+        if err != nil {
+                t.Errorf("Setup error: %v", err)
+                t.FailNow()
+        }
+
+        client := *setup.client
+
+        _, err = client.CreateArticle(ctx, &pb.CreateArticleRequest{
                 Articles: []*pb.Article{
                         &pb.Article{
                                 Title: "New Title 1",

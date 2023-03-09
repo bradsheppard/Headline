@@ -23,8 +23,6 @@ type Server struct {
 }
 
 func (s *Server) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*pb.ArticleResponse, error) {
-	log.Printf("Received a request")
-
         var articles []model.Article
         if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
                 log.Printf(errFormatString, err)
@@ -39,8 +37,6 @@ func (s *Server) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*p
 }
 
 func (s *Server) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
-        log.Printf("Creating article")
-
         articles := model.FromProtos(in.Articles)
 
         if err := db.Create(&articles).Error; err != nil {
