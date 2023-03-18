@@ -5,7 +5,7 @@ import (
 	"headline/model"
 	"log"
 
-	pb "headline/proto"
+	pb "headline/proto/article"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
@@ -18,26 +18,26 @@ const (
         errString = "Error querying database"
 )
 
-type Server struct {
+type ArticleServer struct {
 	pb.UnimplementedArticleServiceServer
 }
 
-func (s *Server) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*pb.ArticleResponse, error) {
+func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*pb.ArticleResponse, error) {
         var articles []model.Article
         if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
                 log.Printf(errFormatString, err)
                 return nil, status.Error(codes.Internal, errString)
         }
 
-        grpcArticles := model.ToProtos(articles)
+        grpcArticles := model.ToArticleProtos(articles)
 
 	return &pb.ArticleResponse{
                 Articles: grpcArticles,
         }, nil
 }
 
-func (s *Server) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
-        articles := model.FromProtos(in.Articles)
+func (s *ArticleServer) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
+        articles := model.FromArticleProtos(in.Articles)
 
         if err := db.Create(&articles).Error; err != nil {
                 log.Printf(errFormatString, err)

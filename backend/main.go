@@ -8,7 +8,7 @@ import (
 
 	"headline/api"
 
-	pb "headline/proto"
+	pb "headline/proto/article"
 
 	"google.golang.org/grpc"
 )
@@ -36,7 +36,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterArticleServiceServer(s, &api.Server{})
+	pb.RegisterArticleServiceServer(s, &api.ArticleServer{})
 
 	log.Printf("Server listening at %v", lis.Addr())
 

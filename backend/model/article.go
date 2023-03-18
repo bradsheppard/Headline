@@ -2,7 +2,7 @@ package model
 
 import (
         "gorm.io/gorm"
-	pb "headline/proto"
+	pb "headline/proto/article"
 )
 
 type Article struct {
@@ -13,7 +13,7 @@ type Article struct {
         UserID  int
 }
 
-func ToProtos(articles []Article) []*pb.Article {
+func ToArticleProtos(articles []Article) []*pb.Article {
         var protoArticles []*pb.Article
 
         for _, article := range(articles) {
@@ -29,7 +29,7 @@ func ToProtos(articles []Article) []*pb.Article {
         return protoArticles
 }
 
-func FromProtos(protoArticles []*pb.Article) []*Article {
+func FromArticleProtos(protoArticles []*pb.Article) []*Article {
         var articles []*Article
 
         for _, protoArticle := range(protoArticles) {

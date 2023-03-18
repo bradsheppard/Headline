@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-option go_package = "proto/headline";
+option go_package = "proto/article";
 
 message Article {
         string title = 1; 
@@ -24,7 +24,7 @@ message GetArticlesRequest {
 }
 
 service ArticleService {
-        rpc GetArticles(GetArticlesRequest) returns (ArticleResponse) {}
-        rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty) {}
+        rpc GetArticles(GetArticlesRequest) returns (ArticleResponse);
+        rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty);
 }
 

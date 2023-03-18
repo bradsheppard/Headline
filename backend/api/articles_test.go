@@ -8,7 +8,7 @@ import (
 
 	"headline/model"
 
-	pb "headline/proto"
+	pb "headline/proto/article"
 
 	"gorm.io/gorm"
 )
@@ -21,9 +21,6 @@ func TestMain(m *testing.M) {
                 return
         }
 
-        db.AutoMigrate(&model.Article{})
-        db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&model.Article{})
-
         exitVal := m.Run()
         os.Exit(exitVal)
 }
@@ -33,17 +30,20 @@ func equal(article1 *pb.Article, article2 *pb.Article) bool {
                 article1.Link == article2.Link
 }
 
-type expectation struct {
+type articleExpectation struct {
         out []*pb.Article
         err error
 }
 
-type SetupResult struct {
+type SetupArticleResult struct {
         client *pb.ArticleServiceClient
         closer func()
 }
 
-func setup(ctx context.Context) (*SetupResult, error) {
+func setupArticles(ctx context.Context) (*SetupArticleResult, error) {
+        db.AutoMigrate(&model.Article{})
+        db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&model.Article{})
+
         conn, err := GenerateTestServer(ctx)
 
         if err != nil {
@@ -51,11 +51,11 @@ func setup(ctx context.Context) (*SetupResult, error) {
         }
         
         client := pb.NewArticleServiceClient(conn.clientConn)
-        pb.RegisterArticleServiceServer(conn.server, &Server{})
+        pb.RegisterArticleServiceServer(conn.server, &ArticleServer{})
 
         go conn.startup()
 
-        return &SetupResult{
+        return &SetupArticleResult{
                 client: &client,
                 closer: conn.closer,
         }, nil
@@ -63,7 +63,7 @@ func setup(ctx context.Context) (*SetupResult, error) {
 
 func TestArticle_GetArticles_Empty(t *testing.T) {
         ctx := context.Background()
-        setup, err := setup(ctx)
+        setup, err := setupArticles(ctx)
 
         if err != nil {
                 t.Errorf("Setup error: %v", err)
@@ -82,7 +82,7 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
                 t.FailNow()
         }
 
-        expected := expectation{
+        expected := articleExpectation{
                 out: []*pb.Article{},
                 err: nil,
         }
@@ -107,7 +107,7 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
 
 func TestArticle_GetArticles_NotEmpty(t *testing.T) {
         ctx := context.Background()
-        setup, err := setup(ctx)
+        setup, err := setupArticles(ctx)
 
         defer setup.closer()
 
@@ -147,7 +147,7 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
                 t.FailNow()
         }
 
-        expected := expectation{
+        expected := articleExpectation{
                 out: []*pb.Article{
                         &pb.Article{
                                 Title: "New Title 1",

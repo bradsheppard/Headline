@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.6.1
-// source: proto/headline.proto
+// source: proto/article/article.proto
 
-package headline
+package article
 
 import (
 	context "context"
@@ -138,5 +138,5 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/headline.proto",
+	Metadata: "proto/article/article.proto",
 }
