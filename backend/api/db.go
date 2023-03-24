@@ -5,6 +5,8 @@ import(
         "net"
         "log"
 
+	"headline/model"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/grpc/credentials/insecure"
@@ -22,6 +24,10 @@ func InitDb(dsi string) error {
         db, err = gorm.Open(postgres.Open(dsi))
 
         return err
+}
+
+func AutoMigrate() error {
+        return db.AutoMigrate(&model.Article{}, &model.Interest{})
 }
 
 type Connection struct {

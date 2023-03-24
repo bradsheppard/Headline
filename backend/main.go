@@ -27,6 +27,13 @@ func main() {
 		return
 	}
 
+        err = api.AutoMigrate()
+
+        if err != nil {
+                log.Fatalf("Failed to run migrations: %v", err)
+                return
+        }
+
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 
