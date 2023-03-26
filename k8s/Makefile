@@ -5,12 +5,6 @@ knative:
 
 .PHONY: istio
 istio:
-	kubectl apply -l knative.dev/crd-install=true -f https://github.com/knative/net-istio/releases/download/knative-v1.9.2/istio.yaml
-	kubectl apply -f https://github.com/knative/net-istio/releases/download/knative-v1.9.2/istio.yaml
-	kubectl apply -f https://github.com/knative/net-istio/releases/download/knative-v1.9.2/net-istio.yaml
-
-.PHONY: istio2
-istio2:
 	istioctl install -y
 	kubectl apply -f https://github.com/knative/net-istio/releases/download/knative-v1.9.2/net-istio.yaml
 	kubectl label namespace knative-serving istio-injection=enabled
