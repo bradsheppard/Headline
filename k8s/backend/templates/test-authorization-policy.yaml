@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: test-auth
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      serving.knative.dev/service: backend
+  action: ALLOW
+  rules:
+  - to:
+    - operation:
+        ports: ["8013"]

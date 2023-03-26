@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"headline/api"
 
@@ -13,13 +14,17 @@ import (
 	"google.golang.org/grpc"
 )
 
-const dbPath = "host=headline-postgresql user=postgres password=pass123"
-
 var (
 	port = flag.Int("port", 50051, "The server port")
 )
 
 func main() {
+        host := os.Getenv("HOST")
+        user := os.Getenv("USER")
+        password := os.Getenv("PASSWORD")
+        database := os.Getenv("DATABASE")
+
+        dbPath := fmt.Sprintf("host=%s user=%s password=%s database=%s", host, user, password, database)
 	err := api.InitDb(dbPath)
 
 	if err != nil {

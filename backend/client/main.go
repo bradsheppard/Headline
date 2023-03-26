@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	grpcAddr := net.JoinHostPort("localhost", "50051")
+	grpcAddr := net.JoinHostPort("localhost", "8088")
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
