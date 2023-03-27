@@ -10,6 +10,10 @@ istio:
 	kubectl label namespace knative-serving istio-injection=enabled
 	kubectl apply -f setup/peer-authentication.yaml
 
+.PHONY: auto-inject
+auto-inject:
+	kubectl label namespace default istio-injection=enabled --overwrite
+
 .PHONY: local-registry
 local-registry:
 	docker run -d -p 5005:5005 --restart=always --name registry registry:2

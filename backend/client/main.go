@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	grpcAddr := net.JoinHostPort("localhost", "8088")
+	grpcAddr := net.JoinHostPort("backend.default.10.106.173.140.sslip.io", "80")
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
