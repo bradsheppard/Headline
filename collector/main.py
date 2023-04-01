@@ -18,8 +18,11 @@ with grpc.insecure_channel(backend_service_url) as channel:
     interest_response: interest_pb2.InterestResponse = stub.GetInterests(request)
     interests = interest_response.interests
 
+print(f"Interests: {interests}")
 
 for interest in interests:
+    print(f"Crawling for interest: {interest}")
+    
     search_term = interest.name
     responses = ddg_news(search_term)
 

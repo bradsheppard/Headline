@@ -1,0 +1,9 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backend
+spec:
+  schedule: "{{ .Values.cron.schedule }}"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  concurrencyPolicy: Forbid
