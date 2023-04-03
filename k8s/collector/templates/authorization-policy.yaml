@@ -12,6 +12,6 @@ spec:
   - from:
     - source:
         principals: ["cluster.local/ns/default/sa/collector"]
-    to:
+  - to:
     - operation:
-        ports: ["80"]
+        methods: ["POST"]

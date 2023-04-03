@@ -1,0 +1,11 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: allow-knative-serving
+ namespace: default
+spec:
+ action: ALLOW
+ rules:
+ - from:
+   - source:
+      namespaces: ["knative-serving"]

@@ -8,7 +8,6 @@ from article import article_pb2_grpc, article_pb2
 from interest import interest_pb2_grpc, interest_pb2
 
 backend_service_url = os.environ['BACKEND_URL']
-time.sleep(10)
 
 print("Starting collection")
 
