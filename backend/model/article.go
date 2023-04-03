@@ -21,7 +21,6 @@ func ToArticleProtos(articles []Article) []*pb.Article {
                         Title: article.Title,
                         Summary: article.Summary,
                         Link: article.Link,
-                        UserId: uint64(article.UserID),
                 }
                 protoArticles = append(protoArticles, protoArticle)
         }
@@ -29,7 +28,7 @@ func ToArticleProtos(articles []Article) []*pb.Article {
         return protoArticles
 }
 
-func FromArticleProtos(protoArticles []*pb.Article) []*Article {
+func FromArticleProtos(protoArticles []*pb.Article, userId uint64) []*Article {
         var articles []*Article
 
         for _, protoArticle := range(protoArticles) {
@@ -37,7 +36,7 @@ func FromArticleProtos(protoArticles []*pb.Article) []*Article {
                         Title: protoArticle.Title,
                         Summary: protoArticle.Summary,
                         Link: protoArticle.Link,
-                        UserID: int(protoArticle.UserId),
+                        UserID: int(userId),
                 }
                 articles = append(articles, article)
         }

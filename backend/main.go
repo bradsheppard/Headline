@@ -9,7 +9,8 @@ import (
 
 	"headline/api"
 
-	pb "headline/proto/article"
+	article_pb "headline/proto/article"
+	interest_pb "headline/proto/interest"
 
 	"google.golang.org/grpc"
 )
@@ -19,12 +20,12 @@ var (
 )
 
 func main() {
-        host := os.Getenv("HOST")
-        user := os.Getenv("USER")
-        password := os.Getenv("PASSWORD")
-        database := os.Getenv("DATABASE")
+	host := os.Getenv("HOST")
+	user := os.Getenv("USER")
+	password := os.Getenv("PASSWORD")
+	database := os.Getenv("DATABASE")
 
-        dbPath := fmt.Sprintf("host=%s user=%s password=%s database=%s", host, user, password, database)
+	dbPath := fmt.Sprintf("host=%s user=%s password=%s database=%s", host, user, password, database)
 	err := api.InitDb(dbPath)
 
 	if err != nil {
@@ -32,12 +33,12 @@ func main() {
 		return
 	}
 
-        err = api.AutoMigrate()
+	err = api.AutoMigrate()
 
-        if err != nil {
-                log.Fatalf("Failed to run migrations: %v", err)
-                return
-        }
+	if err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+		return
+	}
 
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
@@ -48,7 +49,9 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterArticleServiceServer(s, &api.ArticleServer{})
+
+	article_pb.RegisterArticleServiceServer(s, &api.ArticleServer{})
+	interest_pb.RegisterInterestServiceServer(s, &api.InterestServer{})
 
 	log.Printf("Server listening at %v", lis.Addr())
 

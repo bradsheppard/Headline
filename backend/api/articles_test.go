@@ -74,7 +74,7 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
 
         client := *setup.client
 
-        req := &pb.GetArticlesRequest{UserId: 999}
+        req := &pb.User{UserId: 999}
         articles, err := client.GetArticles(ctx, req)
 
         if err != nil {
@@ -118,21 +118,15 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
 
         client := *setup.client
 
-        _, err = client.CreateArticle(ctx, &pb.CreateArticleRequest{
+        _, err = client.SetUserArticles(ctx, &pb.UserArticles{
                 Articles: []*pb.Article{
                         &pb.Article{
                                 Title: "New Title 1",
                                 Summary: "New Summary 1",
                                 Link: "New Link 1",
-                                UserId: 1,
-                        },
-                        &pb.Article{
-                                Title: "New Title 2",
-                                Summary: "New Summary 2",
-                                Link: "New Link 2",
-                                UserId: 2,
                         },
                 },
+                UserId: 1,
         })
 
         if err != nil {
@@ -140,7 +134,23 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
                 t.FailNow()
         }
 
-        articles, err := client.GetArticles(ctx, &pb.GetArticlesRequest{UserId: 1})
+        _, err = client.SetUserArticles(ctx, &pb.UserArticles{
+                Articles: []*pb.Article{
+                        &pb.Article{
+                                Title: "New Title 2",
+                                Summary: "New Summary 2",
+                                Link: "New Link 2",
+                        },
+                },
+                UserId: 2,
+        })
+
+        if err != nil {
+                t.Errorf("Error: %v", err)
+                t.FailNow()
+        }
+
+        articles, err := client.GetArticles(ctx, &pb.User{UserId: 1})
 
         if err != nil {
                 t.Errorf("Error: %v", err)
@@ -153,7 +163,6 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
                                 Title: "New Title 1",
                                 Summary: "New Summary 1",
                                 Link: "New Link 1",
-                                UserId: 1,
                         },
                 },
                 err: nil,

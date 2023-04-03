@@ -2,3 +2,20 @@ image:
   registry: dev.local
   repository: collector
   version: 1.0.0
+
+cron:
+  backoffLimit: 3
+  schedule: "@every 12h"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+
+backendUrl: backend.default.svc.cluster.local:80
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+

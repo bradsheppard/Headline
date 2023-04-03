@@ -1,5 +1,6 @@
 import os
 import grpc
+import time
 
 from duckduckgo_search import ddg_news
 from model.result import Result
@@ -7,6 +8,9 @@ from article import article_pb2_grpc, article_pb2
 from interest import interest_pb2_grpc, interest_pb2
 
 backend_service_url = os.environ['BACKEND_URL']
+time.sleep(10)
+
+print("Starting collection")
 
 with grpc.insecure_channel(backend_service_url) as channel:
     stub = interest_pb2_grpc.InterestServiceStub(channel)
@@ -38,17 +42,17 @@ for interest in interests:
             article = article_pb2.Article(
                 title=response['title'],
                 summary=response['body'],
-                link=response['url'],
-                userId=1
+                link=response['url']
             )
 
             articles.append(article)
             
         stub = article_pb2_grpc.ArticleServiceStub(channel)
 
-        request = article_pb2.CreateArticleRequest(
-                articles=articles
+        request = article_pb2.UserArticles(
+                articles=articles,
+                userId=1
         )
 
-        stub.CreateArticle(request)
+        stub.SetUserArticles(request)
 

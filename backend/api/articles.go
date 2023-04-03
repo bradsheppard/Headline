@@ -22,7 +22,7 @@ type ArticleServer struct {
 	pb.UnimplementedArticleServiceServer
 }
 
-func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.GetArticlesRequest) (*pb.ArticleResponse, error) {
+func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.User) (*pb.UserArticles, error) {
         log.Printf("Received GetArticles")
 
         var articles []model.Article
@@ -33,13 +33,14 @@ func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.GetArticlesReque
 
         grpcArticles := model.ToArticleProtos(articles)
 
-	return &pb.ArticleResponse{
+	return &pb.UserArticles{
                 Articles: grpcArticles,
+                UserId: in.UserId,
         }, nil
 }
 
-func (s *ArticleServer) CreateArticle(ctx context.Context, in *pb.CreateArticleRequest) (*empty.Empty, error) {
-        articles := model.FromArticleProtos(in.Articles)
+func (s *ArticleServer) SetUserArticles(ctx context.Context, in *pb.UserArticles) (*empty.Empty, error) {
+        articles := model.FromArticleProtos(in.Articles, in.UserId)
 
         if err := db.Create(&articles).Error; err != nil {
                 log.Printf(errFormatString, err)

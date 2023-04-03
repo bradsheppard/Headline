@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x61rticle/article.proto\x1a\x1bgoogle/protobuf/empty.proto\"G\n\x07\x41rticle\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07summary\x18\x02 \x01(\t\x12\x0c\n\x04link\x18\x03 \x01(\t\x12\x0e\n\x06userId\x18\x04 \x01(\x04\"-\n\x0f\x41rticleResponse\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\"2\n\x14\x43reateArticleRequest\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\"$\n\x12GetArticlesRequest\x12\x0e\n\x06userId\x18\x01 \x01(\x04\x32\x86\x01\n\x0e\x41rticleService\x12\x34\n\x0bGetArticles\x12\x13.GetArticlesRequest\x1a\x10.ArticleResponse\x12>\n\rCreateArticle\x12\x15.CreateArticleRequest\x1a\x16.google.protobuf.EmptyB\x0fZ\rproto/articleb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x61rticle/article.proto\x1a\x1bgoogle/protobuf/empty.proto\"7\n\x07\x41rticle\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07summary\x18\x02 \x01(\t\x12\x0c\n\x04link\x18\x03 \x01(\t\":\n\x0cUserArticles\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\x12\x0e\n\x06userId\x18\x02 \x01(\x04\"\x16\n\x04User\x12\x0e\n\x06userId\x18\x01 \x01(\x04\x32o\n\x0e\x41rticleService\x12#\n\x0bGetArticles\x12\x05.User\x1a\r.UserArticles\x12\x38\n\x0fSetUserArticles\x12\r.UserArticles\x1a\x16.google.protobuf.EmptyB\x0fZ\rproto/articleb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'article.article_pb2', globals())
@@ -23,13 +23,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\rproto/article'
   _ARTICLE._serialized_start=54
-  _ARTICLE._serialized_end=125
-  _ARTICLERESPONSE._serialized_start=127
-  _ARTICLERESPONSE._serialized_end=172
-  _CREATEARTICLEREQUEST._serialized_start=174
-  _CREATEARTICLEREQUEST._serialized_end=224
-  _GETARTICLESREQUEST._serialized_start=226
-  _GETARTICLESREQUEST._serialized_end=262
-  _ARTICLESERVICE._serialized_start=265
-  _ARTICLESERVICE._serialized_end=399
+  _ARTICLE._serialized_end=109
+  _USERARTICLES._serialized_start=111
+  _USERARTICLES._serialized_end=169
+  _USER._serialized_start=171
+  _USER._serialized_end=193
+  _ARTICLESERVICE._serialized_start=195
+  _ARTICLESERVICE._serialized_end=306
 # @@protoc_insertion_point(module_scope)

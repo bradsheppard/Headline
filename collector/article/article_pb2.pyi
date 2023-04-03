@@ -7,31 +7,25 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class Article(_message.Message):
-    __slots__ = ["link", "summary", "title", "userId"]
+    __slots__ = ["link", "summary", "title"]
     LINK_FIELD_NUMBER: _ClassVar[int]
     SUMMARY_FIELD_NUMBER: _ClassVar[int]
     TITLE_FIELD_NUMBER: _ClassVar[int]
-    USERID_FIELD_NUMBER: _ClassVar[int]
     link: str
     summary: str
     title: str
-    userId: int
-    def __init__(self, title: _Optional[str] = ..., summary: _Optional[str] = ..., link: _Optional[str] = ..., userId: _Optional[int] = ...) -> None: ...
+    def __init__(self, title: _Optional[str] = ..., summary: _Optional[str] = ..., link: _Optional[str] = ...) -> None: ...
 
-class ArticleResponse(_message.Message):
-    __slots__ = ["articles"]
-    ARTICLES_FIELD_NUMBER: _ClassVar[int]
-    articles: _containers.RepeatedCompositeFieldContainer[Article]
-    def __init__(self, articles: _Optional[_Iterable[_Union[Article, _Mapping]]] = ...) -> None: ...
-
-class CreateArticleRequest(_message.Message):
-    __slots__ = ["articles"]
-    ARTICLES_FIELD_NUMBER: _ClassVar[int]
-    articles: _containers.RepeatedCompositeFieldContainer[Article]
-    def __init__(self, articles: _Optional[_Iterable[_Union[Article, _Mapping]]] = ...) -> None: ...
-
-class GetArticlesRequest(_message.Message):
+class User(_message.Message):
     __slots__ = ["userId"]
     USERID_FIELD_NUMBER: _ClassVar[int]
     userId: int
     def __init__(self, userId: _Optional[int] = ...) -> None: ...
+
+class UserArticles(_message.Message):
+    __slots__ = ["articles", "userId"]
+    ARTICLES_FIELD_NUMBER: _ClassVar[int]
+    USERID_FIELD_NUMBER: _ClassVar[int]
+    articles: _containers.RepeatedCompositeFieldContainer[Article]
+    userId: int
+    def __init__(self, articles: _Optional[_Iterable[_Union[Article, _Mapping]]] = ..., userId: _Optional[int] = ...) -> None: ...

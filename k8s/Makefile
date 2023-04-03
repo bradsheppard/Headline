@@ -10,6 +10,13 @@ istio:
 	kubectl label namespace knative-serving istio-injection=enabled
 	kubectl apply -f setup/peer-authentication.yaml
 
+.PHONY: setup
+setup: enable-inject
+	kubectl apply -f setup/default-peer-authentication.yaml
+	kubectl apply -f setup/knative-peer-authentication.yaml
+	kubectl apply -f setup/scale-to-zero.yaml
+	kubectl apply -f setup/allow-nothing.yaml
+
 .PHONY: enable-inject
 enable-inject:
 	kubectl label namespace default istio-injection=enabled --overwrite

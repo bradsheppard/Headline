@@ -17,12 +17,12 @@ class ArticleServiceStub(object):
         """
         self.GetArticles = channel.unary_unary(
                 '/ArticleService/GetArticles',
-                request_serializer=article_dot_article__pb2.GetArticlesRequest.SerializeToString,
-                response_deserializer=article_dot_article__pb2.ArticleResponse.FromString,
+                request_serializer=article_dot_article__pb2.User.SerializeToString,
+                response_deserializer=article_dot_article__pb2.UserArticles.FromString,
                 )
-        self.CreateArticle = channel.unary_unary(
-                '/ArticleService/CreateArticle',
-                request_serializer=article_dot_article__pb2.CreateArticleRequest.SerializeToString,
+        self.SetUserArticles = channel.unary_unary(
+                '/ArticleService/SetUserArticles',
+                request_serializer=article_dot_article__pb2.UserArticles.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
@@ -36,7 +36,7 @@ class ArticleServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def CreateArticle(self, request, context):
+    def SetUserArticles(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -47,12 +47,12 @@ def add_ArticleServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetArticles': grpc.unary_unary_rpc_method_handler(
                     servicer.GetArticles,
-                    request_deserializer=article_dot_article__pb2.GetArticlesRequest.FromString,
-                    response_serializer=article_dot_article__pb2.ArticleResponse.SerializeToString,
+                    request_deserializer=article_dot_article__pb2.User.FromString,
+                    response_serializer=article_dot_article__pb2.UserArticles.SerializeToString,
             ),
-            'CreateArticle': grpc.unary_unary_rpc_method_handler(
-                    servicer.CreateArticle,
-                    request_deserializer=article_dot_article__pb2.CreateArticleRequest.FromString,
+            'SetUserArticles': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetUserArticles,
+                    request_deserializer=article_dot_article__pb2.UserArticles.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
@@ -77,13 +77,13 @@ class ArticleService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ArticleService/GetArticles',
-            article_dot_article__pb2.GetArticlesRequest.SerializeToString,
-            article_dot_article__pb2.ArticleResponse.FromString,
+            article_dot_article__pb2.User.SerializeToString,
+            article_dot_article__pb2.UserArticles.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def CreateArticle(request,
+    def SetUserArticles(request,
             target,
             options=(),
             channel_credentials=None,
@@ -93,8 +93,8 @@ class ArticleService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ArticleService/CreateArticle',
-            article_dot_article__pb2.CreateArticleRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/ArticleService/SetUserArticles',
+            article_dot_article__pb2.UserArticles.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

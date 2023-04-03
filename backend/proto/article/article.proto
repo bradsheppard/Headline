@@ -4,27 +4,24 @@ import "google/protobuf/empty.proto";
 
 option go_package = "proto/article";
 
+
 message Article {
-        string title = 1; 
+        string title = 1;
         string summary = 2;
         string link = 3;
-        uint64 userId = 4;
 }
 
-message ArticleResponse {
-        repeated Article articles = 1; 
-}
-
-message CreateArticleRequest {
+message UserArticles {
         repeated Article articles = 1;
+        uint64 userId = 2;
 }
 
-message GetArticlesRequest {
+message User {
         uint64 userId = 1;
 }
 
 service ArticleService {
-        rpc GetArticles(GetArticlesRequest) returns (ArticleResponse);
-        rpc CreateArticle(CreateArticleRequest) returns (google.protobuf.Empty);
+        rpc GetArticles(User) returns (UserArticles);
+        rpc SetUserArticles(UserArticles) returns (google.protobuf.Empty);
 }
 
