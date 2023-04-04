@@ -5,7 +5,7 @@ image:
 
 cron:
   backoffLimit: 3
-  schedule: "@every 12h"
+  schedule: "@every 1h"
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 2
 

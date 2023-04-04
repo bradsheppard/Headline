@@ -10,7 +10,7 @@ type Article struct {
 	Title   string 
 	Summary string 
 	Link    string 
-        UserID  int
+        UserID  int `gorm:"index"`
 }
 
 func ToArticleProtos(articles []Article) []*pb.Article {

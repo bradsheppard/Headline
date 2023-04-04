@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"gorm.io/gorm"
 )
 
 const (
@@ -42,7 +43,19 @@ func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.User) (*pb.UserA
 func (s *ArticleServer) SetUserArticles(ctx context.Context, in *pb.UserArticles) (*empty.Empty, error) {
         articles := model.FromArticleProtos(in.Articles, in.UserId)
 
-        if err := db.Create(&articles).Error; err != nil {
+        err := db.Transaction(func(tx *gorm.DB) error {
+                if err := db.Where("user_id = ?", in.UserId).Delete(&pb.Article{}).Error; err != nil {
+                        return err
+                }
+
+                if err := db.Create(&articles).Error; err != nil {
+                        return err
+                }
+
+                return nil
+        })
+
+        if err != nil {
                 log.Printf(errFormatString, err)
                 return nil, status.Error(codes.Internal, errString)
         }
