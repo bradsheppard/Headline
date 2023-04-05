@@ -16,6 +16,7 @@ setup: enable-inject
 	kubectl apply -f setup/scale-to-zero.yaml
 	kubectl apply -f setup/allow-nothing.yaml
 	kubectl apply -f setup/service-authorization-policy.yaml
+	kubectl apply -f setup/knative-system-authorization-policy.yaml
 
 .PHONY: dns
 dns:
