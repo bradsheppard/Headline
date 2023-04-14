@@ -1,20 +1,25 @@
-import { Button, Center, Heading, NativeBaseProvider, VStack } from "native-base"
+import {NavigationContainer} from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Login from './components/Login'
+import Main from './components/Main'
 
-export default function App() {
+type RootStackParamList = {
+    Login: undefined;
+    Main: undefined;
+}
+
+const Stack = createNativeStackNavigator<RootStackParamList>()
+
+function App() {
     return (
-        <NativeBaseProvider>
-
-            <Center
-                _dark={{ bg: "blueGray.900" }}
-                _light={{ bg: "blueGray.50" }}
-                px={4}
-                flex={1}
-            >
-                <VStack space={5} alignItems="center">
-                    <Heading size="lg">Headline</Heading>
-                    <Button shadow={2} size="lg">Login</Button>
-                </VStack>
-            </Center>
-        </NativeBaseProvider>
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='Login'>
+                <Stack.Screen name='Login' component={Login} />
+                <Stack.Screen name='Main' component={Main} />
+            </Stack.Navigator>
+        </NavigationContainer>
     )
 }
+
+export default App;
+
