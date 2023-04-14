@@ -24,8 +24,6 @@ type ArticleServer struct {
 }
 
 func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.User) (*pb.UserArticles, error) {
-	log.Printf("Received GetArticles")
-
 	var articles []model.Article
 	if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
 		log.Printf(errFormatString, err)
