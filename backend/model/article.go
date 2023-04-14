@@ -1,46 +1,51 @@
 package model
 
 import (
-        "gorm.io/gorm"
+	"gorm.io/gorm"
 	pb "headline/proto/article"
 )
 
 type Article struct {
-        gorm.Model
-	Title   string 
-	Summary string 
-	Link    string 
-        UserID  int `gorm:"index"`
+	gorm.Model
+	Title       string
+	Description string
+	Url         string
+	ImageUrl    string
+	Source      string
+	UserID      int `gorm:"index"`
 }
 
 func ToArticleProtos(articles []Article) []*pb.Article {
-        var protoArticles []*pb.Article
+	var protoArticles []*pb.Article
 
-        for _, article := range(articles) {
-                protoArticle := &pb.Article{
-                        Title: article.Title,
-                        Summary: article.Summary,
-                        Link: article.Link,
-                }
-                protoArticles = append(protoArticles, protoArticle)
-        }
+	for _, article := range articles {
+		protoArticle := &pb.Article{
+			Title:       article.Title,
+			Description: article.Description,
+			Url:         article.Url,
+			ImageUrl:    article.ImageUrl,
+			Source:      article.Source,
+		}
+		protoArticles = append(protoArticles, protoArticle)
+	}
 
-        return protoArticles
+	return protoArticles
 }
 
 func FromArticleProtos(protoArticles []*pb.Article, userId uint64) []*Article {
-        var articles []*Article
+	var articles []*Article
 
-        for _, protoArticle := range(protoArticles) {
-                article := &Article{
-                        Title: protoArticle.Title,
-                        Summary: protoArticle.Summary,
-                        Link: protoArticle.Link,
-                        UserID: int(userId),
-                }
-                articles = append(articles, article)
-        }
+	for _, protoArticle := range protoArticles {
+		article := &Article{
+			Title:       protoArticle.Title,
+			Description: protoArticle.Description,
+			Url:         protoArticle.Url,
+			UserID:      int(userId),
+			ImageUrl:    protoArticle.ImageUrl,
+			Source:      protoArticle.Source,
+		}
+		articles = append(articles, article)
+	}
 
-        return articles
+	return articles
 }
-

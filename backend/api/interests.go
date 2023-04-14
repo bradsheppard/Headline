@@ -18,37 +18,37 @@ type InterestServer struct {
 }
 
 func (interestServer *InterestServer) AddInterests(ctx context.Context, in *pb.AddInterestsRequest) (*pb.InterestResponse, error) {
-        interests := model.FromInterestProtos(in.Interests)
+	interests := model.FromInterestProtos(in.Interests)
 
-        if err := db.Create(&interests).Error; err != nil {
-                log.Printf(errFormatString, err)
-                return nil, status.Error(codes.Internal, errString)
-        }
+	if err := db.Create(&interests).Error; err != nil {
+		log.Printf(errFormatString, err)
+		return nil, status.Error(codes.Internal, errString)
+	}
 
-        return &pb.InterestResponse{
-                Interests: model.ToInterestProtos(interests),
-        }, nil
+	return &pb.InterestResponse{
+		Interests: model.ToInterestProtos(interests),
+	}, nil
 }
 
 func (interestServer *InterestServer) DeleteInterests(ctx context.Context, in *pb.DeleteInterestsRequest) (*empty.Empty, error) {
-        if err := db.Delete(&model.Interest{}, in.Ids).Error; err != nil {
-                log.Printf(errFormatString, err)
-                return nil, status.Error(codes.Internal, errString)
-        }
+	if err := db.Delete(&model.Interest{}, in.Ids).Error; err != nil {
+		log.Printf(errFormatString, err)
+		return nil, status.Error(codes.Internal, errString)
+	}
 
-        return &emptypb.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (interestServer *InterestServer) GetInterests(ctx context.Context, in *pb.GetInterestsRequest) (*pb.InterestResponse, error) {
-        var interests []*model.Interest
-        if err := db.Where(&model.Interest{UserID: int(in.UserId)}).Find(&interests).Error; err != nil {
-                log.Printf(errFormatString, err)
-                return nil, status.Error(codes.Internal, errString)
-        }
+	var interests []*model.Interest
+	if err := db.Where(&model.Interest{UserID: int(in.UserId)}).Find(&interests).Error; err != nil {
+		log.Printf(errFormatString, err)
+		return nil, status.Error(codes.Internal, errString)
+	}
 
-        grpcInterests := model.ToInterestProtos(interests)
+	grpcInterests := model.ToInterestProtos(interests)
 
 	return &pb.InterestResponse{
-                Interests: grpcInterests,
-        }, nil
+		Interests: grpcInterests,
+	}, nil
 }

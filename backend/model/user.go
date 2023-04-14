@@ -1,11 +1,10 @@
 package model
 
 import (
-        "gorm.io/gorm"
+	"gorm.io/gorm"
 )
 
 type User struct {
-        gorm.Model
-        Name string
+	gorm.Model
+	Name string
 }
-

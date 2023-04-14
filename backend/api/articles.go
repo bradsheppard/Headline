@@ -15,8 +15,8 @@ import (
 )
 
 const (
-        errFormatString = "Error querying database: %v"
-        errString = "Error querying database"
+	errFormatString = "Error querying database: %v"
+	errString       = "Error querying database"
 )
 
 type ArticleServer struct {
@@ -24,42 +24,41 @@ type ArticleServer struct {
 }
 
 func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.User) (*pb.UserArticles, error) {
-        log.Printf("Received GetArticles")
+	log.Printf("Received GetArticles")
 
-        var articles []model.Article
-        if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
-                log.Printf(errFormatString, err)
-                return nil, status.Error(codes.Internal, errString)
-        }
+	var articles []model.Article
+	if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
+		log.Printf(errFormatString, err)
+		return nil, status.Error(codes.Internal, errString)
+	}
 
-        grpcArticles := model.ToArticleProtos(articles)
+	grpcArticles := model.ToArticleProtos(articles)
 
 	return &pb.UserArticles{
-                Articles: grpcArticles,
-                UserId: in.UserId,
-        }, nil
+		Articles: grpcArticles,
+		UserId:   in.UserId,
+	}, nil
 }
 
 func (s *ArticleServer) SetUserArticles(ctx context.Context, in *pb.UserArticles) (*empty.Empty, error) {
-        articles := model.FromArticleProtos(in.Articles, in.UserId)
+	articles := model.FromArticleProtos(in.Articles, in.UserId)
 
-        err := db.Transaction(func(tx *gorm.DB) error {
-                if err := db.Where("user_id = ?", in.UserId).Delete(&pb.Article{}).Error; err != nil {
-                        return err
-                }
+	err := db.Transaction(func(tx *gorm.DB) error {
+		if err := db.Where("user_id = ?", in.UserId).Delete(&pb.Article{}).Error; err != nil {
+			return err
+		}
 
-                if err := db.Create(&articles).Error; err != nil {
-                        return err
-                }
+		if err := db.Create(&articles).Error; err != nil {
+			return err
+		}
 
-                return nil
-        })
+		return nil
+	})
 
-        if err != nil {
-                log.Printf(errFormatString, err)
-                return nil, status.Error(codes.Internal, errString)
-        }
+	if err != nil {
+		log.Printf(errFormatString, err)
+		return nil, status.Error(codes.Internal, errString)
+	}
 
-        return &emptypb.Empty{}, nil
+	return &emptypb.Empty{}, nil
 }
-
