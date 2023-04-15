@@ -7,14 +7,18 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class Article(_message.Message):
-    __slots__ = ["link", "summary", "title"]
-    LINK_FIELD_NUMBER: _ClassVar[int]
-    SUMMARY_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ["description", "imageUrl", "source", "title", "url"]
+    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    IMAGEURL_FIELD_NUMBER: _ClassVar[int]
+    SOURCE_FIELD_NUMBER: _ClassVar[int]
     TITLE_FIELD_NUMBER: _ClassVar[int]
-    link: str
-    summary: str
+    URL_FIELD_NUMBER: _ClassVar[int]
+    description: str
+    imageUrl: str
+    source: str
     title: str
-    def __init__(self, title: _Optional[str] = ..., summary: _Optional[str] = ..., link: _Optional[str] = ...) -> None: ...
+    url: str
+    def __init__(self, title: _Optional[str] = ..., description: _Optional[str] = ..., url: _Optional[str] = ..., imageUrl: _Optional[str] = ..., source: _Optional[str] = ...) -> None: ...
 
 class User(_message.Message):
     __slots__ = ["userId"]

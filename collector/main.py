@@ -40,8 +40,10 @@ for interest in interests:
         for response in responses:
             article = article_pb2.Article(
                 title=response['title'],
-                summary=response['body'],
-                link=response['url']
+                description=response['body'],
+                url=response['url'],
+                imageUrl=response['imageUrl'],
+                source=response['source']
             )
 
             articles.append(article)
