@@ -25,10 +25,12 @@ dns:
 .PHONY: enable-inject
 enable-inject:
 	kubectl label namespace default istio-injection=enabled --overwrite
+	kubectl label namespace knative-serving istio-injection=enabled --overwrite
 
 .PHONY: disable-inject
 disable-inject:
 	kubectl label namespace default istio-injection=disabled --overwrite
+	kubectl label namespace knative-serving istio-injection=disabled --overwrite
 
 .PHONY: local-registry
 local-registry:
