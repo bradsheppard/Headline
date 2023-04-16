@@ -26,6 +26,8 @@ dns:
 enable-inject:
 	kubectl label namespace default istio-injection=enabled --overwrite
 	kubectl label namespace knative-serving istio-injection=enabled --overwrite
+	kubectl delete pods --all --namespace knative-serving
+	kubectl delete pods --all --namespace default
 
 .PHONY: disable-inject
 disable-inject:
