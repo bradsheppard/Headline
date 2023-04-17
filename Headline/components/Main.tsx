@@ -1,5 +1,8 @@
 import {NativeBaseProvider} from "native-base";
+import {FlatList, Text} from "react-native";
 import Article from "./Article";
+import uuid from 'react-native-uuid'
+import {View} from "react-native";
 
 interface ArticleInput {
     interest: string
@@ -19,12 +22,29 @@ const data: Array<ArticleInput> = [
     }
 ]
 
+const styles = {
+    container: {
+        flex: 1,
+        flexGrow: 1,
+        paddingTop: 20,
+    },
+    list: {
+        flex: 1,
+        flexGrow: 1,
+        paddingVertical: 8,
+    }
+}
+
 export default function Main() {
     return (
-        <NativeBaseProvider>
-            {data.map((article: ArticleInput) => {
-                return <Article article={article}></Article>
-            })}
-        </NativeBaseProvider>
+        <View style={[styles.container]}>
+            <FlatList 
+                data={data}
+                keyExtractor={() => uuid.v4()}
+                renderItem={({item, index}: any) => (
+                    <Article article={item} />
+                )}
+            />
+        </View>
     )
 }
