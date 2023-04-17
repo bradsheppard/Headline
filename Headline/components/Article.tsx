@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 
 const Article: React.FC<Props> = (props: Props) => {
     return (
-        <TouchableOpacity activeOpacity={1} styles={styles.container}>
+        <TouchableOpacity activeOpacity={1} style={styles.container}>
             <Image 
                 source={{uri: props.article.imageUrl}} 
                 resizeMode={'cover'}
@@ -80,6 +80,7 @@ const Article: React.FC<Props> = (props: Props) => {
                 colors={['#0000', '#000A', '#000']}
                 style={styles.title}>
                 <Text style={styles.text}>{props.article.title}</Text>
+                <Text style={styles.timestamp}>May 5, 2023</Text>
             </LinearGradient>
         </TouchableOpacity>
     )
