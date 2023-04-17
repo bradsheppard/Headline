@@ -42,7 +42,7 @@ for interest in interests:
                 title=response['title'],
                 description=response['body'],
                 url=response['url'],
-                imageUrl=response['imageUrl'],
+                imageUrl=response['image'],
                 source=response['source']
             )
 
