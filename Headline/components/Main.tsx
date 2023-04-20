@@ -3,6 +3,7 @@ import {FlatList, Text} from "react-native";
 import Article from "./Article";
 import uuid from 'react-native-uuid'
 import {View} from "react-native";
+import Tags from "./Tags";
 
 interface ArticleInput {
     interest: string
@@ -40,7 +41,6 @@ const styles = {
     container: {
         flex: 1,
         flexGrow: 1,
-        paddingTop: 20,
         backgroundColor: '#000',
     },
     list: {
@@ -51,9 +51,13 @@ const styles = {
 }
 
 export default function Main() {
+    const tags = [...new Set(data.map(x => x.interest))];
+
     return (
         <View style={[styles.container]}>
+            <Tags interests={tags} />
             <FlatList 
+                style={styles.list}
                 data={data}
                 keyExtractor={() => uuid.v4() as string}
                 renderItem={({item, index}: any) => (
