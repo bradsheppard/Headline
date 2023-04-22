@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      serving.knative.dev/service: backend
+      app.kubernetes.io/name: backend
   action: ALLOW
   rules:
   - from:

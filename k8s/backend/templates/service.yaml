@@ -10,6 +10,6 @@ spec:
     - port: {{ .Values.service.port }}
       targetPort: h2c
       protocol: TCP
-      name: http
+      name: h2c
   selector:
     {{- include "backend.selectorLabels" . | nindent 4 }}

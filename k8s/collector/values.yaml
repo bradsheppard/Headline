@@ -9,7 +9,7 @@ cron:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 2
 
-backendUrl: backend.default.svc.cluster.local:80
+backendUrl: backend:80
 
 resources:
   requests:
