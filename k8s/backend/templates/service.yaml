@@ -7,9 +7,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - name: h2c
+      port: {{ .Values.service.port }}
       targetPort: h2c
       protocol: TCP
-      name: h2c
+    - name: grpc-web-port
+      port: 9000
+      targetPort: h2c
   selector:
     {{- include "backend.selectorLabels" . | nindent 4 }}
