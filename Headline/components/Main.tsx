@@ -4,6 +4,8 @@ import Article from "./Article";
 import uuid from 'react-native-uuid'
 import {View} from "react-native";
 import Tags from "./Tags";
+import InterestService from "../api/interest";
+import {useEffect, useState} from "react";
 
 interface ArticleInput {
     interest: string
@@ -50,12 +52,22 @@ const styles = {
     }
 }
 
+
 export default function Main() {
-    const tags = [...new Set(data.map(x => x.interest))];
+    const [interests, setInterests] = useState<string[]>([]);
+
+    const fetchData = async () => {
+        const interestResponse = await InterestService.getInterests(1);
+        setInterests(interestResponse);
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
 
     return (
         <View style={[styles.container]}>
-            <Tags interests={tags} />
+            <Tags interests={interests} />
             <FlatList 
                 style={styles.list}
                 data={data}
