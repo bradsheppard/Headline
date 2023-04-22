@@ -19,6 +19,8 @@ services:
     restart: always
     dns:
       - 172.0.0.10
+    networks:
+      - dps
     environment:
       - POSTGRES_PASSWORD=pass123
       - HOSTNAMES=headline-postgresql
@@ -28,8 +30,37 @@ services:
     dns:
       - 172.0.0.10
     restart: always
+    networks:
+      - dps
     ports:
       - 8080:8080
+
+  backend:
+    restart: always
+    image: backend:1.0.0
+    dns:
+      - 172.0.0.10
+    ports:
+      - 50051:50051
+    networks:
+      - dps
+    environment:
+      - HOSTNAMES=backend
+      - HOST=headline-postgresql
+      - USER=postgres
+      - PASSWORD=pass123
+      - DATABASE=postgres
+
+  envoy:
+    image: grpcweb/envoy
+    dns:
+      - 172.0.0.10
+    ports:
+      - 9090:9090
+    networks:
+      - dps
+    environment:
+      - HOSTNAMES=envoy
 
 networks:
   dps:
