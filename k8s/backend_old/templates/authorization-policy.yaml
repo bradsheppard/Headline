@@ -15,4 +15,3 @@ spec:
     to:
     - operation:
         ports: ["5432"]
-

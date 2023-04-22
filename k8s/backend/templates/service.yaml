@@ -1,26 +1,15 @@
-apiVersion: serving.knative.dev/v1
+apiVersion: v1
 kind: Service
 metadata:
-  name: backend
-  namespace: default
+  name: {{ include "backend.fullname" . }}
+  labels:
+    {{- include "backend.labels" . | nindent 4 }}
 spec:
-  template:
-    spec:
-      serviceAccountName: backend
-      containers:
-        - image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
-          ports:
-            - name: h2c
-              containerPort: {{ .Values.service.port }}
-          env:
-            - name: HOST
-              value: backend-postgres
-            - name: USER
-              value: "{{ .Values.postgresql.auth.username }}"
-            - name: DATABASE
-              value: postgres
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: backend-postgres-credentials
-                  key: password
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: h2c
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "backend.selectorLabels" . | nindent 4 }}
