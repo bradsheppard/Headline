@@ -116,7 +116,8 @@ proto.Article.toObject = function(includeInstance, msg) {
     description: jspb.Message.getFieldWithDefault(msg, 2, ""),
     url: jspb.Message.getFieldWithDefault(msg, 3, ""),
     imageurl: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    source: jspb.Message.getFieldWithDefault(msg, 5, "")
+    source: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    interest: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -172,6 +173,10 @@ proto.Article.deserializeBinaryFromReader = function(msg, reader) {
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setSource(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setInterest(value);
       break;
     default:
       reader.skipField();
@@ -234,6 +239,13 @@ proto.Article.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getInterest();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
       f
     );
   }
@@ -327,6 +339,24 @@ proto.Article.prototype.getSource = function() {
  */
 proto.Article.prototype.setSource = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string interest = 6;
+ * @return {string}
+ */
+proto.Article.prototype.getInterest = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.Article} returns this
+ */
+proto.Article.prototype.setInterest = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 

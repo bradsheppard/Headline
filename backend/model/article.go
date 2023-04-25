@@ -13,6 +13,7 @@ type Article struct {
 	ImageUrl    string
 	Source      string
 	UserID      int `gorm:"index"`
+	Interest    string
 }
 
 func ToArticleProtos(articles []Article) []*pb.Article {
@@ -25,6 +26,7 @@ func ToArticleProtos(articles []Article) []*pb.Article {
 			Url:         article.Url,
 			ImageUrl:    article.ImageUrl,
 			Source:      article.Source,
+			Interest:    article.Interest,
 		}
 		protoArticles = append(protoArticles, protoArticle)
 	}
@@ -43,6 +45,7 @@ func FromArticleProtos(protoArticles []*pb.Article, userId uint64) []*Article {
 			UserID:      int(userId),
 			ImageUrl:    protoArticle.ImageUrl,
 			Source:      protoArticle.Source,
+			Interest:    protoArticle.Interest,
 		}
 		articles = append(articles, article)
 	}

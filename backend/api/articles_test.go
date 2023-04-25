@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 func equal(article1 *pb.Article, article2 *pb.Article) bool {
 	return article1.Title == article2.Title && article1.Description == article2.Description &&
 		article1.Url == article2.Url && article1.ImageUrl == article2.ImageUrl &&
-		article1.Source == article2.Source
+		article1.Source == article2.Source && article1.Interest == article2.Interest
 }
 
 type articleExpectation struct {
@@ -127,6 +127,7 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
 				Url:         "New Url 1",
 				ImageUrl:    "New Image Url 1",
 				Source:      "New Source 1",
+				Interest:    "New Interest 1",
 			},
 		},
 		UserId: 1,
@@ -145,6 +146,7 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
 				Url:         "New Url 2",
 				ImageUrl:    "New Image Url 2",
 				Source:      "New Source 2",
+				Interest:    "New Interest 2",
 			},
 		},
 		UserId: 2,
@@ -170,6 +172,7 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
 				Url:         "New Url 1",
 				ImageUrl:    "New Image Url 1",
 				Source:      "New Source 1",
+				Interest:    "New Interest 1",
 			},
 		},
 		err: nil,
