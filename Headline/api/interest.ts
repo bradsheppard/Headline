@@ -1,9 +1,10 @@
 import {InterestServiceClient} from "../proto/InterestServiceClientPb";
 import {GetInterestsRequest} from "../proto/interest_pb";
+import {API_HOST} from "./constants";
 
 class InterestService {
     static async getInterests(userId: number): Promise<Array<string>> {
-        const interestServiceClient = new InterestServiceClient('http://envoy:9090')
+        const interestServiceClient = new InterestServiceClient(`http://${API_HOST}:80`)
 
         const request = new GetInterestsRequest()
         request.setUserid(userId)

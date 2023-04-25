@@ -1,5 +1,5 @@
 import React from "react"
-import {Image, Platform, Text, TouchableOpacity, StyleSheet} from "react-native"
+import {Image, Platform, Text, TouchableOpacity, StyleSheet, Linking} from "react-native"
 import {LinearGradient} from 'expo-linear-gradient'
 
 type Article = {
@@ -70,12 +70,19 @@ const styles = StyleSheet.create({
 
 const Article: React.FC<Props> = (props: Props) => {
     return (
-        <TouchableOpacity activeOpacity={1} style={styles.container}>
-            <Image 
-                source={{uri: props.article.imageUrl}} 
-                resizeMode={'cover'}
-                style={styles.image}
-            />
+        <TouchableOpacity 
+            activeOpacity={1} 
+            style={styles.container}
+            onPress={() => Linking.openURL(props.article.url)}>
+            {
+                props.article.imageUrl !== null && props.article.imageUrl !== '' ?
+                <Image 
+                    source={{uri: props.article.imageUrl}} 
+                    resizeMode={'cover'}
+                    style={styles.image}
+                /> :
+                null
+            }
             <LinearGradient
                 colors={['#0000', '#000A', '#000']}
                 style={styles.title}>

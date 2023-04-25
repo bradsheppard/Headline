@@ -2,6 +2,7 @@ import {StyleSheet, Text, TouchableOpacity} from "react-native"
 
 interface Props {
     name: string
+    setSelectedInterest: (interest: string) => void;
 }
 
 const styles = StyleSheet.create({
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
 const Tag: React.FC<Props> = (props: Props) => {
     return (
         <TouchableOpacity 
+            onPress={() => props.setSelectedInterest(props.name)}
             style={[styles.container]}>
             <Text style={styles.text}>
                 {props.name}
