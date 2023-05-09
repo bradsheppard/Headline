@@ -1,5 +1,5 @@
-import {InterestServiceClient} from "../proto/InterestServiceClientPb";
-import {GetInterestsRequest} from "../proto/interest_pb";
+import {InterestServiceClient} from "../proto/interest/InterestServiceClientPb";
+import {GetInterestsRequest} from "../proto/interest/interest_pb";
 import {API_HOST} from "./constants";
 
 class InterestService {

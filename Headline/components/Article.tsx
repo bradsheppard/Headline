@@ -7,6 +7,7 @@ type Article = {
     url: string
     imageUrl: string
     description: string
+    interest: string
 }
 
 interface Props {

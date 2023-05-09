@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x61rticle/article.proto\x1a\x1bgoogle/protobuf/empty.proto\"\\\n\x07\x41rticle\x12\r\n\x05title\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x10\n\x08imageUrl\x18\x04 \x01(\t\x12\x0e\n\x06source\x18\x05 \x01(\t\":\n\x0cUserArticles\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\x12\x0e\n\x06userId\x18\x02 \x01(\x04\"\x16\n\x04User\x12\x0e\n\x06userId\x18\x01 \x01(\x04\x32o\n\x0e\x41rticleService\x12#\n\x0bGetArticles\x12\x05.User\x1a\r.UserArticles\x12\x38\n\x0fSetUserArticles\x12\r.UserArticles\x1a\x16.google.protobuf.EmptyB\x0fZ\rproto/articleb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x61rticle/article.proto\x1a\x1bgoogle/protobuf/empty.proto\"n\n\x07\x41rticle\x12\r\n\x05title\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x10\n\x08imageUrl\x18\x04 \x01(\t\x12\x0e\n\x06source\x18\x05 \x01(\t\x12\x10\n\x08interest\x18\x06 \x01(\t\":\n\x0cUserArticles\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\x12\x0e\n\x06userId\x18\x02 \x01(\x04\"\x16\n\x04User\x12\x0e\n\x06userId\x18\x01 \x01(\x04\x32o\n\x0e\x41rticleService\x12#\n\x0bGetArticles\x12\x05.User\x1a\r.UserArticles\x12\x38\n\x0fSetUserArticles\x12\r.UserArticles\x1a\x16.google.protobuf.EmptyB\x0fZ\rproto/articleb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'article.article_pb2', globals())
@@ -23,11 +23,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\rproto/article'
   _ARTICLE._serialized_start=54
-  _ARTICLE._serialized_end=146
-  _USERARTICLES._serialized_start=148
-  _USERARTICLES._serialized_end=206
-  _USER._serialized_start=208
-  _USER._serialized_end=230
-  _ARTICLESERVICE._serialized_start=232
-  _ARTICLESERVICE._serialized_end=343
+  _ARTICLE._serialized_end=164
+  _USERARTICLES._serialized_start=166
+  _USERARTICLES._serialized_end=224
+  _USER._serialized_start=226
+  _USER._serialized_end=248
+  _ARTICLESERVICE._serialized_start=250
+  _ARTICLESERVICE._serialized_end=361
 # @@protoc_insertion_point(module_scope)

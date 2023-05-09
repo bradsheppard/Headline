@@ -19,6 +19,9 @@ export class Article extends jspb.Message {
   getSource(): string;
   setSource(value: string): Article;
 
+  getInterest(): string;
+  setInterest(value: string): Article;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Article.AsObject;
   static toObject(includeInstance: boolean, msg: Article): Article.AsObject;
@@ -34,6 +37,7 @@ export namespace Article {
     url: string,
     imageurl: string,
     source: string,
+    interest: string,
   }
 }
 

@@ -15,4 +15,4 @@ push:
 
 .PHONY: load
 load:
-	minikube image load $(DOCKER_REGISTRY)/$(service):$(tag)
+	minikube image load $(DOCKER_REGISTRY)/$(service):$(tag) --overwrite=true

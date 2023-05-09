@@ -17,7 +17,7 @@
 
 import * as grpcWeb from 'grpc-web';
 
-import * as proto_interest_interest_pb from './interest_pb';
+import * as proto_interest_interest_pb from '../../proto/interest/interest_pb';
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
 
 

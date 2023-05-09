@@ -1,5 +1,5 @@
-import {ArticleServiceClient} from "../proto/ArticleServiceClientPb"
-import {User, UserArticles} from "../proto/article_pb";
+import {ArticleServiceClient} from "../proto/article/ArticleServiceClientPb"
+import {User, UserArticles} from "../proto/article/article_pb";
 import {API_HOST} from "./constants";
 
 class ArticleService {
@@ -17,7 +17,8 @@ class ArticleService {
                 description: x.getDescription(),
                 imageUrl: x.getImageurl(),
                 title: x.getTitle(),
-                url: x.getUrl()
+                url: x.getUrl(),
+                interest: x.getInterest()
             }
 
             return article;
@@ -30,6 +31,7 @@ export interface Article {
     url: string
     imageUrl: string
     description: string
+    interest: string
 }
 
 export default ArticleService;

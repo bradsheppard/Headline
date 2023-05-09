@@ -27,10 +27,14 @@ export default function Main() {
     const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
 
     const fetchData = async () => {
-        const [interestResponse, articleResponse] = await Promise.all([
+        let [interestResponse, articleResponse] = await Promise.all([
             InterestService.getInterests(1),
             ArticleService.getArticles(1)
         ])
+
+        if (selectedInterest !== null) {
+            articleResponse = articleResponse.filter(x => x.interest === selectedInterest)
+        }
 
         setArticles(articleResponse);
         setInterests(interestResponse);
@@ -38,7 +42,7 @@ export default function Main() {
 
     useEffect(() => {
         fetchData()
-    }, [])
+    }, [selectedInterest])
 
     return (
         <View style={[styles.container]}>

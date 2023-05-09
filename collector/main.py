@@ -22,6 +22,7 @@ with grpc.insecure_channel(backend_service_url) as channel:
     interests = interest_response.interests
 
 print(f"Interests: {interests}")
+articles = []
 
 for interest in interests:
     print(f"Crawling for interest: {interest}")
@@ -34,26 +35,25 @@ for interest in interests:
     if responses is None:
         continue
 
-    with grpc.insecure_channel(backend_service_url) as channel:
-        articles = []
-
-        for response in responses:
-            article = article_pb2.Article(
-                title=response['title'],
-                description=response['body'],
-                url=response['url'],
-                imageUrl=response['image'],
-                source=response['source']
-            )
-
-            articles.append(article)
-            
-        stub = article_pb2_grpc.ArticleServiceStub(channel)
-
-        request = article_pb2.UserArticles(
-                articles=articles,
-                userId=1
+    for response in responses:
+        article = article_pb2.Article(
+            title=response['title'],
+            description=response['body'],
+            url=response['url'],
+            imageUrl=response['image'],
+            source=response['source'],
+            interest=interest.name
         )
 
-        stub.SetUserArticles(request)
+        articles.append(article)
+            
+with grpc.insecure_channel(backend_service_url) as channel:
+    stub = article_pb2_grpc.ArticleServiceStub(channel)
+
+    request = article_pb2.UserArticles(
+            articles=articles,
+            userId=1
+    )
+
+    stub.SetUserArticles(request)
 
