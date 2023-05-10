@@ -1,2 +1,2 @@
-export const API_HOST = '10.103.34.249'
+export const API_HOST = '10.98.156.116'
 

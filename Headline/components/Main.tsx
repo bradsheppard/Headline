@@ -42,14 +42,16 @@ export default function Main() {
 
     useEffect(() => {
         fetchData()
-    }, [selectedInterest])
+    }, [])
+
+    const filteredArticles = selectedInterest !== null ? articles.filter(x => x.interest === selectedInterest) : articles
 
     return (
         <View style={[styles.container]}>
             <Tags interests={interests} setSelectedInterest={setSelectedInterest} />
             <FlatList 
                 style={styles.list}
-                data={articles}
+                data={filteredArticles}
                 keyExtractor={() => uuid.v4() as string}
                 renderItem={({item, index}: any) => (
                     <Article article={item} />

@@ -1,6 +1,6 @@
 .PHONY: istio
 istio:
-	istioctl install
+	istioctl install -y
 
 .PHONY: setup
 setup: enable-inject
