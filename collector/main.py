@@ -1,59 +1,17 @@
 import os
-import grpc
-import time
 
-from duckduckgo_search import ddg_news
-from model.result import Result
-from article import article_pb2_grpc, article_pb2
-from interest import interest_pb2_grpc, interest_pb2
+from collector.messaging.ddg_subscriber import DDGSubscriber
+from collector.messaging.message_bus import MessageBus
 
-backend_service_url = os.environ['BACKEND_URL']
 
-print("Starting collection")
+if __name__ == '__main__':
+    host = os.environ['KAFKA_HOST']
+    listener_topic = os.environ['KAFKA_LISTENER_TOPIC']
+    publisher_topic = os.environ['KAFKA_PUBLISHER_TOPIC']
 
-with grpc.insecure_channel(backend_service_url) as channel:
-    stub = interest_pb2_grpc.InterestServiceStub(channel)
-    
-    request = interest_pb2.GetInterestsRequest(
-            userId=1
-    )
+    message_bus = MessageBus(host, listener_topic)
+    ddg_subscriber = DDGSubscriber(host, publisher_topic)
 
-    interest_response: interest_pb2.InterestResponse = stub.GetInterests(request)
-    interests = interest_response.interests
+    message_bus.attach(ddg_subscriber)
 
-print(f"Interests: {interests}")
-articles = []
-
-for interest in interests:
-    print(f"Crawling for interest: {interest}")
-    
-    search_term = interest.name
-    responses = ddg_news(search_term)
-
-    results = []
-
-    if responses is None:
-        continue
-
-    for response in responses:
-        article = article_pb2.Article(
-            title=response['title'],
-            description=response['body'],
-            url=response['url'],
-            imageUrl=response['image'],
-            source=response['source'],
-            interest=interest.name
-        )
-
-        articles.append(article)
-            
-with grpc.insecure_channel(backend_service_url) as channel:
-    stub = article_pb2_grpc.ArticleServiceStub(channel)
-
-    request = article_pb2.UserArticles(
-            articles=articles,
-            userId=1
-    )
-
-    stub.SetUserArticles(request)
-
+    message_bus.consume()

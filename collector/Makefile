@@ -13,6 +13,10 @@ tag:
 push:
 	docker push $(DOCKER_REGISTRY)/$(service):$(tag)
 
+.PHONY: lint
+lint:
+	pylint main.py collector/ test/ --rcfile .pylintrc
+
 .PHONY: load
 load:
 	minikube image load $(DOCKER_REGISTRY)/$(service):$(tag) --overwrite=true
