@@ -1,6 +1,6 @@
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, TopicPartition
 from collector.article import article_pb2
-from collector.messaging.ddg_subscriber import DDGSubscriber
+from collector.messaging.ddg_producer import DDGProducer
 
 
 def test_update():
@@ -10,13 +10,19 @@ def test_update():
     consumer = KafkaConsumer(topic, bootstrap_servers=host, group_id='test')
     consumer.poll()
 
-    subscriber = DDGSubscriber(host, topic)
+    topic_partition = TopicPartition(topic, 0)
 
-    subscriber.update('Metallica')
+    offset = consumer.position(topic_partition)
+    consumer.seek(topic_partition, offset - 2)
+
+    subscriber = DDGProducer(host, topic)
+
+    subscriber.update(['Metallica'], 1)
     message = next(consumer).value
 
     # pylint: disable=no-member
     user_articles = article_pb2.UserArticles.FromString(message)
+    assert len(user_articles.articles) > 0
 
     for article in user_articles.articles:
         assert article.description

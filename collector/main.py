@@ -1,7 +1,7 @@
 import os
 
-from collector.messaging.ddg_subscriber import DDGSubscriber
-from collector.messaging.message_bus import MessageBus
+from collector.messaging.ddg_producer import DDGProducer
+from collector.messaging.main_consumer import MainConsumer
 
 
 if __name__ == '__main__':
@@ -9,9 +9,12 @@ if __name__ == '__main__':
     listener_topic = os.environ['KAFKA_LISTENER_TOPIC']
     publisher_topic = os.environ['KAFKA_PUBLISHER_TOPIC']
 
-    message_bus = MessageBus(host, listener_topic)
-    ddg_subscriber = DDGSubscriber(host, publisher_topic)
+    ddg_producer = DDGProducer(host, publisher_topic)
+    main_consumer = MainConsumer(host, listener_topic)
 
-    message_bus.attach(ddg_subscriber)
+    main_consumer.attach(ddg_producer)
 
-    message_bus.consume()
+    while True:
+        result = next(main_consumer)
+
+        print(f'Collection run for {result.userId}')
