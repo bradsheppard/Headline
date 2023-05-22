@@ -21,6 +21,8 @@ func TestMain(m *testing.M) {
 		return
 	}
 
+        InitMessaging("queue-kafka-bootstrap:9092", "start-collection")
+
 	exitVal := m.Run()
 	os.Exit(exitVal)
 }
