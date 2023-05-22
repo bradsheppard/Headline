@@ -13,7 +13,7 @@ def test_update():
     topic_partition = TopicPartition(topic, 0)
 
     offset = consumer.position(topic_partition)
-    consumer.seek(topic_partition, offset - 2)
+    consumer.seek(topic_partition, max([offset - 2, 0]))
 
     subscriber = DDGProducer(host, topic)
 

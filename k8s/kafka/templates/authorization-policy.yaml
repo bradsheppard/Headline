@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: kafka-auth
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: queue
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: ["default"]

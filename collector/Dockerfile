@@ -6,11 +6,9 @@ COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY article article
+COPY collector collector
 
-COPY interest interest
-
-COPY model model
+COPY proto proto
 
 COPY main.py ./
 

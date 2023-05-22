@@ -12,3 +12,8 @@ enable-inject:
 	kubectl label namespace default istio-injection=enabled --overwrite
 	kubectl delete pods --all --namespace default
 
+.PHONY: strimzi
+strimzi:
+	helm install strimzi-operator strimzi/strimzi-kafka-operator
+
+

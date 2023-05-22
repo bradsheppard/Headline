@@ -15,6 +15,8 @@ if __name__ == '__main__':
     main_consumer.attach(ddg_producer)
 
     while True:
+        print('Starting consumption...')
+
         result = next(main_consumer)
 
-        print(f'Collection run for {result.userId}')
+        print(f'Collection run complete for {result.userId}')
