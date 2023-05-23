@@ -9,6 +9,8 @@ RUN go mod download
 COPY api api
 COPY model model
 COPY proto proto
+COPY collection collection
+
 COPY main.go ./
 
 RUN go build -o /backend

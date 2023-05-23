@@ -25,6 +25,9 @@ func main() {
 	password := os.Getenv("PASSWORD")
 	database := os.Getenv("DATABASE")
 
+        kafkaHost := os.Getenv("KAFKA_HOST")
+        kafkaTopic := os.Getenv("KAFKA_TOPIC")
+
 	dbPath := fmt.Sprintf("host=%s user=%s password=%s database=%s", host, user, password, database)
 	err := api.InitDb(dbPath)
 
@@ -32,6 +35,8 @@ func main() {
 		log.Fatalf("Failed to connect to DB: %v", err)
 		return
 	}
+
+        api.InitMessaging(kafkaHost, kafkaTopic)
 
 	err = api.AutoMigrate()
 
