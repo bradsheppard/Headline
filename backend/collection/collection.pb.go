@@ -151,4 +151,3 @@ func file_proto_collection_collection_proto_init() {
 	file_proto_collection_collection_proto_goTypes = nil
 	file_proto_collection_collection_proto_depIdxs = nil
 }
-

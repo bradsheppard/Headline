@@ -15,8 +15,10 @@ import (
 )
 
 const (
-	errFormatString = "Error querying database: %v"
-	errString       = "Error querying database"
+	errDatabaseFormatString  = "Error querying database: %v"
+	errDatabaseString        = "Error querying database"
+	errMessagingFormatString = "Error writing to Kafka brokers: %v"
+	errMessagingString       = "Error writing to Kafka brokers"
 )
 
 type ArticleServer struct {
@@ -26,8 +28,8 @@ type ArticleServer struct {
 func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.User) (*pb.UserArticles, error) {
 	var articles []model.Article
 	if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
-		log.Printf(errFormatString, err)
-		return nil, status.Error(codes.Internal, errString)
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
 	}
 
 	grpcArticles := model.ToArticleProtos(articles)
@@ -54,8 +56,8 @@ func (s *ArticleServer) SetUserArticles(ctx context.Context, in *pb.UserArticles
 	})
 
 	if err != nil {
-		log.Printf(errFormatString, err)
-		return nil, status.Error(codes.Internal, errString)
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
 	}
 
 	return &emptypb.Empty{}, nil

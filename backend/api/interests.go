@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"headline/model"
 	"log"
 
@@ -12,9 +11,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/segmentio/kafka-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -28,44 +25,39 @@ func (interestServer *InterestServer) AddInterests(ctx context.Context, in *pb.A
 	interests := model.FromInterestProtos(in.Interests)
 
 	err := db.Transaction(func(tx *gorm.DB) error {
-                if err := db.Create(&interests).Error; err != nil {
-                        return err
-                }
+		if err := db.Create(&interests).Error; err != nil {
+			return err
+		}
 
-                if err := db.Where(&model.Interest{UserID: int(in.UserId)}).Find(&interests).Error; err != nil {
-                        return err
-	        }
+		if err := db.Where(&model.Interest{UserID: int(in.UserId)}).Find(&interests).Error; err != nil {
+			return err
+		}
 
-                return nil
+		return nil
 	})
 
-        interestsToCollect := []string{}
+	if err != nil {
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
+	}
 
-        for _, interest := range interests{
-                interestsToCollect = append(interestsToCollect, interest.Name)
-        }
+	interestsToCollect := []string{}
 
-        collection := collection.Collection{
-                UserId: in.UserId,
-                Interests: interestsToCollect,
-        }
+	for _, interest := range interests {
+		interestsToCollect = append(interestsToCollect, interest.Name)
+	}
 
-        bytes, err := proto.Marshal(&collection)
+	collection := collection.Collection{
+		UserId:    in.UserId,
+		Interests: interestsToCollect,
+	}
 
-        if err != nil {
-                return nil, status.Error(codes.Internal, "Error marshalling bytes")
-        }
+	err = StartCollection(ctx, &collection)
 
-        err = writer.WriteMessages(ctx,
-                kafka.Message{
-                        Value: bytes,
-                },
-        )
-
-        if err != nil {
-                fmt.Printf("Error: %v", err)
-                return nil, status.Error(codes.Internal, "Error writing to Kafka brokers")
-        }
+	if err != nil {
+		log.Printf(errMessagingFormatString, err)
+		return nil, status.Error(codes.Internal, errMessagingString)
+	}
 
 	return &pb.InterestResponse{
 		Interests: model.ToInterestProtos(interests),
@@ -74,8 +66,8 @@ func (interestServer *InterestServer) AddInterests(ctx context.Context, in *pb.A
 
 func (interestServer *InterestServer) DeleteInterests(ctx context.Context, in *pb.DeleteInterestsRequest) (*empty.Empty, error) {
 	if err := db.Delete(&model.Interest{}, in.Ids).Error; err != nil {
-		log.Printf(errFormatString, err)
-		return nil, status.Error(codes.Internal, errString)
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
 	}
 
 	return &emptypb.Empty{}, nil
@@ -84,8 +76,8 @@ func (interestServer *InterestServer) DeleteInterests(ctx context.Context, in *p
 func (interestServer *InterestServer) GetInterests(ctx context.Context, in *pb.GetInterestsRequest) (*pb.InterestResponse, error) {
 	var interests []*model.Interest
 	if err := db.Where(&model.Interest{UserID: int(in.UserId)}).Find(&interests).Error; err != nil {
-		log.Printf(errFormatString, err)
-		return nil, status.Error(codes.Internal, errString)
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
 	}
 
 	grpcInterests := model.ToInterestProtos(interests)
