@@ -1,6 +1,6 @@
 from typing import List
 
-from article import article_pb2
+from proto.article import article_pb2
 
 
 class ArticleService:

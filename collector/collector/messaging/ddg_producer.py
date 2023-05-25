@@ -1,7 +1,7 @@
 from typing import List
 from duckduckgo_search import DDGS
 
-from article import article_pb2
+from proto.article import article_pb2
 from collector.article.article_service import ArticleService
 from collector.messaging.producer import Producer
 
@@ -31,5 +31,5 @@ class DDGProducer(Producer):
                 )
 
                 articles.append(article)
-    
+
         self._article_service.set_user_articles(user_id, articles)
