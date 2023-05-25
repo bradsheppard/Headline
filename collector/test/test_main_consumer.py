@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from kafka import KafkaProducer
-from collector.collection import collection_pb2
+from proto.collection import collection_pb2
 from collector.messaging.main_consumer import MainConsumer
 
 

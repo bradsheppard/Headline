@@ -1,16 +1,15 @@
 from typing import List
 from duckduckgo_search import DDGS
-from kafka import KafkaProducer
 
-from collector.article import article_pb2
+from article import article_pb2
+from collector.article.article_service import ArticleService
 from collector.messaging.producer import Producer
 
 class DDGProducer(Producer):
 
-    def __init__(self, host: str, topic: str):
-        self._kafka_producer = KafkaProducer(bootstrap_servers=host)
-        self._topic = topic
+    def __init__(self, article_service: ArticleService):
         self._ddgs = DDGS()
+        self._article_service = article_service
 
     def update(self, interests: List[str], user_id: int):
         articles = []
@@ -32,11 +31,5 @@ class DDGProducer(Producer):
                 )
 
                 articles.append(article)
-
-        request = article_pb2.UserArticles(
-            articles=articles,
-            userId=user_id
-        ).SerializeToString()
-
-        future = self._kafka_producer.send(self._topic, request)
-        future.get(timeout=10)
+    
+        self._article_service.set_user_articles(user_id, articles)

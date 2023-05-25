@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from typing import List
-from collector.collection import collection_pb2
+from proto.collection import collection_pb2
 
 from collector.messaging.producer import Producer
 

@@ -26,3 +26,6 @@ protoc:
 	protoc --go_out=proto/golang --go_opt=paths=source_relative --go-grpc_out=proto/golang --go-grpc_opt=paths=source_relative proto/collection/collection.proto
 	python -m grpc_tools.protoc --proto_path=proto --python_out=collector --pyi_out=collector --grpc_python_out=collector proto/collection/collection.proto
 
+.PHONY: test
+test:
+	python -m pytest test
