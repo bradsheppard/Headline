@@ -1,7 +1,7 @@
 from typing import List
 import grpc
 
-from article import article_pb2, article_pb2_grpc
+from proto.article import article_pb2, article_pb2_grpc
 
 from collector.article.article_service import ArticleService
 

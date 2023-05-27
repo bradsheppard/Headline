@@ -1,12 +1,13 @@
 import {NativeBaseProvider} from "native-base";
-import {FlatList, Text} from "react-native";
-import Article from "./Article";
+import {Button, FlatList, Text} from "react-native";
+import Article from "../components/Article";
 import uuid from 'react-native-uuid'
 import {View} from "react-native";
-import Tags from "./Tags";
+import Tags from "../components/Tags";
 import InterestService from "../api/interest";
 import {useEffect, useState} from "react";
 import ArticleService from "../api/article";
+import {NativeStackScreenProps} from "@react-navigation/native-stack";
 
 const styles = {
     container: {
@@ -21,7 +22,13 @@ const styles = {
     }
 }
 
-export default function Main() {
+type ParamList = {
+    Interests: undefined;
+}
+
+type Props = NativeStackScreenProps<ParamList, 'Interests'>;
+
+export default function Main(props: Props) {
     const [interests, setInterests] = useState<string[]>([]);
     const [articles, setArticles] = useState<Article[]>([]);
     const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
@@ -57,6 +64,7 @@ export default function Main() {
                     <Article article={item} />
                 )}
             />
+            <Button title="Interests" onPress={() => props.navigation.navigate('Interests')} />
         </View>
     )
 }

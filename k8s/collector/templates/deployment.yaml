@@ -35,11 +35,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: KAFKA_HOST
-              value: "{{ .Values.kafka.host}}"
-            - name: KAFKA_PUBLISHER_TOPIC
-              value: "{{ .Values.kafka.publisherTopic}}"
-            - name: KAFKA_LISTENER_TOPIC
-              value: "{{ .Values.kafka.listenerTopic}}"
+              value: "{{ .Values.kafka.host }}"
+            - name: KAFKA_TOPIC
+              value: "{{ .Values.kafka.topic }}"
+            - name: BACKEND_URL
+              value: "{{ .Values.backendUrl }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

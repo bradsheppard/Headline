@@ -19,7 +19,7 @@ spec:
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: ingress-gateway-auth
+  name: backend-auth
   namespace: default
 spec:
   selector:
@@ -30,7 +30,8 @@ spec:
   - from:
     - source:
         principals: [
-            "cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account"
+            "cluster.local/ns/istio-system/sa/istio-ingressgateway-service-account",
+            "cluster.local/ns/default/sa/collector"
         ]
     to:
     - operation:

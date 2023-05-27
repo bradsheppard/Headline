@@ -76,8 +76,9 @@ autoscaling:
 
 kafka:
   host: queue-kafka-bootstrap:9092
-  publisherTopic: set-user-articles
-  listenerTopic: start-collection
+  topic: start-collection
+
+backendUrl: backend:80
 
 nodeSelector: {}
 

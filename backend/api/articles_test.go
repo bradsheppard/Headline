@@ -108,7 +108,7 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
 	}
 }
 
-func TestArticle_GetArticles_NotEmpty(t *testing.T) {
+func TestArticle_SetUserArticles_GetArticles_NotEmpty(t *testing.T) {
 	ctx := context.Background()
 	setup, err := setupArticles(ctx)
 
@@ -177,6 +177,59 @@ func TestArticle_GetArticles_NotEmpty(t *testing.T) {
 				Interest:    "New Interest 1",
 			},
 		},
+		err: nil,
+	}
+
+	if len(expected.out) != len(articles.Articles) {
+		t.Errorf("Inequal length for articles")
+		t.Errorf("Expected Length: %d", len(expected.out))
+		t.Errorf("Actual length: %d", len(articles.Articles))
+		t.FailNow()
+	}
+
+	for i := range expected.out {
+		exp := expected.out[i]
+		actual := articles.Articles[i]
+
+		if !equal(exp, actual) {
+			t.Errorf("Expected -> %q\nGot: %q", exp, actual)
+			t.FailNow()
+		}
+	}
+}
+
+func TestArticle_SetUserArticles_GetArticles_Empty(t *testing.T) {
+	ctx := context.Background()
+	setup, err := setupArticles(ctx)
+
+	defer setup.closer()
+
+	if err != nil {
+		t.Errorf("Setup error: %v", err)
+		t.FailNow()
+	}
+
+	client := *setup.client
+
+	_, err = client.SetUserArticles(ctx, &pb.UserArticles{
+		Articles: []*pb.Article{},
+		UserId: 1,
+	})
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	articles, err := client.GetArticles(ctx, &pb.User{UserId: 1})
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	expected := articleExpectation{
+		out: []*pb.Article{},
 		err: nil,
 	}
 

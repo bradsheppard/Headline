@@ -48,6 +48,10 @@ spec:
                 secretKeyRef:
                   name: backend-postgres-credentials
                   key: password
+            - name: KAFKA_HOST
+              value: "{{ .Values.kafka.host }}"
+            - name: KAFKA_TOPIC
+              value: "{{ .Values.kafka.topic }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

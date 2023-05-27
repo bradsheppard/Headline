@@ -48,6 +48,10 @@ func (s *ArticleServer) SetUserArticles(ctx context.Context, in *pb.UserArticles
 			return err
 		}
 
+                if len(articles) == 0 {
+                        return nil
+                }
+
 		if err := db.Create(&articles).Error; err != nil {
 			return err
 		}

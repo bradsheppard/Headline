@@ -89,3 +89,7 @@ postgresql:
     existingSecret: backend-postgres-credentials
   nameOverride: backend-postgres
   fullnameOverride: backend-postgres
+
+kafka:
+  host: queue-kafka-bootstrap:9092
+  topic: start-collection
