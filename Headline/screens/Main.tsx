@@ -1,6 +1,5 @@
 import {NativeBaseProvider} from "native-base";
 import {Button, FlatList, Text} from "react-native";
-import Article from "../components/Article";
 import uuid from 'react-native-uuid'
 import {View} from "react-native";
 import Tags from "../components/Tags";
@@ -8,6 +7,10 @@ import InterestService from "../api/interest";
 import {useEffect, useState} from "react";
 import ArticleService from "../api/article";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
+import {createStore} from "zustand";
+import {useStore} from "../store";
+import {Article as ArticleProto} from "../proto/article/article_pb";
+import Article from "../components/Article";
 
 const styles = {
     container: {
@@ -29,40 +32,48 @@ type ParamList = {
 type Props = NativeStackScreenProps<ParamList, 'Interests'>;
 
 export default function Main(props: Props) {
-    const [interests, setInterests] = useState<string[]>([]);
-    const [articles, setArticles] = useState<Article[]>([]);
-    const [selectedInterest, setSelectedInterest] = useState<string | null>(null)
+    const [articles, interests] = 
+        useStore((state) => [state.articles, state.interests])
+    const [fetchArticles, fetchInterests] = 
+        useStore((state) => [state.fetchArticles, state.fetchInterests])
+    const [selectedInterest, setSelectedInterest] = 
+        useStore((state) => [state.selectedInterest, state.setSelectedInterest])
+
+    const [filteredArticles, setFilteredArticles] = useState<Array<ArticleProto>>([])
 
     const fetchData = async () => {
-        let [interestResponse, articleResponse] = await Promise.all([
-            InterestService.getInterests(1),
-            ArticleService.getArticles(1)
-        ])
+        await Promise.all([fetchArticles(1), fetchInterests(1)])
 
         if (selectedInterest !== null) {
-            articleResponse = articleResponse.filter(x => x.interest === selectedInterest)
+            setFilteredArticles(articles.filter(x => x.getInterest() === selectedInterest))
         }
-
-        setArticles(articleResponse);
-        setInterests(interestResponse);
+        else {
+            setFilteredArticles(articles)
+        }
     }
 
     useEffect(() => {
         fetchData()
-    }, [])
-
-    const filteredArticles = selectedInterest !== null ? articles.filter(x => x.interest === selectedInterest) : articles
+    }, [selectedInterest])
 
     return (
         <View style={[styles.container]}>
-            <Tags interests={interests} setSelectedInterest={setSelectedInterest} />
+            <Tags interests={interests.map(x => x.getName())} />
             <FlatList 
                 style={styles.list}
                 data={filteredArticles}
                 keyExtractor={() => uuid.v4() as string}
-                renderItem={({item, index}: any) => (
-                    <Article article={item} />
-                )}
+                renderItem={(entry) => {
+                    return <Article article={
+                        {
+                            description: entry.item.getDescription(),
+                            imageUrl: entry.item.getImageurl(),
+                            interest: entry.item.getInterest(),
+                            title: entry.item.getTitle(),
+                            url: entry.item.getUrl()
+                        } 
+                    } />
+                }}
             />
             <Button title="Interests" onPress={() => props.navigation.navigate('Interests')} />
         </View>

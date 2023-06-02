@@ -5,7 +5,6 @@ import Tag from "./Tag";
 
 interface Props {
     interests: Array<string>
-    setSelectedInterest: (interest: string) => void;
 }
 
 const style = StyleSheet.create({
@@ -27,7 +26,7 @@ const Tags: React.FC<Props> = (props: Props) => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item: string) => item}
             renderItem={({item}: ListRenderItemInfo<string>) => (
-                <Tag name={item} setSelectedInterest={props.setSelectedInterest}/>
+                <Tag name={item} />
             )}
             style={style.list}
             contentContainerStyle={style.contentContainer}

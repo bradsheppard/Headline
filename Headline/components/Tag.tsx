@@ -1,8 +1,8 @@
 import {StyleSheet, Text, TouchableOpacity} from "react-native"
+import {useStore} from "../store"
 
 interface Props {
     name: string
-    setSelectedInterest: (interest: string) => void;
 }
 
 const styles = StyleSheet.create({
@@ -28,9 +28,11 @@ const styles = StyleSheet.create({
 })
 
 const Tag: React.FC<Props> = (props: Props) => {
+    const setSelectedInterest = useStore((store) => store.setSelectedInterest)
+
     return (
         <TouchableOpacity 
-            onPress={() => props.setSelectedInterest(props.name)}
+            onPress={() => setSelectedInterest(props.name)}
             style={[styles.container]}>
             <Text style={styles.text}>
                 {props.name}

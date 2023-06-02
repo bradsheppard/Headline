@@ -35,6 +35,8 @@ func main() {
 	} else if arg == "CreateInterest" {
 		interest := os.Args[2]
 		runCreateInterest(interest_client, interest)
+        } else if arg == "DeleteInterests" {
+                runDeleteInterests(interest_client)
 	} else {
 		log.Println("Invalid command")
 	}
@@ -90,4 +92,34 @@ func runCreateInterest(client interest_pb.InterestServiceClient, interest string
 	if err != nil {
 		log.Printf("Error creating interests: %v", err)
 	}
+}
+
+func runDeleteInterests(client interest_pb.InterestServiceClient) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	getRequest := &interest_pb.GetInterestsRequest{UserId: 1}
+
+	res, err := client.GetInterests(ctx, getRequest)
+
+        if err != nil {
+                log.Printf("Error getting interests: %v", err)
+                return
+        }
+        
+        ids := []uint64{}
+
+        for _, entry := range(res.Interests) {
+                ids = append(ids, entry.Id)
+        }
+
+        deleteRequest := &interest_pb.DeleteInterestsRequest{
+                Ids: ids,
+        }
+
+        _, err = client.DeleteInterests(ctx, deleteRequest)
+
+        if err != nil {
+                log.Printf("Error deleting interests: %v", err)
+        }
 }

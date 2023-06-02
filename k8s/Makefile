@@ -16,4 +16,14 @@ enable-inject:
 strimzi:
 	helm install strimzi-operator strimzi/strimzi-kafka-operator
 
+.PHONY: backend
+backend:
+	helm upgrade --install backend backend
 
+.PHONY: collector
+collector:
+	helm upgrade --install collector collector
+
+.PHONY: kafka
+kafka:
+	helm upgrade --install kafka kafka
