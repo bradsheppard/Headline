@@ -1,8 +1,9 @@
 import os
 from collector.article.article_grpc_service import ArticleGrpcService
+from collector.article.article_ddg_collector import ArticleDDGCollector
 
-from collector.messaging.ddg_producer import DDGProducer
 from collector.messaging.main_consumer import MainConsumer
+from collector.messaging.producer import Producer
 
 
 if __name__ == '__main__':
@@ -11,10 +12,12 @@ if __name__ == '__main__':
     backend_url = os.environ['BACKEND_URL']
 
     article_service = ArticleGrpcService(backend_url)
-    ddg_producer = DDGProducer(article_service)
+    article_collector = ArticleDDGCollector()
+
+    producer = Producer(article_service, article_collector)
     main_consumer = MainConsumer(host, listener_topic)
 
-    main_consumer.attach(ddg_producer)
+    main_consumer.attach(producer)
 
     while True:
         print('Starting consumption...')

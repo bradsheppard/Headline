@@ -21,3 +21,14 @@ class ArticleGrpcService(ArticleService):
         with grpc.insecure_channel(self._backend_url) as channel:
             stub = article_pb2_grpc.ArticleServiceStub(channel)
             stub.SetUserArticles(request)
+
+    def get_user_articles(self, user_id: int) -> List[article_pb2.Article]:
+        request = article_pb2.User(
+            userId=user_id
+        )
+
+        with grpc.insecure_channel(self._backend_url) as channel:
+            stub = article_pb2_grpc.ArticleServiceStub(channel)
+            user_articles: article_pb2.UserArticles = stub.GetArticles(request)
+
+            return list(user_articles.articles)

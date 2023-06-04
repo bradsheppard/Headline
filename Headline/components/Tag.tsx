@@ -1,25 +1,22 @@
-import {StyleSheet, Text, TouchableOpacity} from "react-native"
+import {useTheme, Text} from "native-base"
+import {StyleSheet, TouchableOpacity} from "react-native"
 import {useStore} from "../store"
 
 interface Props {
     name: string
 }
 
-const styles = StyleSheet.create({
+const createStyles = (color: string) => StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: '#FFA500',
+    borderColor: color,
+    backgroundColor: color,
     borderRadius: 12,
     height: 28,
     paddingHorizontal: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 24,
-    backgroundColor: '#FFA50066',
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: '500',
   },
   selected: {
     backgroundColor: '#FF8800',
@@ -28,13 +25,26 @@ const styles = StyleSheet.create({
 })
 
 const Tag: React.FC<Props> = (props: Props) => {
-    const setSelectedInterest = useStore((store) => store.setSelectedInterest)
+    const [ selectedInterest, setSelectedInterest ] = 
+        useStore((store) => [store.selectedInterest, store.setSelectedInterest])
+
+    const { colors } = useTheme()
+    
+    const isSelected = selectedInterest === props.name
+    let styles;
+
+    if (isSelected) {
+        styles = createStyles(colors.warning[400])
+    }
+    else {
+        styles = createStyles(colors.info[400])
+    }
 
     return (
         <TouchableOpacity 
             onPress={() => setSelectedInterest(props.name)}
             style={[styles.container]}>
-            <Text style={styles.text}>
+            <Text bold>
                 {props.name}
             </Text>
         </TouchableOpacity>

@@ -7,3 +7,6 @@ class ArticleService:
 
     def set_user_articles(self, user_id: int, articles: List[article_pb2.Article]):
         pass
+
+    def get_user_articles(self, user_id: int) -> List[article_pb2.Article]:
+        pass

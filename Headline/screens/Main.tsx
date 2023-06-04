@@ -1,5 +1,5 @@
 import {NativeBaseProvider} from "native-base";
-import {Button, FlatList, Text} from "react-native";
+import {Button, FlatList, RefreshControl, Text} from "react-native";
 import uuid from 'react-native-uuid'
 import {View} from "react-native";
 import Tags from "../components/Tags";
@@ -40,10 +40,15 @@ export default function Main(props: Props) {
         useStore((state) => [state.selectedInterest, state.setSelectedInterest])
 
     const [filteredArticles, setFilteredArticles] = useState<Array<ArticleProto>>([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const fetchData = async () => {
+        setIsLoading(true)
         await Promise.all([fetchArticles(1), fetchInterests(1)])
+        setIsLoading(false)
+    }
 
+    const filterArticles = () => {
         if (selectedInterest !== null) {
             setFilteredArticles(articles.filter(x => x.getInterest() === selectedInterest))
         }
@@ -54,6 +59,10 @@ export default function Main(props: Props) {
 
     useEffect(() => {
         fetchData()
+    }, [])
+
+    useEffect(() => {
+        filterArticles()
     }, [selectedInterest])
 
     return (
@@ -74,6 +83,9 @@ export default function Main(props: Props) {
                         } 
                     } />
                 }}
+                refreshControl={
+                    <RefreshControl refreshing={isLoading} onRefresh={fetchData} />
+                }
             />
             <Button title="Interests" onPress={() => props.navigation.navigate('Interests')} />
         </View>
