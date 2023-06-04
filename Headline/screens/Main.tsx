@@ -42,6 +42,11 @@ export default function Main(props: Props) {
     const [filteredArticles, setFilteredArticles] = useState<Array<ArticleProto>>([])
     const [isLoading, setIsLoading] = useState(false)
 
+    const fetchAndFilter = async() => {
+        await fetchData()
+        filterArticles()
+    }
+
     const fetchData = async () => {
         setIsLoading(true)
         await Promise.all([fetchArticles(1), fetchInterests(1)])
@@ -84,7 +89,7 @@ export default function Main(props: Props) {
                     } />
                 }}
                 refreshControl={
-                    <RefreshControl refreshing={isLoading} onRefresh={fetchData} />
+                    <RefreshControl refreshing={isLoading} onRefresh={fetchAndFilter} />
                 }
             />
             <Button title="Interests" onPress={() => props.navigation.navigate('Interests')} />

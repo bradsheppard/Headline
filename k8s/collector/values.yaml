@@ -78,6 +78,8 @@ kafka:
   host: queue-kafka-bootstrap:9092
   topic: start-collection
 
+apiKey: CHANGE_ME
+
 backendUrl: backend:80
 
 nodeSelector: {}

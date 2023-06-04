@@ -40,6 +40,8 @@ spec:
               value: "{{ .Values.kafka.topic }}"
             - name: BACKEND_URL
               value: "{{ .Values.backendUrl }}"
+            - name: API_KEY
+              value: "{{ .Values.apiKey }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

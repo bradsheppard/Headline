@@ -22,7 +22,7 @@ backend:
 
 .PHONY: collector
 collector:
-	helm upgrade --install collector collector
+	helm upgrade --install collector collector -f collector/prod_values.yaml
 
 .PHONY: kafka
 kafka:

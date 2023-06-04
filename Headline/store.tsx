@@ -36,6 +36,12 @@ const useStore = create<State>((set) => ({
     },
     deleteInterest: async(id: number) => {
         await InterestService.deleteInterest(id)
+        set((state) => {
+            const newInterests = state.interests.filter(interest => interest.getId() !== id)
+            return {
+                interests: newInterests
+            }
+        })
     }
 }))
 
