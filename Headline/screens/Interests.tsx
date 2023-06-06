@@ -1,12 +1,10 @@
-import {useEffect, useState} from "react";
-import {Button, FlatList, Text, View} from "react-native";
-import {Button as NativeBaseButton} from 'native-base'
-import InterestService from "../api/interest";
-import uuid from 'react-native-uuid'
-import Interest from "../components/Interest";
-import {FormControl, Input, Modal, VStack} from "native-base";
-import {Interest as InterestProto} from "../proto/interest/interest_pb";
-import {useStore} from "../store";
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { Button, View } from 'react-native';
+import { Button as NativeBaseButton, FormControl, Input, Modal, VStack } from 'native-base';
+import InterestService from '../api/interest';
+import Interest from '../components/Interest';
+import { useStore } from '../store';
 
 const styles = {
     list: {
@@ -25,34 +23,48 @@ const styles = {
         color: '#fff',
         paddingBottom: 24,
     },
-}
+};
 
-export default function Interests() {
-    const [interests, fetchInterests] = useStore((state) => [state.interests, state.fetchInterests])
-    const [modalVisible, setModalVisible] = useState(false)
-    const [inputText, setInputText] = useState('')
+export default function Interests(): JSX.Element {
+    const [interests, fetchInterests] = useStore((state) => [
+        state.interests,
+        state.fetchInterests,
+    ]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [inputText, setInputText] = useState('');
 
-    const fetchData = async () => {
-        await fetchInterests(1)
-    }
+    const fetchData = async (): Promise<void> => {
+        await fetchInterests(1);
+    };
 
-    const createInterest = async () => {
-        await InterestService.createInterest(inputText)
-        await fetchData()
-    }
+    const createInterest = async (): Promise<void> => {
+        await InterestService.createInterest(inputText);
+        await fetchData();
+    };
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        void fetchData();
+    }, []);
 
     return (
         <View style={styles.container}>
-            <VStack space={4} alignItems="center" style={styles.list}>
-                {interests.map(interest => {
-                    return <Interest key={interest.getId()} id={interest.getId()} name={interest.getName()} />
+            <VStack space={4} alignItems='center' style={styles.list}>
+                {interests.map((interest) => {
+                    return (
+                        <Interest
+                            key={interest.getId()}
+                            id={interest.getId()}
+                            name={interest.getName()}
+                        />
+                    );
                 })}
             </VStack>
-            <Button title="+" onPress={() => setModalVisible(true)}/>
+            <Button
+                title='+'
+                onPress={() => {
+                    setModalVisible(true);
+                }}
+            />
             <Modal isOpen={modalVisible}>
                 <Modal.Content>
                     <Modal.CloseButton />
@@ -60,20 +72,30 @@ export default function Interests() {
                     <Modal.Body>
                         <FormControl>
                             <FormControl.Label>Interest</FormControl.Label>
-                            <Input onChangeText={text => setInputText(text)}/>
+                            <Input
+                                onChangeText={(text) => {
+                                    setInputText(text);
+                                }}
+                            />
                         </FormControl>
                     </Modal.Body>
                     <Modal.Footer>
                         <NativeBaseButton.Group space={2}>
-                            <NativeBaseButton variant="ghost" colorScheme="blueGray" onPress={() => {
-                                setModalVisible(false);
-                            }}>
+                            <NativeBaseButton
+                                variant='ghost'
+                                colorScheme='blueGray'
+                                onPress={() => {
+                                    setModalVisible(false);
+                                }}
+                            >
                                 Cancel
                             </NativeBaseButton>
-                            <NativeBaseButton onPress={() => {
-                                setModalVisible(false);
-                                createInterest()
-                            }}>
+                            <NativeBaseButton
+                                onPress={() => {
+                                    setModalVisible(false);
+                                    void createInterest();
+                                }}
+                            >
                                 Save
                             </NativeBaseButton>
                         </NativeBaseButton.Group>
@@ -81,6 +103,5 @@ export default function Interests() {
                 </Modal.Content>
             </Modal>
         </View>
-    )
+    );
 }
-

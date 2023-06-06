@@ -1,19 +1,21 @@
-import {NavigationContainer} from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import {NativeBaseProvider} from 'native-base'
-import Interests from './screens/Interests'
-import Login from './screens/Login'
-import Main from './screens/Main'
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeBaseProvider } from 'native-base';
+import Interests from './screens/Interests';
+import Login from './screens/Login';
+import Main from './screens/Main';
 
-type RootStackParamList = {
-    Login: undefined;
-    Main: undefined;
-    Interests: undefined;
+interface RootStackParamList {
+    [key: string]: object;
+    Login: object;
+    Main: object;
+    Interests: object;
 }
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function App() {
+function App(): JSX.Element {
     return (
         <NativeBaseProvider>
             <NavigationContainer>
@@ -24,8 +26,7 @@ function App() {
                 </Stack.Navigator>
             </NavigationContainer>
         </NativeBaseProvider>
-    )
+    );
 }
 
 export default App;
-

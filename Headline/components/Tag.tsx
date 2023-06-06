@@ -1,54 +1,58 @@
-import {useTheme, Text} from "native-base"
-import {StyleSheet, TouchableOpacity} from "react-native"
-import {useStore} from "../store"
+import * as React from 'react';
+import { useTheme, Text } from 'native-base';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useStore } from '../store';
 
 interface Props {
-    name: string
+    name: string;
 }
 
-const createStyles = (color: string) => StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderColor: color,
-    backgroundColor: color,
-    borderRadius: 12,
-    height: 28,
-    paddingHorizontal: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 24,
-  },
-  selected: {
-    backgroundColor: '#FF8800',
-    borderColor: '#FF6600',
-  },
-})
+const createStyles = (color: string): StyleSheet.NamedStyles<any> =>
+    StyleSheet.create({
+        container: {
+            borderWidth: 1,
+            borderColor: color,
+            backgroundColor: color,
+            borderRadius: 12,
+            height: 28,
+            paddingHorizontal: 14,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginRight: 24,
+        },
+        selected: {
+            backgroundColor: '#FF8800',
+            borderColor: '#FF6600',
+        },
+    });
 
 const Tag: React.FC<Props> = (props: Props) => {
-    const [ selectedInterest, setSelectedInterest ] = 
-        useStore((store) => [store.selectedInterest, store.setSelectedInterest])
+    const [selectedInterest, setSelectedInterest] = useStore((store) => [
+        store.selectedInterest,
+        store.setSelectedInterest,
+    ]);
 
-    const { colors } = useTheme()
-    
-    const isSelected = selectedInterest === props.name
+    const { colors } = useTheme();
+
+    const isSelected = selectedInterest === props.name;
     let styles;
 
     if (isSelected) {
-        styles = createStyles(colors.warning[400])
-    }
-    else {
-        styles = createStyles(colors.info[400])
+        styles = createStyles(colors.warning[400]);
+    } else {
+        styles = createStyles(colors.info[400]);
     }
 
     return (
-        <TouchableOpacity 
-            onPress={() => setSelectedInterest(props.name)}
-            style={[styles.container]}>
-            <Text bold>
-                {props.name}
-            </Text>
+        <TouchableOpacity
+            onPress={() => {
+                setSelectedInterest(props.name);
+            }}
+            style={[styles.container]}
+        >
+            <Text bold>{props.name}</Text>
         </TouchableOpacity>
-    )
-}
+    );
+};
 
-export default Tag
+export default Tag;

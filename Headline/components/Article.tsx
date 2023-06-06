@@ -1,37 +1,37 @@
-import React from "react"
-import {Image, Platform, Text, TouchableOpacity, StyleSheet, Linking} from "react-native"
-import {LinearGradient} from 'expo-linear-gradient'
+import React from 'react';
+import { Image, Platform, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-type Article = {
-    title: string
-    url: string
-    imageUrl: string
-    description: string
-    interest: string
+interface ArticleProp {
+    title: string;
+    url: string;
+    imageUrl: string;
+    description: string;
+    interest: string;
 }
 
 interface Props {
-    article: Article
+    article: ArticleProp;
 }
 
 const boxShadow: any = Platform.select({
-  ios: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 0,
+    ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 0,
+        },
+        shadowOpacity: 0.4,
+        shadowRadius: 4,
     },
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
-  },
-  android: {elevation: 6},
+    android: { elevation: 6 },
 });
 
 const styles = StyleSheet.create({
     image: {
         flex: 1,
         borderRadius: 24,
-        height: 300
+        height: 300,
     },
     container: {
         height: 240,
@@ -65,33 +65,32 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '300',
         right: 16,
-        bottom: 8, 
-    }
+        bottom: 8,
+    },
 });
 
 const Article: React.FC<Props> = (props: Props) => {
     return (
-        <TouchableOpacity 
-            activeOpacity={1} 
+        <TouchableOpacity
+            activeOpacity={1}
             style={styles.container}
-            onPress={() => Linking.openURL(props.article.url)}>
-            {
-                props.article.imageUrl !== null && props.article.imageUrl !== '' ?
-                <Image 
-                    source={{uri: props.article.imageUrl}} 
+            onPress={() => {
+                void Linking.openURL(props.article.url);
+            }}
+        >
+            {props.article.imageUrl !== null && props.article.imageUrl !== '' ? (
+                <Image
+                    source={{ uri: props.article.imageUrl }}
                     resizeMode={'cover'}
                     style={styles.image}
-                /> :
-                null
-            }
-            <LinearGradient
-                colors={['#0000', '#000A', '#000']}
-                style={styles.title}>
+                />
+            ) : null}
+            <LinearGradient colors={['#0000', '#000A', '#000']} style={styles.title}>
                 <Text style={styles.text}>{props.article.title}</Text>
                 <Text style={styles.timestamp}>May 5, 2023</Text>
             </LinearGradient>
         </TouchableOpacity>
-    )
-}
+    );
+};
 
-export default Article
+export default Article;
