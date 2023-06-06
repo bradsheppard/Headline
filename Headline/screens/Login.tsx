@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { Button, Center, Heading, VStack } from 'native-base';
 import { type NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../App';
 
-interface ParamList {
-    [key: string]: string;
-    Main: string;
-}
-
-type Props = NativeStackScreenProps<ParamList, 'Main'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function Login(props: Props): JSX.Element {
     return (

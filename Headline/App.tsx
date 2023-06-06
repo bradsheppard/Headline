@@ -6,12 +6,12 @@ import Interests from './screens/Interests';
 import Login from './screens/Login';
 import Main from './screens/Main';
 
-interface RootStackParamList {
-    [key: string]: object;
-    Login: object;
-    Main: object;
-    Interests: object;
-}
+// eslint-disable-next-line
+export type RootStackParamList = {
+    Login: undefined;
+    Main: undefined;
+    Interests: undefined;
+};
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

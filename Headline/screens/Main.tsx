@@ -7,6 +7,7 @@ import { type NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useStore } from '../store';
 import { type Article as ArticleProto } from '../proto/article/article_pb';
 import Article from '../components/Article';
+import type { RootStackParamList } from '../App';
 
 const styles = {
     container: {
@@ -21,11 +22,7 @@ const styles = {
     },
 };
 
-interface ParamList {
-    Interests: undefined;
-}
-
-type Props = NativeStackScreenProps<ParamList, 'Interests'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Main'>;
 
 export default function Main(props: Props): JSX.Element {
     const [articles, interests] = useStore((state) => [state.articles, state.interests]);
@@ -89,7 +86,7 @@ export default function Main(props: Props): JSX.Element {
                     <RefreshControl
                         refreshing={isLoading}
                         onRefresh={() => {
-                            void fetchAndFilter;
+                            void fetchAndFilter();
                         }}
                     />
                 }
