@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useTheme, Text } from 'native-base';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useTheme } from 'native-base';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useStore } from '../store';
 
 interface Props {
@@ -50,7 +50,7 @@ const Tag: React.FC<Props> = (props: Props) => {
             }}
             style={[styles.container]}
         >
-            <Text bold>{props.name}</Text>
+            <Text>{props.name}</Text>
         </TouchableOpacity>
     );
 };
