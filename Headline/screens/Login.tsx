@@ -29,7 +29,12 @@ export default function Login(props: Props): JSX.Element {
             <TouchableOpacity>
                 <Text style={styles.forgot_button}>Forgot Password?</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.loginBtn} onPress={() => {props.navigation.navigate('Main')}}>
+            <TouchableOpacity
+                style={styles.loginBtn}
+                onPress={() => {
+                    props.navigation.navigate('Main');
+                }}
+            >
                 <Text>LOGIN</Text>
             </TouchableOpacity>
         </View>
@@ -46,7 +51,7 @@ const styles = StyleSheet.create({
     image: {
         marginBottom: 40,
         height: 200,
-        width: 200
+        width: 200,
     },
     inputView: {
         backgroundColor: '#C0DDFF',
@@ -74,5 +79,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 40,
         backgroundColor: '#14AAFF',
-    }
+    },
 });

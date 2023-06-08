@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import {
+    createNativeStackNavigator,
+    type NativeStackNavigationOptions,
+} from '@react-navigation/native-stack';
 import { NativeBaseProvider } from 'native-base';
 import Interests from './screens/Interests';
 import Login from './screens/Login';
@@ -17,38 +20,34 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const screenOptions: NativeStackNavigationOptions = {
     headerStyle: {
-        backgroundColor: 'black'
+        backgroundColor: 'black',
     },
     headerTintColor: 'white',
     headerTitleStyle: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     statusBarStyle: 'light',
-    statusBarColor: 'black'
-}
+    statusBarColor: 'black',
+};
 
 function App(): JSX.Element {
     return (
         <NativeBaseProvider>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName='Login'>
-                    <Stack.Screen 
-                        name='Login' 
-                        component={Login} 
+                    <Stack.Screen
+                        name='Login'
+                        component={Login}
                         options={{
-                            headerShown: false
+                            headerShown: false,
                         }}
-                        />
-                    <Stack.Screen 
-                        name='Main' 
-                        component={Main} 
-                        options={screenOptions}
-                        />
-                    <Stack.Screen 
-                        name='Interests' 
-                        component={Interests} 
-                        options={screenOptions}
-                        />
+                    />
+                    <Stack.Screen
+                        name='Main'
+                        component={Main}
+                        options={{ ...screenOptions, ...{ headerTitle: 'Feed' } }}
+                    />
+                    <Stack.Screen name='Interests' component={Interests} options={screenOptions} />
                 </Stack.Navigator>
             </NavigationContainer>
         </NativeBaseProvider>
