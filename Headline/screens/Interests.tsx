@@ -1,12 +1,47 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Button, View } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Button as NativeBaseButton, FormControl, Input, Modal, VStack } from 'native-base';
 import InterestService from '../api/interest';
 import Interest from '../components/Interest';
 import { useStore } from '../store';
+import { Svg, Rect, Line } from 'react-native-svg';
 
-const styles = {
+const plus = (): JSX.Element => {
+    return (
+        <Svg
+            enable-background='new 0 0 50 50'
+            height='50px'
+            id='Layer_1'
+            viewBox='0 0 50 50'
+            width='50px'
+        >
+            <Rect fill='none' height='50' width='50' />
+            <Line
+                fill='none'
+                stroke='#030D45'
+                strokeMiterlimit='10'
+                strokeWidth='3'
+                x1='12'
+                x2='38'
+                y1='25'
+                y2='25'
+            />
+            <Line
+                fill='none'
+                stroke='#030D45'
+                strokeMiterlimit='10'
+                strokeWidth='3'
+                x1='25'
+                x2='25'
+                y1='12'
+                y2='38'
+            />
+        </Svg>
+    );
+};
+
+const styles = StyleSheet.create({
     list: {
         flex: 1,
         flexGrow: 1,
@@ -23,7 +58,14 @@ const styles = {
         color: '#fff',
         paddingBottom: 24,
     },
-};
+    button: {
+        position: 'absolute',
+        right: 20,
+        bottom: 20,
+        backgroundColor: '#14AAFF',
+        borderRadius: 30,
+    },
+});
 
 export default function Interests(): JSX.Element {
     const [interests, fetchInterests] = useStore((state) => [
@@ -59,12 +101,14 @@ export default function Interests(): JSX.Element {
                     );
                 })}
             </VStack>
-            <Button
-                title='+'
+            <TouchableOpacity
+                style={styles.button}
                 onPress={() => {
                     setModalVisible(true);
                 }}
-            />
+            >
+                {plus()}
+            </TouchableOpacity>
             <Modal isOpen={modalVisible}>
                 <Modal.Content>
                     <Modal.CloseButton />
