@@ -8,6 +8,7 @@ import { NativeBaseProvider } from 'native-base';
 import Interests from './screens/Interests';
 import Login from './screens/Login';
 import Main from './screens/Main';
+import { useStore } from './store';
 
 // eslint-disable-next-line
 export type RootStackParamList = {
@@ -31,23 +32,34 @@ const screenOptions: NativeStackNavigationOptions = {
 };
 
 function App(): JSX.Element {
+    const token = useStore((state) => state.token);
+
     return (
         <NativeBaseProvider>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName='Login'>
-                    <Stack.Screen
-                        name='Login'
-                        component={Login}
-                        options={{
-                            headerShown: false,
-                        }}
-                    />
-                    <Stack.Screen
-                        name='Main'
-                        component={Main}
-                        options={{ ...screenOptions, ...{ headerTitle: 'Feed' } }}
-                    />
-                    <Stack.Screen name='Interests' component={Interests} options={screenOptions} />
+                    {token === null ? (
+                        <Stack.Screen
+                            name='Login'
+                            component={Login}
+                            options={{
+                                headerShown: false,
+                            }}
+                        />
+                    ) : (
+                        <>
+                            <Stack.Screen
+                                name='Main'
+                                component={Main}
+                                options={{ ...screenOptions, ...{ headerTitle: 'Feed' } }}
+                            />
+                            <Stack.Screen
+                                name='Interests'
+                                component={Interests}
+                                options={screenOptions}
+                            />
+                        </>
+                    )}
                 </Stack.Navigator>
             </NavigationContainer>
         </NativeBaseProvider>

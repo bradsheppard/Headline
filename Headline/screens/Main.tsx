@@ -78,6 +78,7 @@ export default function Main(props: Props): JSX.Element {
                                 interest: entry.item.getInterest(),
                                 title: entry.item.getTitle(),
                                 url: entry.item.getUrl(),
+                                source: entry.item.getSource(),
                             }}
                         />
                     );

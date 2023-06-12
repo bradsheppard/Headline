@@ -4,13 +4,24 @@ import InterestService from './api/interest';
 import { type Article } from './proto/article/article_pb';
 import { type Interest } from './proto/interest/interest_pb';
 
+export interface UserInfo {
+    name: string;
+}
+
 interface State {
     interests: Interest[];
     articles: Article[];
 
+    userInfo: UserInfo | null;
+    token: string | null;
+
     selectedInterest: string | null;
 
     setSelectedInterest: (interest: string) => void;
+
+    setUserInfo: (userInfo: UserInfo) => void;
+    setToken: (token: string | null) => void;
+
     fetchInterests: (userId: number) => Promise<void>;
     fetchArticles: (userId: number) => Promise<void>;
 
@@ -21,9 +32,20 @@ const useStore = create<State>((set) => ({
     interests: [],
     articles: [],
     selectedInterest: null,
+    token: null,
+
+    userInfo: null,
 
     setSelectedInterest: (interest: string) => {
         set({ selectedInterest: interest });
+    },
+
+    setUserInfo: (userInfo: UserInfo) => {
+        set({ userInfo });
+    },
+
+    setToken: (token: string | null) => {
+        set({ token });
     },
 
     fetchInterests: async (userId: number) => {

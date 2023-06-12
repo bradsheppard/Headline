@@ -8,6 +8,7 @@ interface ArticleProp {
     imageUrl: string;
     description: string;
     interest: string;
+    source: string;
 }
 
 interface Props {
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         lineHeight: 24,
         color: '#fff',
-        paddingBottom: 24,
+        paddingBottom: 32,
     },
     timestamp: {
         position: 'absolute',
@@ -65,6 +66,14 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '300',
         right: 16,
+        bottom: 8,
+    },
+    source: {
+        position: 'absolute',
+        color: '#eee',
+        fontSize: 12,
+        fontWeight: '300',
+        left: 16,
         bottom: 8,
     },
 });
@@ -87,6 +96,7 @@ const Article: React.FC<Props> = (props: Props) => {
             ) : null}
             <LinearGradient colors={['#0000', '#000A', '#000']} style={styles.title}>
                 <Text style={styles.text}>{props.article.title}</Text>
+                <Text style={styles.source}>{props.article.source}</Text>
                 <Text style={styles.timestamp}>May 5, 2023</Text>
             </LinearGradient>
         </TouchableOpacity>
