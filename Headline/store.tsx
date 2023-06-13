@@ -6,6 +6,7 @@ import { type Interest } from './proto/interest/interest_pb';
 
 export interface UserInfo {
     name: string;
+    image: string;
 }
 
 interface State {

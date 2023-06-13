@@ -9,6 +9,8 @@ import Interests from './screens/Interests';
 import Login from './screens/Login';
 import Main from './screens/Main';
 import { useStore } from './store';
+import {type HeaderButtonProps} from '@react-navigation/native-stack/lib/typescript/src/types';
+import {Image, TouchableOpacity} from 'react-native';
 
 // eslint-disable-next-line
 export type RootStackParamList = {
@@ -19,20 +21,32 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const screenOptions: NativeStackNavigationOptions = {
-    headerStyle: {
-        backgroundColor: 'black',
-    },
-    headerTintColor: 'white',
-    headerTitleStyle: {
-        fontWeight: 'bold',
-    },
-    statusBarStyle: 'light',
-    statusBarColor: 'black',
-};
 
 function App(): JSX.Element {
-    const token = useStore((state) => state.token);
+    const [token, setToken, userInfo ] = useStore((state) => [state.token, state.setToken, state.userInfo]);
+
+    const screenOptions: NativeStackNavigationOptions = {
+        headerStyle: {
+            backgroundColor: 'black',
+        },
+        headerTintColor: 'white',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+        statusBarStyle: 'light',
+        statusBarColor: 'black',
+
+        headerRight: (props: HeaderButtonProps) => {
+            return (
+                <TouchableOpacity onPress={() => {setToken(null)}}>
+                    <Image 
+                        style={{width: 35, height: 35, borderRadius: 35}} 
+                        source={{uri: userInfo?.image}} 
+                    />
+                </TouchableOpacity>
+            )
+        }
+    };
 
     return (
         <NativeBaseProvider>

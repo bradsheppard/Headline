@@ -47,6 +47,7 @@ export default function Login(props: Props): JSX.Element {
 
         const userInfo: UserInfo = {
             name: user.name,
+            image: user.picture
         };
 
         setUserInfo(userInfo);
