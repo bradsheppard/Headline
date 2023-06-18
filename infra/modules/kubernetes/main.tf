@@ -84,7 +84,7 @@ resource "google_compute_firewall" "webhook_admission_firewall" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8443"]
+    ports    = ["8443", "15017"]
   }
 
   source_ranges = ["10.0.1.0/28"]

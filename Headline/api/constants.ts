@@ -1,1 +1,1 @@
-export const API_HOST = '10.111.42.133';
+export const API_HOST = '34.28.111.24';

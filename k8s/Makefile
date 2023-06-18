@@ -18,7 +18,7 @@ strimzi:
 
 .PHONY: backend
 backend:
-	helm upgrade --install backend backend
+	helm upgrade --install backend backend -f backend/prod_values.yaml
 
 .PHONY: collector
 collector:

@@ -28,13 +28,13 @@ export default function Login(props: Props): JSX.Element {
         if (response?.type === 'success') {
             const accessToken = response.authentication?.accessToken;
 
-            if (accessToken !== undefined) setToken(accessToken);
+            if (accessToken === undefined) return;
 
-            void getUserInfo();
+            void getUserInfo(accessToken);
         }
     }, [response, token]);
 
-    const getUserInfo = async (): Promise<void> => {
+    const getUserInfo = async (token: string): Promise<void> => {
         if (token === null) {
             return;
         }
@@ -47,10 +47,11 @@ export default function Login(props: Props): JSX.Element {
 
         const userInfo: UserInfo = {
             name: user.name,
-            image: user.picture
+            image: user.picture,
         };
 
         setUserInfo(userInfo);
+        setToken(token);
     };
 
     return (

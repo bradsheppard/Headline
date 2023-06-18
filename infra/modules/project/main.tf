@@ -22,3 +22,9 @@ resource "google_project_service" "logging-api" {
   disable_dependent_services = true
 }
 
+resource "google_project_service" "artifact-registry-api" {
+  project = google_project.project.project_id
+  service = "artifactregistry.googleapis.com"
+  disable_dependent_services = true
+}
+

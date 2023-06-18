@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, FlatList, RefreshControl, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
 import uuid from 'react-native-uuid';
 import Tags from '../components/Tags';
 import { useEffect, useState } from 'react';
@@ -22,7 +22,7 @@ const styles = {
     },
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Main'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Feed'>;
 
 export default function Main(props: Props): JSX.Element {
     const [articles, interests] = useStore((state) => [state.articles, state.interests]);
@@ -91,12 +91,6 @@ export default function Main(props: Props): JSX.Element {
                         }}
                     />
                 }
-            />
-            <Button
-                title='Interests'
-                onPress={() => {
-                    props.navigation.navigate('Interests');
-                }}
             />
         </View>
     );
