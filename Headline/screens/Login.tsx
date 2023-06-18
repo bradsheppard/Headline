@@ -21,7 +21,8 @@ export default function Login(props: Props): JSX.Element {
     ]);
 
     const [, response, promptAsync] = Google.useAuthRequest({
-        expoClientId: '769516741930-9r4ush4ft2j15c3ng1d49idvd3qthb9r.apps.googleusercontent.com',
+        clientId: '769516741930-9r4ush4ft2j15c3ng1d49idvd3qthb9r.apps.googleusercontent.com',
+        androidClientId: '769516741930-t24q0a64288iahilf2t558irfn8vbvim.apps.googleusercontent.com',
     });
 
     React.useEffect(() => {
