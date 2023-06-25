@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "proto/topic";
+
+
+message Topic {
+        string name = 1;
+}
+
+message TopicResponse {
+        repeated Topic topics = 1;
+}
+
+message GetTopicsRequest {
+        uint64 userId = 1; 
+}
+
+message AddTopicsRequest {
+        repeated Topic topics = 1;
+        uint64 userId = 2;
+}
+
+message RemoveTopicsRequest {
+        repeated string topicNames = 1;
+        uint64 userId = 2;
+}
+
+service TopicService {
+        rpc AddTopics(AddTopicsRequest) returns (TopicResponse);
+        rpc GetTopics(GetTopicsRequest) returns (TopicResponse);
+        rpc RemoveTopics(RemoveTopicsRequest) returns (google.protobuf.Empty);
+}
+

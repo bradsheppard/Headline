@@ -6,11 +6,11 @@ from proto.article import article_pb2
 
 class ArticleDDGCollector(ArticleCollector):
 
-    def collect_articles(self, interest: str) -> List[article_pb2.Article]:
+    def collect_articles(self, topic: str) -> List[article_pb2.Article]:
         articles = []
 
         with DDGS() as ddgs:
-            responses = ddgs.news(interest)
+            responses = ddgs.news(topic)
 
             for response in responses:
                 article = article_pb2.Article(
@@ -19,7 +19,6 @@ class ArticleDDGCollector(ArticleCollector):
                     url=response['url'],
                     imageUrl=response['image'],
                     source=response['source'],
-                    interest=interest
                 )
 
                 articles.append(article)

@@ -10,7 +10,7 @@ import (
 	"headline/api"
 
 	article_pb "headline/proto/article"
-	interest_pb "headline/proto/interest"
+	topic_pb "headline/proto/topic"
 
 	"google.golang.org/grpc"
 )
@@ -77,7 +77,7 @@ func initGrpc() (*grpc.Server, *net.Listener, error) {
 	s := grpc.NewServer()
 
 	article_pb.RegisterArticleServiceServer(s, &api.ArticleServer{})
-	interest_pb.RegisterInterestServiceServer(s, &api.InterestServer{})
+	topic_pb.RegisterTopicServiceServer(s, &api.TopicServer{})
 
 	return s, &lis, nil
 }

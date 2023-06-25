@@ -5,10 +5,12 @@ import (
 	"log"
 	"os"
 	"testing"
+        "reflect"
 
 	"headline/model"
 
-	pb "headline/proto/article"
+	article_pb "headline/proto/article"
+        topic_pb "headline/proto/topic"
 
 	"gorm.io/gorm"
 )
@@ -27,25 +29,29 @@ func TestMain(m *testing.M) {
 	os.Exit(exitVal)
 }
 
-func equal(article1 *pb.Article, article2 *pb.Article) bool {
-	return article1.Title == article2.Title && article1.Description == article2.Description &&
-		article1.Url == article2.Url && article1.ImageUrl == article2.ImageUrl &&
-		article1.Source == article2.Source && article1.Interest == article2.Interest
-}
-
 type articleExpectation struct {
-	out []*pb.Article
+	out *article_pb.TopicArticles
 	err error
 }
 
 type SetupArticleResult struct {
-	client *pb.ArticleServiceClient
+	articleClient *article_pb.ArticleServiceClient
+	topicClient *topic_pb.TopicServiceClient
 	closer func()
 }
 
 func setupArticles(ctx context.Context) (*SetupArticleResult, error) {
-	db.AutoMigrate(&model.Article{})
-	db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&model.Article{})
+        err := db.AutoMigrate(&model.Article{}, &model.Topic{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&model.Article{}, &model.Topic{}).Error
+
+	if err != nil {
+		return nil, err
+	}
 
 	conn, err := GenerateTestServer(ctx)
 
@@ -53,18 +59,22 @@ func setupArticles(ctx context.Context) (*SetupArticleResult, error) {
 		return nil, err
 	}
 
-	client := pb.NewArticleServiceClient(conn.clientConn)
-	pb.RegisterArticleServiceServer(conn.server, &ArticleServer{})
+	article_client := article_pb.NewArticleServiceClient(conn.clientConn)
+	article_pb.RegisterArticleServiceServer(conn.server, &ArticleServer{})
+
+	topic_client := topic_pb.NewTopicServiceClient(conn.clientConn)
+	topic_pb.RegisterTopicServiceServer(conn.server, &TopicServer{})
 
 	go conn.startup()
 
 	return &SetupArticleResult{
-		client: &client,
+		articleClient: &article_client,
+                topicClient: &topic_client,
 		closer: conn.closer,
 	}, nil
 }
 
-func TestArticle_GetArticles_Empty(t *testing.T) {
+func TestArticle_GetTopicArticles_Empty(t *testing.T) {
 	ctx := context.Background()
 	setup, err := setupArticles(ctx)
 
@@ -75,10 +85,13 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
 
 	defer setup.closer()
 
-	client := *setup.client
+	client := *setup.articleClient
 
-	req := &pb.User{UserId: 999}
-	articles, err := client.GetArticles(ctx, req)
+	req := &article_pb.GetTopicArticlesRequest{
+                Topics: []string{"Topic 1", "Topic 2"},
+        }
+
+	topicArticles, err := client.GetTopicArticles(ctx, req)
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -86,29 +99,19 @@ func TestArticle_GetArticles_Empty(t *testing.T) {
 	}
 
 	expected := articleExpectation{
-		out: []*pb.Article{},
+		out: &article_pb.TopicArticles{},
 		err: nil,
 	}
 
-	if len(expected.out) != len(articles.Articles) {
+	if len(expected.out.TopicArticles) != len(topicArticles.TopicArticles) {
 		t.Errorf("Inequal length for articles")
-		t.Errorf("Expected Length: %d", len(expected.out))
-		t.Errorf("Actual length: %d", len(articles.Articles))
+		t.Errorf("Expected Length: %d", len(expected.out.TopicArticles))
+		t.Errorf("Actual length: %d", len(topicArticles.TopicArticles))
 		t.FailNow()
-	}
-
-	for i := range expected.out {
-		exp := expected.out[i]
-		actual := articles.Articles[i]
-
-		if !equal(exp, actual) {
-			t.Errorf("Expected -> %q\nGot: %q", exp, actual)
-			t.FailNow()
-		}
 	}
 }
 
-func TestArticle_SetUserArticles_GetArticles_NotEmpty(t *testing.T) {
+func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 	ctx := context.Background()
 	setup, err := setupArticles(ctx)
 
@@ -119,20 +122,65 @@ func TestArticle_SetUserArticles_GetArticles_NotEmpty(t *testing.T) {
 		t.FailNow()
 	}
 
-	client := *setup.client
+	articleClient := *setup.articleClient
+        topicClient := *setup.topicClient
+        
+        _, err = topicClient.AddTopics(ctx, &topic_pb.AddTopicsRequest{
+                Topics: []*topic_pb.Topic{
+                        &topic_pb.Topic{
+                                Name: "Topic 3",
+                        },
+                        &topic_pb.Topic{
+                                Name: "Topic 4",
+                        },
+                },
+                UserId: 1,
+        })
 
-	_, err = client.SetUserArticles(ctx, &pb.UserArticles{
-		Articles: []*pb.Article{
-			&pb.Article{
-				Title:       "New Title 1",
-				Description: "New Description 1",
-				Url:         "New Url 1",
-				ImageUrl:    "New Image Url 1",
-				Source:      "New Source 1",
-				Interest:    "New Interest 1",
-			},
-		},
-		UserId: 1,
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	_, err = articleClient.SetTopicArticles(ctx, &article_pb.SetTopicArticlesRequest{
+                TopicArticles: map[string]*article_pb.Articles{
+                        "Topic 3": &article_pb.Articles{
+                                Articles: []*article_pb.Article{
+                                        &article_pb.Article{
+                                                Title:       "New Title 1",
+                                                Description: "New Description 1",
+                                                Url:         "New Url 1",
+                                                ImageUrl:    "New Image Url 1",
+                                                Source:      "New Source 1",
+                                        },
+                                        &article_pb.Article{
+                                                Title:       "New Title 2",
+                                                Description: "New Description 2",
+                                                Url:         "New Url 2",
+                                                ImageUrl:    "New Image Url 2",
+                                                Source:      "New Source 2",
+                                        },
+                                },
+                        },
+                        "Topic 4": &article_pb.Articles{
+                                Articles: []*article_pb.Article{
+                                        &article_pb.Article{
+                                                Title:       "New Title 3",
+                                                Description: "New Description 3",
+                                                Url:         "New Url 3",
+                                                ImageUrl:    "New Image Url 3",
+                                                Source:      "New Source 3",
+                                        },
+                                        &article_pb.Article{
+                                                Title:       "New Title 4",
+                                                Description: "New Description 4",
+                                                Url:         "New Url 4",
+                                                ImageUrl:    "New Image Url 4",
+                                                Source:      "New Source 4",
+                                        },
+                                },
+                        },
+                },
 	})
 
 	if err != nil {
@@ -140,26 +188,7 @@ func TestArticle_SetUserArticles_GetArticles_NotEmpty(t *testing.T) {
 		t.FailNow()
 	}
 
-	_, err = client.SetUserArticles(ctx, &pb.UserArticles{
-		Articles: []*pb.Article{
-			&pb.Article{
-				Title:       "New Title 2",
-				Description: "New Description 2",
-				Url:         "New Url 2",
-				ImageUrl:    "New Image Url 2",
-				Source:      "New Source 2",
-				Interest:    "New Interest 2",
-			},
-		},
-		UserId: 2,
-	})
-
-	if err != nil {
-		t.Errorf("Error: %v", err)
-		t.FailNow()
-	}
-
-	articles, err := client.GetArticles(ctx, &pb.User{UserId: 1})
+	articles, err := articleClient.GetTopicArticles(ctx, &article_pb.GetTopicArticlesRequest{Topics: []string{"Topic 3"}})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -167,86 +196,46 @@ func TestArticle_SetUserArticles_GetArticles_NotEmpty(t *testing.T) {
 	}
 
 	expected := articleExpectation{
-		out: []*pb.Article{
-			&pb.Article{
-				Title:       "New Title 1",
-				Description: "New Description 1",
-				Url:         "New Url 1",
-				ImageUrl:    "New Image Url 1",
-				Source:      "New Source 1",
-				Interest:    "New Interest 1",
-			},
-		},
+                out: &article_pb.TopicArticles{
+                        TopicArticles: map[string]*article_pb.Articles{
+                                "Topic 3": &article_pb.Articles{
+                                        Articles: []*article_pb.Article{
+                                                &article_pb.Article{
+                                                        Title:       "New Title 1",
+                                                        Description: "New Description 1",
+                                                        Url:         "New Url 1",
+                                                        ImageUrl:    "New Image Url 1",
+                                                        Source:      "New Source 1",
+                                                },
+                                                &article_pb.Article{
+                                                        Title:       "New Title 2",
+                                                        Description: "New Description 2",
+                                                        Url:         "New Url 2",
+                                                        ImageUrl:    "New Image Url 2",
+                                                        Source:      "New Source 2",
+                                                },
+                                        },
+                                },
+                        },
+                },
 		err: nil,
 	}
 
-	if len(expected.out) != len(articles.Articles) {
+	if len(expected.out.TopicArticles) != len(articles.TopicArticles) {
 		t.Errorf("Inequal length for articles")
-		t.Errorf("Expected Length: %d", len(expected.out))
-		t.Errorf("Actual length: %d", len(articles.Articles))
+		t.Errorf("Expected Length: %d", len(expected.out.TopicArticles))
+		t.Errorf("Actual length: %d", len(articles.TopicArticles))
 		t.FailNow()
 	}
 
-	for i := range expected.out {
-		exp := expected.out[i]
-		actual := articles.Articles[i]
+	for i := range expected.out.TopicArticles {
+		exp := expected.out.TopicArticles[i]
+		actual := articles.TopicArticles[i]
 
-		if !equal(exp, actual) {
+		if !reflect.DeepEqual(exp, actual) {
 			t.Errorf("Expected -> %q\nGot: %q", exp, actual)
 			t.FailNow()
 		}
 	}
 }
 
-func TestArticle_SetUserArticles_GetArticles_Empty(t *testing.T) {
-	ctx := context.Background()
-	setup, err := setupArticles(ctx)
-
-	defer setup.closer()
-
-	if err != nil {
-		t.Errorf("Setup error: %v", err)
-		t.FailNow()
-	}
-
-	client := *setup.client
-
-	_, err = client.SetUserArticles(ctx, &pb.UserArticles{
-		Articles: []*pb.Article{},
-		UserId: 1,
-	})
-
-	if err != nil {
-		t.Errorf("Error: %v", err)
-		t.FailNow()
-	}
-
-	articles, err := client.GetArticles(ctx, &pb.User{UserId: 1})
-
-	if err != nil {
-		t.Errorf("Error: %v", err)
-		t.FailNow()
-	}
-
-	expected := articleExpectation{
-		out: []*pb.Article{},
-		err: nil,
-	}
-
-	if len(expected.out) != len(articles.Articles) {
-		t.Errorf("Inequal length for articles")
-		t.Errorf("Expected Length: %d", len(expected.out))
-		t.Errorf("Actual length: %d", len(articles.Articles))
-		t.FailNow()
-	}
-
-	for i := range expected.out {
-		exp := expected.out[i]
-		actual := articles.Articles[i]
-
-		if !equal(exp, actual) {
-			t.Errorf("Expected -> %q\nGot: %q", exp, actual)
-			t.FailNow()
-		}
-	}
-}

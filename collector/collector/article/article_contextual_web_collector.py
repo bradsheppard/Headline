@@ -13,10 +13,10 @@ class ArticleContextualWebCollector(ArticleCollector):
     def __init__(self, api_key: str) -> None:
         self._api_key = api_key
 
-    def collect_articles(self, interest: str) -> List[article_pb2.Article]:
+    def collect_articles(self, topic: str) -> List[article_pb2.Article]:
         articles = []
         querystring = {
-                "q": interest,
+                "q": topic,
                 "pageNumber":"1",
                 "pageSize":"10",
                 "autoCorrect":"true",
@@ -38,7 +38,6 @@ class ArticleContextualWebCollector(ArticleCollector):
                     description=entry["description"],
                     imageUrl=entry["image"]["url"],
                     title=entry["title"],
-                    interest=interest,
                     source=entry["provider"]["name"],
                     url=entry["url"]
             )

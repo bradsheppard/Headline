@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto.article import article_pb2 as article_dot_article__pb2
+from article import article_pb2 as article_dot_article__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
@@ -15,14 +15,14 @@ class ArticleServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetArticles = channel.unary_unary(
-                '/ArticleService/GetArticles',
-                request_serializer=article_dot_article__pb2.User.SerializeToString,
-                response_deserializer=article_dot_article__pb2.UserArticles.FromString,
+        self.GetTopicArticles = channel.unary_unary(
+                '/ArticleService/GetTopicArticles',
+                request_serializer=article_dot_article__pb2.GetTopicArticlesRequest.SerializeToString,
+                response_deserializer=article_dot_article__pb2.TopicArticles.FromString,
                 )
-        self.SetUserArticles = channel.unary_unary(
-                '/ArticleService/SetUserArticles',
-                request_serializer=article_dot_article__pb2.UserArticles.SerializeToString,
+        self.SetTopicArticles = channel.unary_unary(
+                '/ArticleService/SetTopicArticles',
+                request_serializer=article_dot_article__pb2.SetTopicArticlesRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
@@ -30,13 +30,13 @@ class ArticleServiceStub(object):
 class ArticleServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def GetArticles(self, request, context):
+    def GetTopicArticles(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SetUserArticles(self, request, context):
+    def SetTopicArticles(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -45,14 +45,14 @@ class ArticleServiceServicer(object):
 
 def add_ArticleServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetArticles': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetArticles,
-                    request_deserializer=article_dot_article__pb2.User.FromString,
-                    response_serializer=article_dot_article__pb2.UserArticles.SerializeToString,
+            'GetTopicArticles': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTopicArticles,
+                    request_deserializer=article_dot_article__pb2.GetTopicArticlesRequest.FromString,
+                    response_serializer=article_dot_article__pb2.TopicArticles.SerializeToString,
             ),
-            'SetUserArticles': grpc.unary_unary_rpc_method_handler(
-                    servicer.SetUserArticles,
-                    request_deserializer=article_dot_article__pb2.UserArticles.FromString,
+            'SetTopicArticles': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTopicArticles,
+                    request_deserializer=article_dot_article__pb2.SetTopicArticlesRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
@@ -66,7 +66,7 @@ class ArticleService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetArticles(request,
+    def GetTopicArticles(request,
             target,
             options=(),
             channel_credentials=None,
@@ -76,14 +76,14 @@ class ArticleService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ArticleService/GetArticles',
-            article_dot_article__pb2.User.SerializeToString,
-            article_dot_article__pb2.UserArticles.FromString,
+        return grpc.experimental.unary_unary(request, target, '/ArticleService/GetTopicArticles',
+            article_dot_article__pb2.GetTopicArticlesRequest.SerializeToString,
+            article_dot_article__pb2.TopicArticles.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SetUserArticles(request,
+    def SetTopicArticles(request,
             target,
             options=(),
             channel_credentials=None,
@@ -93,8 +93,8 @@ class ArticleService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ArticleService/SetUserArticles',
-            article_dot_article__pb2.UserArticles.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/ArticleService/SetTopicArticles',
+            article_dot_article__pb2.SetTopicArticlesRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

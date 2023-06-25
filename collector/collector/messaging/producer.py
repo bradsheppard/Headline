@@ -9,17 +9,11 @@ class Producer:
         self._article_service = article_service
         self._article_collector = article_collector
 
-    def update(self, interests: List[str], user_id: int):
-        articles = []
+    def update(self, topics: List[str]):
+        topic_articles = {}
 
-        for interest in interests:
-            collected_articles = self._article_collector.collect_articles(interest)
-            articles.extend(collected_articles)
+        for topic in topics:
+            articles = self._article_collector.collect_articles(topic)
+            topic_articles[topic] = articles
 
-        user_articles = self._article_service.get_user_articles(user_id)
-        unrelated_articles = list(
-                filter(lambda article: article.interest not in interests, user_articles))
-
-        articles.extend(unrelated_articles)
-
-        self._article_service.set_user_articles(user_id, articles)
+        self._article_service.set_topic_articles(topic_articles)

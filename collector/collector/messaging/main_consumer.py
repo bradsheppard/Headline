@@ -15,8 +15,8 @@ class MainConsumer(Consumer):
         self._consumer = KafkaConsumer(topic, bootstrap_servers=host, group_id='collector')
         self._consumer.poll()
 
-    def notify(self, user_id: int, interests: List[str]):
+    def notify(self, topics: List[str]):
         if not self._producer:
             return
 
-        self._producer.update(interests, user_id)
+        self._producer.update(topics)

@@ -12,9 +12,10 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x61rticle/article.proto\x1a\x1bgoogle/protobuf/empty.proto\"n\n\x07\x41rticle\x12\r\n\x05title\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x10\n\x08imageUrl\x18\x04 \x01(\t\x12\x0e\n\x06source\x18\x05 \x01(\t\x12\x10\n\x08interest\x18\x06 \x01(\t\":\n\x0cUserArticles\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\x12\x0e\n\x06userId\x18\x02 \x01(\x04\"\x16\n\x04User\x12\x0e\n\x06userId\x18\x01 \x01(\x04\x32o\n\x0e\x41rticleService\x12#\n\x0bGetArticles\x12\x05.User\x1a\r.UserArticles\x12\x38\n\x0fSetUserArticles\x12\r.UserArticles\x1a\x16.google.protobuf.EmptyB\x0fZ\rproto/articleb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15\x61rticle/article.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8a\x01\n\rTopicArticles\x12\x38\n\rtopicArticles\x18\x01 \x03(\x0b\x32!.TopicArticles.TopicArticlesEntry\x1a?\n\x12TopicArticlesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x18\n\x05value\x18\x02 \x01(\x0b\x32\t.Articles:\x02\x38\x01\"&\n\x08\x41rticles\x12\x1a\n\x08\x61rticles\x18\x01 \x03(\x0b\x32\x08.Article\"\x86\x01\n\x07\x41rticle\x12\r\n\x05title\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x10\n\x08imageUrl\x18\x04 \x01(\t\x12\x0e\n\x06source\x18\x05 \x01(\t\x12(\n\x04\x64\x61te\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x9e\x01\n\x17SetTopicArticlesRequest\x12\x42\n\rtopicArticles\x18\x01 \x03(\x0b\x32+.SetTopicArticlesRequest.TopicArticlesEntry\x1a?\n\x12TopicArticlesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x18\n\x05value\x18\x02 \x01(\x0b\x32\t.Articles:\x02\x38\x01\")\n\x17GetTopicArticlesRequest\x12\x0e\n\x06topics\x18\x01 \x03(\t2\x94\x01\n\x0e\x41rticleService\x12<\n\x10GetTopicArticles\x12\x18.GetTopicArticlesRequest\x1a\x0e.TopicArticles\x12\x44\n\x10SetTopicArticles\x12\x18.SetTopicArticlesRequest\x1a\x16.google.protobuf.EmptyB\x0fZ\rproto/articleb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'article.article_pb2', globals())
@@ -22,12 +23,24 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   DESCRIPTOR._serialized_options = b'Z\rproto/article'
-  _ARTICLE._serialized_start=54
-  _ARTICLE._serialized_end=164
-  _USERARTICLES._serialized_start=166
-  _USERARTICLES._serialized_end=224
-  _USER._serialized_start=226
-  _USER._serialized_end=248
-  _ARTICLESERVICE._serialized_start=250
-  _ARTICLESERVICE._serialized_end=361
+  _TOPICARTICLES_TOPICARTICLESENTRY._options = None
+  _TOPICARTICLES_TOPICARTICLESENTRY._serialized_options = b'8\001'
+  _SETTOPICARTICLESREQUEST_TOPICARTICLESENTRY._options = None
+  _SETTOPICARTICLESREQUEST_TOPICARTICLESENTRY._serialized_options = b'8\001'
+  _TOPICARTICLES._serialized_start=88
+  _TOPICARTICLES._serialized_end=226
+  _TOPICARTICLES_TOPICARTICLESENTRY._serialized_start=163
+  _TOPICARTICLES_TOPICARTICLESENTRY._serialized_end=226
+  _ARTICLES._serialized_start=228
+  _ARTICLES._serialized_end=266
+  _ARTICLE._serialized_start=269
+  _ARTICLE._serialized_end=403
+  _SETTOPICARTICLESREQUEST._serialized_start=406
+  _SETTOPICARTICLESREQUEST._serialized_end=564
+  _SETTOPICARTICLESREQUEST_TOPICARTICLESENTRY._serialized_start=163
+  _SETTOPICARTICLESREQUEST_TOPICARTICLESENTRY._serialized_end=226
+  _GETTOPICARTICLESREQUEST._serialized_start=566
+  _GETTOPICARTICLESREQUEST._serialized_end=607
+  _ARTICLESERVICE._serialized_start=610
+  _ARTICLESERVICE._serialized_end=758
 # @@protoc_insertion_point(module_scope)

@@ -1,9 +1,17 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "proto/article";
 
+message TopicArticles {
+        map<string, Articles> topicArticles = 1;
+}
+
+message Articles {
+        repeated Article articles = 1;
+}
 
 message Article {
         string title = 1;
@@ -11,20 +19,19 @@ message Article {
         string url = 3;
         string imageUrl = 4;
         string source = 5;
-        string interest = 6;
-}
-
-message UserArticles {
-        repeated Article articles = 1;
-        uint64 userId = 2;
-}
-
-message User {
-        uint64 userId = 1;
+        google.protobuf.Timestamp date = 6;
 }
 
 service ArticleService {
-        rpc GetArticles(User) returns (UserArticles);
-        rpc SetUserArticles(UserArticles) returns (google.protobuf.Empty);
+        rpc GetTopicArticles(GetTopicArticlesRequest) returns (TopicArticles);
+        rpc SetTopicArticles(SetTopicArticlesRequest) returns (google.protobuf.Empty);
+}
+
+message SetTopicArticlesRequest {
+        map<string, Articles> topicArticles = 1;
+}
+
+message GetTopicArticlesRequest {
+        repeated string topics = 1;
 }
 

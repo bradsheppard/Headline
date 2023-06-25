@@ -8,7 +8,7 @@ import (
 	"time"
 
 	article_pb "headline/proto/article"
-	interest_pb "headline/proto/interest"
+	topic_pb "headline/proto/topic"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -26,29 +26,32 @@ func main() {
 	arg := os.Args[1]
 
 	article_client := article_pb.NewArticleServiceClient(conn)
-	interest_client := interest_pb.NewInterestServiceClient(conn)
+	interest_client := topic_pb.NewTopicServiceClient(conn)
 
 	if arg == "GetArticles" {
-		runGetArticles(article_client)
-	} else if arg == "GetInterests" {
-		runGetInterests(interest_client)
-	} else if arg == "CreateInterest" {
+                topic := os.Args[2]
+		runGetArticles(article_client, topic)
+	} else if arg == "GetTopics" {
+		runGetTopics(interest_client)
+	} else if arg == "CreateTopic" {
 		interest := os.Args[2]
-		runCreateInterest(interest_client, interest)
-        } else if arg == "DeleteInterests" {
-                runDeleteInterests(interest_client)
+		runCreateTopic(interest_client, interest)
 	} else {
 		log.Println("Invalid command")
 	}
 }
 
-func runGetArticles(client article_pb.ArticleServiceClient) {
+func runGetArticles(client article_pb.ArticleServiceClient, topic string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	req := &article_pb.User{UserId: 1}
+	req := &article_pb.GetTopicArticlesRequest{
+                Topics: []string{
+                        topic,
+                },
+        }
 
-	res, err := client.GetArticles(ctx, req)
+	res, err := client.GetTopicArticles(ctx, req)
 
 	if err != nil {
 		log.Printf("Error getting contact: %v", err)
@@ -58,13 +61,13 @@ func runGetArticles(client article_pb.ArticleServiceClient) {
 	fmt.Printf("Got articles: %+v\n", res)
 }
 
-func runGetInterests(client interest_pb.InterestServiceClient) {
+func runGetTopics(client topic_pb.TopicServiceClient) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	req := &interest_pb.GetInterestsRequest{UserId: 1}
+	req := &topic_pb.GetTopicsRequest{UserId: 1}
 
-	res, err := client.GetInterests(ctx, req)
+	res, err := client.GetTopics(ctx, req)
 
 	if err != nil {
 		log.Printf("Error getting interests: %v", err)
@@ -73,53 +76,23 @@ func runGetInterests(client interest_pb.InterestServiceClient) {
 	fmt.Printf("Got interests: %v\n", res)
 }
 
-func runCreateInterest(client interest_pb.InterestServiceClient, interest string) {
+func runCreateTopic(client topic_pb.TopicServiceClient, interest string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	req := &interest_pb.AddInterestsRequest{
-		UserId: 1,
-		Interests: []*interest_pb.CreateInterest{
-			&interest_pb.CreateInterest{
+	req := &topic_pb.AddTopicsRequest{
+		Topics: []*topic_pb.Topic{
+			&topic_pb.Topic{
 				Name:   interest,
-				UserId: 1,
 			},
 		},
+                UserId: 1,
 	}
 
-	_, err := client.AddInterests(ctx, req)
+	_, err := client.AddTopics(ctx, req)
 
 	if err != nil {
 		log.Printf("Error creating interests: %v", err)
 	}
 }
 
-func runDeleteInterests(client interest_pb.InterestServiceClient) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	getRequest := &interest_pb.GetInterestsRequest{UserId: 1}
-
-	res, err := client.GetInterests(ctx, getRequest)
-
-        if err != nil {
-                log.Printf("Error getting interests: %v", err)
-                return
-        }
-        
-        ids := []uint64{}
-
-        for _, entry := range(res.Interests) {
-                ids = append(ids, entry.Id)
-        }
-
-        deleteRequest := &interest_pb.DeleteInterestsRequest{
-                Ids: ids,
-        }
-
-        _, err = client.DeleteInterests(ctx, deleteRequest)
-
-        if err != nil {
-                log.Printf("Error deleting interests: %v", err)
-        }
-}

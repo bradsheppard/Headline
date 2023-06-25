@@ -6,5 +6,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Name string
+        Id      int `gorm:"index"`
+	Name    string
+        Topics  []*Topic `gorm:"many2many:user_topics;"`
 }
+

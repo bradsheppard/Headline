@@ -3,7 +3,6 @@ syntax = "proto3";
 option go_package = "proto/collection";
 
 message Collection {
-        uint64 userId = 1;
-        repeated string interests = 2;
+        repeated string topics = 2;
 }
 

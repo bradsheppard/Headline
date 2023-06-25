@@ -5,6 +5,7 @@ import (
 	"headline/model"
 	"log"
 
+	"headline/proto/article"
 	pb "headline/proto/article"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -25,34 +26,56 @@ type ArticleServer struct {
 	pb.UnimplementedArticleServiceServer
 }
 
-func (s *ArticleServer) GetArticles(ctx context.Context, in *pb.User) (*pb.UserArticles, error) {
-	var articles []model.Article
-	if err := db.Where(&model.Article{UserID: int(in.UserId)}).Find(&articles).Error; err != nil {
-		log.Printf(errDatabaseFormatString, err)
-		return nil, status.Error(codes.Internal, errDatabaseString)
-	}
-
-	grpcArticles := model.ToArticleProtos(articles)
-
-	return &pb.UserArticles{
-		Articles: grpcArticles,
-		UserId:   in.UserId,
-	}, nil
+type TopicsWithArticles struct {
+        topics          []*model.Topic
+        articles        [][]*model.Article
 }
 
-func (s *ArticleServer) SetUserArticles(ctx context.Context, in *pb.UserArticles) (*empty.Empty, error) {
-	articles := model.FromArticleProtos(in.Articles, in.UserId)
+func Unwrap(m map[string]*article.Articles) TopicsWithArticles {
+        topicsWithArticles := TopicsWithArticles{
+                topics: []*model.Topic{},
+                articles: [][]*model.Article{},
+        }
+        for topic, articles := range m {
+                topicsWithArticles.topics = append(topicsWithArticles.topics, &model.Topic{Name: topic})
+                topicsWithArticles.articles = append(topicsWithArticles.articles, model.FromArticleProtos(articles.Articles))
+        }
+        return topicsWithArticles
+}
+
+func (s *ArticleServer) GetTopicArticles(ctx context.Context, in *pb.GetTopicArticlesRequest) (*pb.TopicArticles, error) {
+        var articles []model.Article
+        topics := []model.Topic{}
+
+        for _, topic := range in.Topics {
+                topics = append(topics, model.Topic{Name: topic})
+        }
+        
+        if err := db.Model(&topics).Association("Articles").Find(&articles); err != nil {
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
+        }
+
+	grpcArticles := model.ToConverter(articles)
+
+        return grpcArticles, nil
+}
+
+func (s *ArticleServer) SetTopicArticles(ctx context.Context, in *pb.SetTopicArticlesRequest) (*empty.Empty, error) {
+        unwrapped := Unwrap(in.TopicArticles)
+
+        articles := []interface{}{}
+
+        for _, article := range unwrapped.articles {
+                articles = append(articles, article)
+        }
 
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := db.Where("user_id = ?", in.UserId).Delete(&pb.Article{}).Error; err != nil {
-			return err
-		}
-
-                if len(articles) == 0 {
-                        return nil
+                if err := db.Unscoped().Model(unwrapped.topics).Association("Articles").Clear(); err != nil {
+                        return err
                 }
 
-		if err := db.Create(&articles).Error; err != nil {
+                if err := db.Model(unwrapped.topics).Association("Articles").Append(articles...); err != nil{
 			return err
 		}
 

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 import grpc
 
 from proto.article import article_pb2, article_pb2_grpc
@@ -12,23 +12,29 @@ class ArticleGrpcService(ArticleService):
         super().__init__()
         self._backend_url = backend_url
 
-    def set_user_articles(self, user_id: int, articles: List[article_pb2.Article]):
-        request = article_pb2.UserArticles(
-            articles=articles,
-            userId=user_id
+    def set_topic_articles(self, topic_articles: Dict[str, List[article_pb2.Article]]):
+        topic_articles_proto = {}
+
+        for topic, articles in topic_articles.items():
+            topic_articles_proto[topic] = article_pb2.Articles(
+                    articles=articles
+            )
+
+        request = article_pb2.SetTopicArticlesRequest(
+                topicArticles=topic_articles_proto
         )
 
         with grpc.insecure_channel(self._backend_url) as channel:
             stub = article_pb2_grpc.ArticleServiceStub(channel)
-            stub.SetUserArticles(request)
+            stub.SetTopicArticles(request)
 
-    def get_user_articles(self, user_id: int) -> List[article_pb2.Article]:
-        request = article_pb2.User(
-            userId=user_id
+    def get_topic_articles(self, topic_name: str) -> List[article_pb2.Article]:
+        request = article_pb2.GetTopicArticlesRequest(
+                topics=[topic_name]
         )
 
         with grpc.insecure_channel(self._backend_url) as channel:
             stub = article_pb2_grpc.ArticleServiceStub(channel)
-            user_articles: article_pb2.UserArticles = stub.GetArticles(request)
+            topic_articles: article_pb2.TopicArticles = stub.GetTopicArticles(request)
 
-            return list(user_articles.articles)
+            return list(topic_articles.topicArticles[topic_name].articles)

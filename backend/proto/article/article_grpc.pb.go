@@ -23,8 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArticleServiceClient interface {
-	GetArticles(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserArticles, error)
-	SetUserArticles(ctx context.Context, in *UserArticles, opts ...grpc.CallOption) (*empty.Empty, error)
+	GetTopicArticles(ctx context.Context, in *GetTopicArticlesRequest, opts ...grpc.CallOption) (*TopicArticles, error)
+	SetTopicArticles(ctx context.Context, in *SetTopicArticlesRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type articleServiceClient struct {
@@ -35,18 +35,18 @@ func NewArticleServiceClient(cc grpc.ClientConnInterface) ArticleServiceClient {
 	return &articleServiceClient{cc}
 }
 
-func (c *articleServiceClient) GetArticles(ctx context.Context, in *User, opts ...grpc.CallOption) (*UserArticles, error) {
-	out := new(UserArticles)
-	err := c.cc.Invoke(ctx, "/ArticleService/GetArticles", in, out, opts...)
+func (c *articleServiceClient) GetTopicArticles(ctx context.Context, in *GetTopicArticlesRequest, opts ...grpc.CallOption) (*TopicArticles, error) {
+	out := new(TopicArticles)
+	err := c.cc.Invoke(ctx, "/ArticleService/GetTopicArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *articleServiceClient) SetUserArticles(ctx context.Context, in *UserArticles, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *articleServiceClient) SetTopicArticles(ctx context.Context, in *SetTopicArticlesRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/ArticleService/SetUserArticles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ArticleService/SetTopicArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,8 @@ func (c *articleServiceClient) SetUserArticles(ctx context.Context, in *UserArti
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility
 type ArticleServiceServer interface {
-	GetArticles(context.Context, *User) (*UserArticles, error)
-	SetUserArticles(context.Context, *UserArticles) (*empty.Empty, error)
+	GetTopicArticles(context.Context, *GetTopicArticlesRequest) (*TopicArticles, error)
+	SetTopicArticles(context.Context, *SetTopicArticlesRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -66,11 +66,11 @@ type ArticleServiceServer interface {
 type UnimplementedArticleServiceServer struct {
 }
 
-func (UnimplementedArticleServiceServer) GetArticles(context.Context, *User) (*UserArticles, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticles not implemented")
+func (UnimplementedArticleServiceServer) GetTopicArticles(context.Context, *GetTopicArticlesRequest) (*TopicArticles, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTopicArticles not implemented")
 }
-func (UnimplementedArticleServiceServer) SetUserArticles(context.Context, *UserArticles) (*empty.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetUserArticles not implemented")
+func (UnimplementedArticleServiceServer) SetTopicArticles(context.Context, *SetTopicArticlesRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetTopicArticles not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 
@@ -85,38 +85,38 @@ func RegisterArticleServiceServer(s grpc.ServiceRegistrar, srv ArticleServiceSer
 	s.RegisterService(&ArticleService_ServiceDesc, srv)
 }
 
-func _ArticleService_GetArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+func _ArticleService_GetTopicArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTopicArticlesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ArticleServiceServer).GetArticles(ctx, in)
+		return srv.(ArticleServiceServer).GetTopicArticles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ArticleService/GetArticles",
+		FullMethod: "/ArticleService/GetTopicArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).GetArticles(ctx, req.(*User))
+		return srv.(ArticleServiceServer).GetTopicArticles(ctx, req.(*GetTopicArticlesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ArticleService_SetUserArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserArticles)
+func _ArticleService_SetTopicArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetTopicArticlesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ArticleServiceServer).SetUserArticles(ctx, in)
+		return srv.(ArticleServiceServer).SetTopicArticles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ArticleService/SetUserArticles",
+		FullMethod: "/ArticleService/SetTopicArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).SetUserArticles(ctx, req.(*UserArticles))
+		return srv.(ArticleServiceServer).SetTopicArticles(ctx, req.(*SetTopicArticlesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -129,12 +129,12 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ArticleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetArticles",
-			Handler:    _ArticleService_GetArticles_Handler,
+			MethodName: "GetTopicArticles",
+			Handler:    _ArticleService_GetTopicArticles_Handler,
 		},
 		{
-			MethodName: "SetUserArticles",
-			Handler:    _ArticleService_SetUserArticles_Handler,
+			MethodName: "SetTopicArticles",
+			Handler:    _ArticleService_SetTopicArticles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from typing import List
-from proto.collection import collection_pb2
+from collector.collection import collection_pb2
 
 from collector.messaging.producer import Producer
 
@@ -25,10 +25,10 @@ class Consumer(ABC):
 
         collection = collection_pb2.Collection.FromString(message_val)
 
-        self.notify(collection.userId, list(collection.interests))
+        self.notify(list(collection.topics))
 
         return collection
 
     @abstractmethod
-    def notify(self, user_id: int, interests: List[str]):
+    def notify(self, topics: List[str]):
         pass

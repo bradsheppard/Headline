@@ -27,7 +27,7 @@ func InitDb(dsi string) error {
 }
 
 func AutoMigrate() error {
-	return db.AutoMigrate(&model.Article{}, &model.Interest{})
+	return db.AutoMigrate(&model.Article{}, &model.Topic{})
 }
 
 type Connection struct {
