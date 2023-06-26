@@ -27,14 +27,14 @@ const createStyles = (color: string): StyleSheet.NamedStyles<any> =>
     });
 
 const Tag: React.FC<Props> = (props: Props) => {
-    const [selectedInterest, setSelectedInterest] = useStore((store) => [
-        store.selectedInterest,
-        store.setSelectedInterest,
+    const [selectedTopic, setSelectedTopic] = useStore((store) => [
+        store.selectedTopic,
+        store.setSelectedTopic,
     ]);
 
     const { colors } = useTheme();
 
-    const isSelected = selectedInterest === props.name;
+    const isSelected = selectedTopic === props.name;
     let styles;
 
     if (isSelected) {
@@ -46,7 +46,7 @@ const Tag: React.FC<Props> = (props: Props) => {
     return (
         <TouchableOpacity
             onPress={() => {
-                setSelectedInterest(props.name);
+                setSelectedTopic(props.name);
             }}
             style={[styles.container]}
         >

@@ -25,4 +25,4 @@ if __name__ == '__main__':
 
         result = next(main_consumer)
 
-        print(f'Collection run complete for {result.userId}')
+        print(f'Collection run complete for {list(result.topics)}')

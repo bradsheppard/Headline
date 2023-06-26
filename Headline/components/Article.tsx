@@ -7,7 +7,6 @@ interface ArticleProp {
     url: string;
     imageUrl: string;
     description: string;
-    interest: string;
     source: string;
 }
 

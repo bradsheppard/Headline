@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import ArticleService from './api/article';
-import InterestService from './api/interest';
+import TopicService from './api/topic';
 import { type Article } from './proto/article/article_pb';
-import { type Interest } from './proto/interest/interest_pb';
+import { type Topic } from './proto/topic/topic_pb';
 
 export interface UserInfo {
     name: string;
@@ -10,35 +10,35 @@ export interface UserInfo {
 }
 
 interface State {
-    interests: Interest[];
-    articles: Article[];
+    topics: Topic[];
+    articles: Map<string, Article[]>
 
     userInfo: UserInfo | null;
     token: string | null;
 
-    selectedInterest: string | null;
+    selectedTopic: string | null;
 
-    setSelectedInterest: (interest: string) => void;
+    setSelectedTopic: (topic: string) => void;
 
     setUserInfo: (userInfo: UserInfo) => void;
     setToken: (token: string | null) => void;
 
-    fetchInterests: (userId: number) => Promise<void>;
-    fetchArticles: (userId: number) => Promise<void>;
+    fetchTopics: (userId: number) => Promise<void>;
+    fetchArticles: (topics: string[]) => Promise<void>;
 
-    deleteInterest: (id: number) => Promise<void>;
+    deleteTopic: (topic: string) => Promise<void>;
 }
 
 const useStore = create<State>((set) => ({
-    interests: [],
-    articles: [],
-    selectedInterest: null,
+    topics: [],
+    articles: new Map<string, Article[]>(),
+    selectedTopic: null,
     token: null,
 
     userInfo: null,
 
-    setSelectedInterest: (interest: string) => {
-        set({ selectedInterest: interest });
+    setSelectedTopic: (topic: string) => {
+        set({ selectedTopic: topic });
     },
 
     setUserInfo: (userInfo: UserInfo) => {
@@ -49,20 +49,20 @@ const useStore = create<State>((set) => ({
         set({ token });
     },
 
-    fetchInterests: async (userId: number) => {
-        const interestResponse = await InterestService.getInterests(userId);
-        set({ interests: interestResponse });
+    fetchTopics: async (userId: number) => {
+        const topicResponse = await TopicService.getTopics(userId);
+        set({ topics: topicResponse });
     },
-    fetchArticles: async (userId: number) => {
-        const articlesResponse = await ArticleService.getArticles(userId);
+    fetchArticles: async (topics: string[]) => {
+        const articlesResponse = await ArticleService.getArticles(topics);
         set({ articles: articlesResponse });
     },
-    deleteInterest: async (id: number) => {
-        await InterestService.deleteInterest(id);
+    deleteTopic: async (topicName: string) => {
+        await TopicService.deleteTopic(topicName);
         set((state) => {
-            const newInterests = state.interests.filter((interest) => interest.getId() !== id);
+            const newTopics = state.topics.filter((topic) => topic.getName() !== topicName);
             return {
-                interests: newInterests,
+                topics: newTopics,
             };
         });
     },

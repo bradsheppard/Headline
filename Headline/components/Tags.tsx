@@ -3,7 +3,7 @@ import { type ListRenderItemInfo, StyleSheet, FlatList } from 'react-native';
 import Tag from './Tag';
 
 interface Props {
-    interests: string[];
+    topics: string[];
 }
 
 const style = StyleSheet.create({
@@ -21,7 +21,7 @@ const Tags: React.FC<Props> = (props: Props) => {
     return (
         <FlatList
             horizontal
-            data={props.interests}
+            data={props.topics}
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item: string) => item}
             renderItem={({ item }: ListRenderItemInfo<string>) => <Tag name={item} />}

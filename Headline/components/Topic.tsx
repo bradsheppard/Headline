@@ -5,7 +5,6 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 
 interface Props {
-    id: number;
     name: string;
 }
 
@@ -24,8 +23,8 @@ const trash = (): JSX.Element => {
     );
 };
 
-const Interest: React.FC<Props> = (props: Props) => {
-    const deleteInterest = useStore((state) => state.deleteInterest);
+const Topic: React.FC<Props> = (props: Props) => {
+    const deleteTopic = useStore((state) => state.deleteTopic);
 
     return (
         <TouchableOpacity style={styles.button}>
@@ -33,7 +32,7 @@ const Interest: React.FC<Props> = (props: Props) => {
             <TouchableOpacity
                 style={styles.delete}
                 onPress={() => {
-                    void deleteInterest(props.id);
+                    void deleteTopic(props.name);
                 }}
             >
                 {trash()}
@@ -61,4 +60,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Interest;
+export default Topic;

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Button as NativeBaseButton, FormControl, Input, Modal, VStack } from 'native-base';
-import InterestService from '../api/interest';
-import Interest from '../components/Interest';
+import TopicService from '../api/topic';
+import Topic from '../components/Topic';
 import { useStore } from '../store';
 import { Svg, Rect, Line } from 'react-native-svg';
 
@@ -67,20 +67,20 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function Interests(): JSX.Element {
-    const [interests, fetchInterests] = useStore((state) => [
-        state.interests,
-        state.fetchInterests,
+export default function Topics(): JSX.Element {
+    const [topics, fetchTopics] = useStore((state) => [
+        state.topics,
+        state.fetchTopics,
     ]);
     const [modalVisible, setModalVisible] = useState(false);
     const [inputText, setInputText] = useState('');
 
     const fetchData = async (): Promise<void> => {
-        await fetchInterests(1);
+        await fetchTopics(1);
     };
 
-    const createInterest = async (): Promise<void> => {
-        await InterestService.createInterest(inputText);
+    const createTopic = async (): Promise<void> => {
+        await TopicService.createTopic(inputText);
         await fetchData();
     };
 
@@ -91,12 +91,11 @@ export default function Interests(): JSX.Element {
     return (
         <View style={styles.container}>
             <VStack space={4} alignItems='center' style={styles.list}>
-                {interests.map((interest) => {
+                {topics.map((topic) => {
                     return (
-                        <Interest
-                            key={interest.getId()}
-                            id={interest.getId()}
-                            name={interest.getName()}
+                        <Topic
+                            key={topic.getName()}
+                            name={topic.getName()}
                         />
                     );
                 })}
@@ -112,10 +111,10 @@ export default function Interests(): JSX.Element {
             <Modal isOpen={modalVisible}>
                 <Modal.Content>
                     <Modal.CloseButton />
-                    <Modal.Header>New Interest</Modal.Header>
+                    <Modal.Header>New Topic</Modal.Header>
                     <Modal.Body>
                         <FormControl>
-                            <FormControl.Label>Interest</FormControl.Label>
+                            <FormControl.Label>Topic</FormControl.Label>
                             <Input
                                 onChangeText={(text) => {
                                     setInputText(text);
@@ -137,7 +136,7 @@ export default function Interests(): JSX.Element {
                             <NativeBaseButton
                                 onPress={() => {
                                     setModalVisible(false);
-                                    void createInterest();
+                                    void createTopic();
                                 }}
                             >
                                 Save

@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { type NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useStore } from '../store';
 import { type Article as ArticleProto } from '../proto/article/article_pb';
-import Article from '../components/Article';
 import type { RootStackParamList } from '../App';
+import Article from '../components/Article';
 
 const styles = {
     container: {
@@ -25,12 +25,11 @@ const styles = {
 type Props = NativeStackScreenProps<RootStackParamList, 'Feed'>;
 
 export default function Main(props: Props): JSX.Element {
-    const [articles, interests] = useStore((state) => [state.articles, state.interests]);
-    const [fetchArticles, fetchInterests] = useStore((state) => [
+    const [articles, topics, selectedTopic] = useStore((state) => [state.articles, state.topics, state.selectedTopic]);
+    const [fetchArticles, fetchTopics] = useStore((state) => [
         state.fetchArticles,
-        state.fetchInterests,
+        state.fetchTopics,
     ]);
-    const selectedInterest = useStore((state) => state.selectedInterest);
 
     const [filteredArticles, setFilteredArticles] = useState<ArticleProto[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -42,15 +41,29 @@ export default function Main(props: Props): JSX.Element {
 
     const fetchData = async (): Promise<void> => {
         setIsLoading(true);
-        await Promise.all([fetchArticles(1), fetchInterests(1)]);
+        await fetchTopics(1);
+        await fetchArticles(topics.map(x => x.getName()))
         setIsLoading(false);
     };
 
     const filterArticles = (): void => {
-        if (selectedInterest !== null) {
-            setFilteredArticles(articles.filter((x) => x.getInterest() === selectedInterest));
+        if (selectedTopic !== null) {
+            const selectedArticles = articles.get(selectedTopic);
+
+            if (selectedArticles === undefined) {
+                setFilteredArticles([])
+                return
+            }
+
+            setFilteredArticles(selectedArticles);
         } else {
-            setFilteredArticles(articles);
+            let allArticles: ArticleProto[] = []
+            
+            for(const [, value] of articles) {
+                allArticles = allArticles.concat(value)
+            }
+
+            setFilteredArticles(allArticles);
         }
     };
 
@@ -60,11 +73,11 @@ export default function Main(props: Props): JSX.Element {
 
     useEffect(() => {
         filterArticles();
-    }, [selectedInterest]);
+    }, [selectedTopic]);
 
     return (
         <View style={[styles.container]}>
-            <Tags interests={interests.map((x) => x.getName())} />
+            <Tags topics={topics.map((x) => x.getName())} />
             <FlatList
                 style={styles.list}
                 data={filteredArticles}
@@ -75,7 +88,6 @@ export default function Main(props: Props): JSX.Element {
                             article={{
                                 description: entry.item.getDescription(),
                                 imageUrl: entry.item.getImageurl(),
-                                interest: entry.item.getInterest(),
                                 title: entry.item.getTitle(),
                                 url: entry.item.getUrl(),
                                 source: entry.item.getSource(),
