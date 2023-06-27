@@ -83,6 +83,8 @@ export default function Main(props: Props): JSX.Element {
                 data={filteredArticles}
                 keyExtractor={() => uuid.v4() as string}
                 renderItem={(entry) => {
+                    const date = entry.item.getDate();
+
                     return (
                         <Article
                             article={{
@@ -91,6 +93,7 @@ export default function Main(props: Props): JSX.Element {
                                 title: entry.item.getTitle(),
                                 url: entry.item.getUrl(),
                                 source: entry.item.getSource(),
+                                date: date !== undefined ? date.toDate() : new Date()
                             }}
                         />
                     );

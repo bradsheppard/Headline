@@ -8,6 +8,7 @@ interface ArticleProp {
     imageUrl: string;
     description: string;
     source: string;
+    date: Date
 }
 
 interface Props {
@@ -96,7 +97,7 @@ const Article: React.FC<Props> = (props: Props) => {
             <LinearGradient colors={['#0000', '#000A', '#000']} style={styles.title}>
                 <Text style={styles.text}>{props.article.title}</Text>
                 <Text style={styles.source}>{props.article.source}</Text>
-                <Text style={styles.timestamp}>May 5, 2023</Text>
+                <Text style={styles.timestamp}>{props.article.date.toDateString()}</Text>
             </LinearGradient>
         </TouchableOpacity>
     );

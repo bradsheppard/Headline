@@ -32,7 +32,7 @@ const Topic: React.FC<Props> = (props: Props) => {
             <TouchableOpacity
                 style={styles.delete}
                 onPress={() => {
-                    void deleteTopic(props.name);
+                    void deleteTopic(props.name, 1);
                 }}
             >
                 {trash()}

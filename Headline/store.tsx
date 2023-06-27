@@ -26,7 +26,7 @@ interface State {
     fetchTopics: (userId: number) => Promise<void>;
     fetchArticles: (topics: string[]) => Promise<void>;
 
-    deleteTopic: (topic: string) => Promise<void>;
+    deleteTopic: (topic: string, userId: number) => Promise<void>;
 }
 
 const useStore = create<State>((set) => ({
@@ -57,8 +57,8 @@ const useStore = create<State>((set) => ({
         const articlesResponse = await ArticleService.getArticles(topics);
         set({ articles: articlesResponse });
     },
-    deleteTopic: async (topicName: string) => {
-        await TopicService.deleteTopic(topicName);
+    deleteTopic: async (topicName: string, userId: number) => {
+        await TopicService.deleteTopic(topicName, userId);
         set((state) => {
             const newTopics = state.topics.filter((topic) => topic.getName() !== topicName);
             return {

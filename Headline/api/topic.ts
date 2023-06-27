@@ -30,11 +30,12 @@ class TopicService {
         await topicServiceClient.addTopics(request, null);
     }
 
-    static async deleteTopic(topic: string): Promise<void> {
+    static async deleteTopic(topic: string, userId: number): Promise<void> {
         const topicServiceClient = this.getClient();
 
         const request = new RemoveTopicsRequest();
         request.setTopicnamesList([topic]);
+        request.setUserid(userId);
 
         await topicServiceClient.removeTopics(request, null);
     }
