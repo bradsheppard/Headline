@@ -30,6 +30,11 @@ class TopicServiceStub(object):
                 request_serializer=topic_dot_topic__pb2.RemoveTopicsRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
+        self.GetPendingTopics = channel.unary_stream(
+                '/TopicService/GetPendingTopics',
+                request_serializer=topic_dot_topic__pb2.GetPendingTopicsRequest.SerializeToString,
+                response_deserializer=topic_dot_topic__pb2.TopicResponse.FromString,
+                )
 
 
 class TopicServiceServicer(object):
@@ -53,6 +58,12 @@ class TopicServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetPendingTopics(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_TopicServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -70,6 +81,11 @@ def add_TopicServiceServicer_to_server(servicer, server):
                     servicer.RemoveTopics,
                     request_deserializer=topic_dot_topic__pb2.RemoveTopicsRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'GetPendingTopics': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetPendingTopics,
+                    request_deserializer=topic_dot_topic__pb2.GetPendingTopicsRequest.FromString,
+                    response_serializer=topic_dot_topic__pb2.TopicResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -129,5 +145,22 @@ class TopicService(object):
         return grpc.experimental.unary_unary(request, target, '/TopicService/RemoveTopics',
             topic_dot_topic__pb2.RemoveTopicsRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetPendingTopics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/TopicService/GetPendingTopics',
+            topic_dot_topic__pb2.GetPendingTopicsRequest.SerializeToString,
+            topic_dot_topic__pb2.TopicResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -1,4 +1,5 @@
 from google.protobuf import empty_pb2 as _empty_pb2
+from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -13,6 +14,12 @@ class AddTopicsRequest(_message.Message):
     topics: _containers.RepeatedCompositeFieldContainer[Topic]
     userId: int
     def __init__(self, topics: _Optional[_Iterable[_Union[Topic, _Mapping]]] = ..., userId: _Optional[int] = ...) -> None: ...
+
+class GetPendingTopicsRequest(_message.Message):
+    __slots__ = ["lastUpdated"]
+    LASTUPDATED_FIELD_NUMBER: _ClassVar[int]
+    lastUpdated: _timestamp_pb2.Timestamp
+    def __init__(self, lastUpdated: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class GetTopicsRequest(_message.Message):
     __slots__ = ["userId"]
@@ -29,10 +36,12 @@ class RemoveTopicsRequest(_message.Message):
     def __init__(self, topicNames: _Optional[_Iterable[str]] = ..., userId: _Optional[int] = ...) -> None: ...
 
 class Topic(_message.Message):
-    __slots__ = ["name"]
+    __slots__ = ["lastUpdated", "name"]
+    LASTUPDATED_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
+    lastUpdated: _timestamp_pb2.Timestamp
     name: str
-    def __init__(self, name: _Optional[str] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., lastUpdated: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class TopicResponse(_message.Message):
     __slots__ = ["topics"]

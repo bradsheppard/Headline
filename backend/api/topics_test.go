@@ -3,11 +3,13 @@ package api
 import (
 	"context"
 	"testing"
+	"time"
 
 	"headline/model"
 
 	pb "headline/proto/topic"
 
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -91,7 +93,7 @@ func TestTopic_GetTopics_Empty(t *testing.T) {
 		err: nil,
 	}
 
-        checkEqual(t,&expected, topics)
+	checkEqual(t, &expected, topics)
 }
 
 func TestTopic_GetTopics_NotEmpty(t *testing.T) {
@@ -110,10 +112,10 @@ func TestTopic_GetTopics_NotEmpty(t *testing.T) {
 	_, err = client.AddTopics(ctx, &pb.AddTopicsRequest{
 		Topics: []*pb.Topic{
 			&pb.Topic{
-				Name:   "Topic 1",
+				Name: "Topic 1",
 			},
 		},
-                UserId: 10,
+		UserId: 10,
 	})
 
 	if err != nil {
@@ -124,10 +126,10 @@ func TestTopic_GetTopics_NotEmpty(t *testing.T) {
 	_, err = client.AddTopics(ctx, &pb.AddTopicsRequest{
 		Topics: []*pb.Topic{
 			&pb.Topic{
-				Name:   "Topic 2",
+				Name: "Topic 2",
 			},
 		},
-                UserId: 20,
+		UserId: 20,
 	})
 
 	topics, err := client.GetTopics(ctx, &pb.GetTopicsRequest{UserId: 10})
@@ -140,14 +142,13 @@ func TestTopic_GetTopics_NotEmpty(t *testing.T) {
 	expected := topicExpectation{
 		out: []*pb.Topic{
 			&pb.Topic{
-				Name:   "Topic 1",
+				Name: "Topic 1",
 			},
 		},
 		err: nil,
-
 	}
 
-        checkEqual(t, &expected, topics)
+	checkEqual(t, &expected, topics)
 }
 
 func TestTopic_DeleteTopics(t *testing.T) {
@@ -166,24 +167,24 @@ func TestTopic_DeleteTopics(t *testing.T) {
 	_, err = client.AddTopics(ctx, &pb.AddTopicsRequest{
 		Topics: []*pb.Topic{
 			&pb.Topic{
-				Name:   "Topic 1",
+				Name: "Topic 1",
 			},
 			&pb.Topic{
-				Name:   "Topic 2",
+				Name: "Topic 2",
 			},
 		},
-                UserId: 20,
+		UserId: 20,
 	})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
 		t.FailNow()
 	}
-        
-        _, err = client.RemoveTopics(ctx, &pb.RemoveTopicsRequest{
-                TopicNames: []string{"Topic 1"},
-                UserId: 20,
-        })
+
+	_, err = client.RemoveTopics(ctx, &pb.RemoveTopicsRequest{
+		TopicNames: []string{"Topic 1"},
+		UserId:     20,
+	})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -200,12 +201,66 @@ func TestTopic_DeleteTopics(t *testing.T) {
 	expected := topicExpectation{
 		out: []*pb.Topic{
 			&pb.Topic{
-				Name:   "Topic 2",
+				Name: "Topic 2",
 			},
 		},
 		err: nil,
-
 	}
 
-        checkEqual(t, &expected, topics)
+	checkEqual(t, &expected, topics)
+}
+
+func TestTopic_GetPendingTopics(t *testing.T) {
+	ctx := context.Background()
+	setup, err := setupTopic(ctx)
+
+	defer setup.closer()
+
+	if err != nil {
+		t.Errorf("Setup error: %v", err)
+		t.FailNow()
+	}
+
+	client := *setup.client
+
+	_, err = client.AddTopics(ctx, &pb.AddTopicsRequest{
+		Topics: []*pb.Topic{
+			&pb.Topic{
+				Name: "Topic 1",
+			},
+			&pb.Topic{
+				Name: "Topic 2",
+			},
+		},
+		UserId: 21,
+	})
+
+	currentTime := time.Now()
+	streamClient, err := client.GetPendingTopics(ctx, &pb.GetPendingTopicsRequest{LastUpdated: timestamppb.New(currentTime)})
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	expected := topicExpectation{
+		out: []*pb.Topic{
+			&pb.Topic{
+				Name: "Topic 1",
+			},
+			&pb.Topic{
+				Name: "Topic 2",
+			},
+		},
+		err: nil,
+	}
+
+	topics, err := streamClient.Recv()
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	checkEqual(t, &expected, topics)
 }

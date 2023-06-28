@@ -12,9 +12,9 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"github.com/golang/protobuf/ptypes/empty"
 )
 
 type TopicServer struct {
@@ -22,15 +22,15 @@ type TopicServer struct {
 }
 
 func repeated(str uint64, n int) []interface{} {
-        arr := make([]interface{}, n)
+	arr := make([]interface{}, n)
 
-        for i := 0; i < n; i++ {
-                arr[i] = &model.User{
-                        Id: int(str),
-                }
-        }
+	for i := 0; i < n; i++ {
+		arr[i] = &model.User{
+			Id: int(str),
+		}
+	}
 
-        return arr
+	return arr
 }
 
 func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsRequest) (*pb.TopicResponse, error) {
@@ -60,7 +60,7 @@ func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsR
 	}
 
 	collection := collection.Collection{
-		Topics:    topicsToCollect,
+		Topics: topicsToCollect,
 	}
 
 	err = StartCollection(ctx, &collection)
@@ -78,10 +78,10 @@ func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsR
 func (topicServer *TopicServer) GetTopics(ctx context.Context, in *pb.GetTopicsRequest) (*pb.TopicResponse, error) {
 	var topics []*model.Topic
 
-        if err := db.Table("topics").Joins("join user_topics on topics.name = user_topics.topic_name").Joins("join users on user_topics.user_id = users.id").Where("users.id = ?", in.UserId).Select("topics.*").Scan(&topics).Error; err != nil {
+	if err := db.Table("topics").Joins("join user_topics on topics.name = user_topics.topic_name").Joins("join users on user_topics.user_id = users.id").Where("users.id = ?", in.UserId).Select("topics.*").Scan(&topics).Error; err != nil {
 		log.Printf(errDatabaseFormatString, err)
 		return nil, status.Error(codes.Internal, errDatabaseString)
-        }
+	}
 
 	grpcTopics := model.ToTopicProtos(topics)
 
@@ -91,22 +91,42 @@ func (topicServer *TopicServer) GetTopics(ctx context.Context, in *pb.GetTopicsR
 }
 
 func (topicServer *TopicServer) RemoveTopics(ctx context.Context, in *pb.RemoveTopicsRequest) (*empty.Empty, error) {
-        topics := []*model.Topic{}
+	topics := []*model.Topic{}
 
-        for _, topicName := range in.TopicNames {
-                topic := &model.Topic{
-                        Name: topicName,
-                }
+	for _, topicName := range in.TopicNames {
+		topic := &model.Topic{
+			Name: topicName,
+		}
 
-                topics = append(topics, topic)
-        }
+		topics = append(topics, topic)
+	}
 
-        err := db.Model(topics).Association("Users").Delete(repeated(in.UserId, len(topics))...)
+	err := db.Model(topics).Association("Users").Delete(repeated(in.UserId, len(topics))...)
 
-        if err != nil {
+	if err != nil {
 		log.Printf(errMessagingFormatString, err)
 		return nil, status.Error(codes.Internal, errMessagingString)
-        }
+	}
 
-        return &empty.Empty{}, nil
+	return &empty.Empty{}, nil
+}
+
+func (topicServer *TopicServer) GetPendingTopics(in *pb.GetPendingTopicsRequest, stream pb.TopicService_GetPendingTopicsServer) error {
+	topics := []*model.Topic{}
+
+	result := db.Where("updated_at < ?", in.LastUpdated.AsTime()).FindInBatches(&topics, 1000, func(tx *gorm.DB, batch int) error {
+		grpcTopics := model.ToTopicProtos(topics)
+		stream.Send(&pb.TopicResponse{
+			Topics: grpcTopics,
+		})
+
+		return nil
+	})
+
+	if result.Error != nil {
+		log.Printf(errDatabaseFormatString, result.Error)
+		return status.Error(codes.Internal, errDatabaseString)
+	}
+
+	return nil
 }

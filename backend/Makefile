@@ -31,6 +31,10 @@ test:
 	go clean -testcache
 	go test ./...
 
+.PHONY: fmt
+fmt:
+	go fmt ./...
+
 .PHONY: build_envoy
 build_envoy:
 	docker build -t grpcweb/envoy -f Dockerfile_envoy .

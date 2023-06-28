@@ -29,7 +29,7 @@ func main() {
 	interest_client := topic_pb.NewTopicServiceClient(conn)
 
 	if arg == "GetArticles" {
-                topic := os.Args[2]
+		topic := os.Args[2]
 		runGetArticles(article_client, topic)
 	} else if arg == "GetTopics" {
 		runGetTopics(interest_client)
@@ -46,10 +46,10 @@ func runGetArticles(client article_pb.ArticleServiceClient, topic string) {
 	defer cancel()
 
 	req := &article_pb.GetTopicArticlesRequest{
-                Topics: []string{
-                        topic,
-                },
-        }
+		Topics: []string{
+			topic,
+		},
+	}
 
 	res, err := client.GetTopicArticles(ctx, req)
 
@@ -83,10 +83,10 @@ func runCreateTopic(client topic_pb.TopicServiceClient, interest string) {
 	req := &topic_pb.AddTopicsRequest{
 		Topics: []*topic_pb.Topic{
 			&topic_pb.Topic{
-				Name:   interest,
+				Name: interest,
 			},
 		},
-                UserId: 1,
+		UserId: 1,
 	}
 
 	_, err := client.AddTopics(ctx, req)
@@ -95,4 +95,3 @@ func runCreateTopic(client topic_pb.TopicServiceClient, interest string) {
 		log.Printf("Error creating interests: %v", err)
 	}
 }
-

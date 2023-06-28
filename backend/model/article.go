@@ -13,51 +13,52 @@ type Article struct {
 	Url         string
 	ImageUrl    string
 	Source      string
-        TopicName   string
+	TopicName   string
 }
+
 func ToConverter(articles []Article) *pb.TopicArticles {
-        topicArticles := &pb.TopicArticles{}
-        topicArticles.TopicArticles = map[string]*pb.Articles{}
+	topicArticles := &pb.TopicArticles{}
+	topicArticles.TopicArticles = map[string]*pb.Articles{}
 
 	for _, article := range articles {
-                if _, ok := topicArticles.TopicArticles[article.TopicName]; !ok {
-                        topicArticles.TopicArticles[article.TopicName] = &pb.Articles{}
-                }
-                articleList := topicArticles.TopicArticles[article.TopicName].Articles
+		if _, ok := topicArticles.TopicArticles[article.TopicName]; !ok {
+			topicArticles.TopicArticles[article.TopicName] = &pb.Articles{}
+		}
+		articleList := topicArticles.TopicArticles[article.TopicName].Articles
 
-                protoArticle := &pb.Article{
-                        Title:       article.Title,
-                        Description: article.Description,
-                        Url:         article.Url,
-                        ImageUrl:    article.ImageUrl,
-                        Source:      article.Source,
-                }
+		protoArticle := &pb.Article{
+			Title:       article.Title,
+			Description: article.Description,
+			Url:         article.Url,
+			ImageUrl:    article.ImageUrl,
+			Source:      article.Source,
+		}
 
-                articleList = append(articleList, protoArticle)
-                topicArticles.TopicArticles[article.TopicName].Articles = articleList
+		articleList = append(articleList, protoArticle)
+		topicArticles.TopicArticles[article.TopicName].Articles = articleList
 	}
 
 	return topicArticles
 }
 
 func ToTopicArticleProto(topics []Topic) *pb.TopicArticles {
-        topicArticles := &pb.TopicArticles{}
-        topicArticles.TopicArticles = map[string]*pb.Articles{}
+	topicArticles := &pb.TopicArticles{}
+	topicArticles.TopicArticles = map[string]*pb.Articles{}
 
 	for _, topic := range topics {
-                topicArticles.TopicArticles[topic.Name] = &pb.Articles{}
-                articleList := topicArticles.TopicArticles[topic.Name].Articles
+		topicArticles.TopicArticles[topic.Name] = &pb.Articles{}
+		articleList := topicArticles.TopicArticles[topic.Name].Articles
 
-                for _, article := range topic.Articles {
-                        protoArticle := &pb.Article{
-                                Title:       article.Title,
-                                Description: article.Description,
-                                Url:         article.Url,
-                                ImageUrl:    article.ImageUrl,
-                                Source:      article.Source,
-                        }
-		        articleList = append(articleList, protoArticle)
-                }
+		for _, article := range topic.Articles {
+			protoArticle := &pb.Article{
+				Title:       article.Title,
+				Description: article.Description,
+				Url:         article.Url,
+				ImageUrl:    article.ImageUrl,
+				Source:      article.Source,
+			}
+			articleList = append(articleList, protoArticle)
+		}
 	}
 
 	return topicArticles
@@ -79,4 +80,3 @@ func FromArticleProtos(protoArticles []*pb.Article) []*Article {
 
 	return articles
 }
-

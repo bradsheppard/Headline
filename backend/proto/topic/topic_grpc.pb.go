@@ -26,6 +26,7 @@ type TopicServiceClient interface {
 	AddTopics(ctx context.Context, in *AddTopicsRequest, opts ...grpc.CallOption) (*TopicResponse, error)
 	GetTopics(ctx context.Context, in *GetTopicsRequest, opts ...grpc.CallOption) (*TopicResponse, error)
 	RemoveTopics(ctx context.Context, in *RemoveTopicsRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	GetPendingTopics(ctx context.Context, in *GetPendingTopicsRequest, opts ...grpc.CallOption) (TopicService_GetPendingTopicsClient, error)
 }
 
 type topicServiceClient struct {
@@ -63,6 +64,38 @@ func (c *topicServiceClient) RemoveTopics(ctx context.Context, in *RemoveTopicsR
 	return out, nil
 }
 
+func (c *topicServiceClient) GetPendingTopics(ctx context.Context, in *GetPendingTopicsRequest, opts ...grpc.CallOption) (TopicService_GetPendingTopicsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TopicService_ServiceDesc.Streams[0], "/TopicService/GetPendingTopics", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &topicServiceGetPendingTopicsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type TopicService_GetPendingTopicsClient interface {
+	Recv() (*TopicResponse, error)
+	grpc.ClientStream
+}
+
+type topicServiceGetPendingTopicsClient struct {
+	grpc.ClientStream
+}
+
+func (x *topicServiceGetPendingTopicsClient) Recv() (*TopicResponse, error) {
+	m := new(TopicResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // TopicServiceServer is the server API for TopicService service.
 // All implementations must embed UnimplementedTopicServiceServer
 // for forward compatibility
@@ -70,6 +103,7 @@ type TopicServiceServer interface {
 	AddTopics(context.Context, *AddTopicsRequest) (*TopicResponse, error)
 	GetTopics(context.Context, *GetTopicsRequest) (*TopicResponse, error)
 	RemoveTopics(context.Context, *RemoveTopicsRequest) (*empty.Empty, error)
+	GetPendingTopics(*GetPendingTopicsRequest, TopicService_GetPendingTopicsServer) error
 	mustEmbedUnimplementedTopicServiceServer()
 }
 
@@ -85,6 +119,9 @@ func (UnimplementedTopicServiceServer) GetTopics(context.Context, *GetTopicsRequ
 }
 func (UnimplementedTopicServiceServer) RemoveTopics(context.Context, *RemoveTopicsRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveTopics not implemented")
+}
+func (UnimplementedTopicServiceServer) GetPendingTopics(*GetPendingTopicsRequest, TopicService_GetPendingTopicsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetPendingTopics not implemented")
 }
 func (UnimplementedTopicServiceServer) mustEmbedUnimplementedTopicServiceServer() {}
 
@@ -153,6 +190,27 @@ func _TopicService_RemoveTopics_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TopicService_GetPendingTopics_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetPendingTopicsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TopicServiceServer).GetPendingTopics(m, &topicServiceGetPendingTopicsServer{stream})
+}
+
+type TopicService_GetPendingTopicsServer interface {
+	Send(*TopicResponse) error
+	grpc.ServerStream
+}
+
+type topicServiceGetPendingTopicsServer struct {
+	grpc.ServerStream
+}
+
+func (x *topicServiceGetPendingTopicsServer) Send(m *TopicResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // TopicService_ServiceDesc is the grpc.ServiceDesc for TopicService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -173,6 +231,12 @@ var TopicService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TopicService_RemoveTopics_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetPendingTopics",
+			Handler:       _TopicService_GetPendingTopics_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "proto/topic/topic.proto",
 }

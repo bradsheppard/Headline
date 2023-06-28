@@ -4,16 +4,17 @@ import (
 	pb "headline/proto/topic"
 	"time"
 
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
 type Topic struct {
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt `gorm:"index"`
-	Name            string `gorm:"primaryKey"`
-        Articles        []Article `gorm:"foreignKey:TopicName;references:Name"`
-        Users           []User `gorm:"many2many:user_topics;"`
+	CreatedAt time.Time
+	UpdatedAt time.Time      `gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Name      string         `gorm:"primaryKey"`
+	Articles  []Article      `gorm:"foreignKey:TopicName;references:Name"`
+	Users     []User         `gorm:"many2many:user_topics;"`
 }
 
 func ToTopicProtos(topics []*Topic) []*pb.Topic {
@@ -21,7 +22,8 @@ func ToTopicProtos(topics []*Topic) []*pb.Topic {
 
 	for _, topic := range topics {
 		protoTopic := &pb.Topic{
-			Name:   topic.Name,
+			Name:        topic.Name,
+			LastUpdated: timestamppb.New(topic.UpdatedAt),
 		}
 		protoTopics = append(protoTopics, protoTopic)
 	}
@@ -34,7 +36,8 @@ func FromTopicProtos(protoTopics []*pb.Topic) []*Topic {
 
 	for _, protoTopic := range protoTopics {
 		topic := &Topic{
-			Name:   protoTopic.Name,
+			Name:      protoTopic.Name,
+			UpdatedAt: protoTopic.LastUpdated.AsTime(),
 		}
 		topics = append(topics, topic)
 	}

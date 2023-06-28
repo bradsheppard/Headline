@@ -1,12 +1,14 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "proto/topic";
 
 
 message Topic {
         string name = 1;
+        google.protobuf.Timestamp lastUpdated = 2;
 }
 
 message TopicResponse {
@@ -15,6 +17,10 @@ message TopicResponse {
 
 message GetTopicsRequest {
         uint64 userId = 1; 
+}
+
+message GetPendingTopicsRequest {
+        google.protobuf.Timestamp lastUpdated = 1;
 }
 
 message AddTopicsRequest {
@@ -31,5 +37,6 @@ service TopicService {
         rpc AddTopics(AddTopicsRequest) returns (TopicResponse);
         rpc GetTopics(GetTopicsRequest) returns (TopicResponse);
         rpc RemoveTopics(RemoveTopicsRequest) returns (google.protobuf.Empty);
+        rpc GetPendingTopics(GetPendingTopicsRequest) returns (stream TopicResponse);
 }
 

@@ -1,11 +1,17 @@
 import * as jspb from 'google-protobuf'
 
 import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
+import * as google_protobuf_timestamp_pb from 'google-protobuf/google/protobuf/timestamp_pb';
 
 
 export class Topic extends jspb.Message {
   getName(): string;
   setName(value: string): Topic;
+
+  getLastupdated(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setLastupdated(value?: google_protobuf_timestamp_pb.Timestamp): Topic;
+  hasLastupdated(): boolean;
+  clearLastupdated(): Topic;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Topic.AsObject;
@@ -18,6 +24,7 @@ export class Topic extends jspb.Message {
 export namespace Topic {
   export type AsObject = {
     name: string,
+    lastupdated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
 
@@ -56,6 +63,26 @@ export class GetTopicsRequest extends jspb.Message {
 export namespace GetTopicsRequest {
   export type AsObject = {
     userid: number,
+  }
+}
+
+export class GetPendingTopicsRequest extends jspb.Message {
+  getLastupdated(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setLastupdated(value?: google_protobuf_timestamp_pb.Timestamp): GetPendingTopicsRequest;
+  hasLastupdated(): boolean;
+  clearLastupdated(): GetPendingTopicsRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetPendingTopicsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetPendingTopicsRequest): GetPendingTopicsRequest.AsObject;
+  static serializeBinaryToWriter(message: GetPendingTopicsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetPendingTopicsRequest;
+  static deserializeBinaryFromReader(message: GetPendingTopicsRequest, reader: jspb.BinaryReader): GetPendingTopicsRequest;
+}
+
+export namespace GetPendingTopicsRequest {
+  export type AsObject = {
+    lastupdated?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
 

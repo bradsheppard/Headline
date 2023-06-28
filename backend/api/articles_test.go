@@ -4,13 +4,13 @@ import (
 	"context"
 	"log"
 	"os"
+	"reflect"
 	"testing"
-        "reflect"
 
 	"headline/model"
 
 	article_pb "headline/proto/article"
-        topic_pb "headline/proto/topic"
+	topic_pb "headline/proto/topic"
 
 	"gorm.io/gorm"
 )
@@ -36,12 +36,12 @@ type articleExpectation struct {
 
 type SetupArticleResult struct {
 	articleClient *article_pb.ArticleServiceClient
-	topicClient *topic_pb.TopicServiceClient
-	closer func()
+	topicClient   *topic_pb.TopicServiceClient
+	closer        func()
 }
 
 func setupArticles(ctx context.Context) (*SetupArticleResult, error) {
-        err := db.AutoMigrate(&model.Article{}, &model.Topic{})
+	err := db.AutoMigrate(&model.Topic{}, &model.Article{})
 
 	if err != nil {
 		return nil, err
@@ -69,8 +69,8 @@ func setupArticles(ctx context.Context) (*SetupArticleResult, error) {
 
 	return &SetupArticleResult{
 		articleClient: &article_client,
-                topicClient: &topic_client,
-		closer: conn.closer,
+		topicClient:   &topic_client,
+		closer:        conn.closer,
 	}, nil
 }
 
@@ -88,8 +88,8 @@ func TestArticle_GetTopicArticles_Empty(t *testing.T) {
 	client := *setup.articleClient
 
 	req := &article_pb.GetTopicArticlesRequest{
-                Topics: []string{"Topic 1", "Topic 2"},
-        }
+		Topics: []string{"Topic 1", "Topic 2"},
+	}
 
 	topicArticles, err := client.GetTopicArticles(ctx, req)
 
@@ -123,19 +123,19 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 	}
 
 	articleClient := *setup.articleClient
-        topicClient := *setup.topicClient
-        
-        _, err = topicClient.AddTopics(ctx, &topic_pb.AddTopicsRequest{
-                Topics: []*topic_pb.Topic{
-                        &topic_pb.Topic{
-                                Name: "Topic 3",
-                        },
-                        &topic_pb.Topic{
-                                Name: "Topic 4",
-                        },
-                },
-                UserId: 1,
-        })
+	topicClient := *setup.topicClient
+
+	_, err = topicClient.AddTopics(ctx, &topic_pb.AddTopicsRequest{
+		Topics: []*topic_pb.Topic{
+			&topic_pb.Topic{
+				Name: "Topic 3",
+			},
+			&topic_pb.Topic{
+				Name: "Topic 4",
+			},
+		},
+		UserId: 1,
+	})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -143,44 +143,44 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 	}
 
 	_, err = articleClient.SetTopicArticles(ctx, &article_pb.SetTopicArticlesRequest{
-                TopicArticles: map[string]*article_pb.Articles{
-                        "Topic 3": &article_pb.Articles{
-                                Articles: []*article_pb.Article{
-                                        &article_pb.Article{
-                                                Title:       "New Title 1",
-                                                Description: "New Description 1",
-                                                Url:         "New Url 1",
-                                                ImageUrl:    "New Image Url 1",
-                                                Source:      "New Source 1",
-                                        },
-                                        &article_pb.Article{
-                                                Title:       "New Title 2",
-                                                Description: "New Description 2",
-                                                Url:         "New Url 2",
-                                                ImageUrl:    "New Image Url 2",
-                                                Source:      "New Source 2",
-                                        },
-                                },
-                        },
-                        "Topic 4": &article_pb.Articles{
-                                Articles: []*article_pb.Article{
-                                        &article_pb.Article{
-                                                Title:       "New Title 3",
-                                                Description: "New Description 3",
-                                                Url:         "New Url 3",
-                                                ImageUrl:    "New Image Url 3",
-                                                Source:      "New Source 3",
-                                        },
-                                        &article_pb.Article{
-                                                Title:       "New Title 4",
-                                                Description: "New Description 4",
-                                                Url:         "New Url 4",
-                                                ImageUrl:    "New Image Url 4",
-                                                Source:      "New Source 4",
-                                        },
-                                },
-                        },
-                },
+		TopicArticles: map[string]*article_pb.Articles{
+			"Topic 3": &article_pb.Articles{
+				Articles: []*article_pb.Article{
+					&article_pb.Article{
+						Title:       "New Title 1",
+						Description: "New Description 1",
+						Url:         "New Url 1",
+						ImageUrl:    "New Image Url 1",
+						Source:      "New Source 1",
+					},
+					&article_pb.Article{
+						Title:       "New Title 2",
+						Description: "New Description 2",
+						Url:         "New Url 2",
+						ImageUrl:    "New Image Url 2",
+						Source:      "New Source 2",
+					},
+				},
+			},
+			"Topic 4": &article_pb.Articles{
+				Articles: []*article_pb.Article{
+					&article_pb.Article{
+						Title:       "New Title 3",
+						Description: "New Description 3",
+						Url:         "New Url 3",
+						ImageUrl:    "New Image Url 3",
+						Source:      "New Source 3",
+					},
+					&article_pb.Article{
+						Title:       "New Title 4",
+						Description: "New Description 4",
+						Url:         "New Url 4",
+						ImageUrl:    "New Image Url 4",
+						Source:      "New Source 4",
+					},
+				},
+			},
+		},
 	})
 
 	if err != nil {
@@ -196,28 +196,28 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 	}
 
 	expected := articleExpectation{
-                out: &article_pb.TopicArticles{
-                        TopicArticles: map[string]*article_pb.Articles{
-                                "Topic 3": &article_pb.Articles{
-                                        Articles: []*article_pb.Article{
-                                                &article_pb.Article{
-                                                        Title:       "New Title 1",
-                                                        Description: "New Description 1",
-                                                        Url:         "New Url 1",
-                                                        ImageUrl:    "New Image Url 1",
-                                                        Source:      "New Source 1",
-                                                },
-                                                &article_pb.Article{
-                                                        Title:       "New Title 2",
-                                                        Description: "New Description 2",
-                                                        Url:         "New Url 2",
-                                                        ImageUrl:    "New Image Url 2",
-                                                        Source:      "New Source 2",
-                                                },
-                                        },
-                                },
-                        },
-                },
+		out: &article_pb.TopicArticles{
+			TopicArticles: map[string]*article_pb.Articles{
+				"Topic 3": &article_pb.Articles{
+					Articles: []*article_pb.Article{
+						&article_pb.Article{
+							Title:       "New Title 1",
+							Description: "New Description 1",
+							Url:         "New Url 1",
+							ImageUrl:    "New Image Url 1",
+							Source:      "New Source 1",
+						},
+						&article_pb.Article{
+							Title:       "New Title 2",
+							Description: "New Description 2",
+							Url:         "New Url 2",
+							ImageUrl:    "New Image Url 2",
+							Source:      "New Source 2",
+						},
+					},
+				},
+			},
+		},
 		err: nil,
 	}
 
@@ -238,4 +238,3 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 		}
 	}
 }
-

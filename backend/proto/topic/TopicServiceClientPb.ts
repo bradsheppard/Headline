@@ -169,5 +169,27 @@ export class TopicServiceClient {
     this.methodDescriptorRemoveTopics);
   }
 
+  methodDescriptorGetPendingTopics = new grpcWeb.MethodDescriptor(
+    '/TopicService/GetPendingTopics',
+    grpcWeb.MethodType.SERVER_STREAMING,
+    proto_topic_topic_pb.GetPendingTopicsRequest,
+    proto_topic_topic_pb.TopicResponse,
+    (request: proto_topic_topic_pb.GetPendingTopicsRequest) => {
+      return request.serializeBinary();
+    },
+    proto_topic_topic_pb.TopicResponse.deserializeBinary
+  );
+
+  getPendingTopics(
+    request: proto_topic_topic_pb.GetPendingTopicsRequest,
+    metadata?: grpcWeb.Metadata): grpcWeb.ClientReadableStream<proto_topic_topic_pb.TopicResponse> {
+    return this.client_.serverStreaming(
+      this.hostname_ +
+        '/TopicService/GetPendingTopics',
+      request,
+      metadata || {},
+      this.methodDescriptorGetPendingTopics);
+  }
+
 }
 
