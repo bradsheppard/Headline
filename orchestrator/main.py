@@ -15,7 +15,9 @@ if __name__ == '__main__':
     kafka_host = os.environ['KAFKA_HOST']
     kafka_topic = os.environ['KAFKA_TOPIC']
 
-    search_time = datetime.datetime.now() + datetime.timedelta(hours=-6)
+    hour_offset = int(os.environ['HOUR_OFFSET'])
+
+    search_time = datetime.datetime.now() + datetime.timedelta(hours=hour_offset)
     search_time_proto = Timestamp()
     search_time_proto.FromDatetime(dt=search_time)
 
@@ -27,6 +29,8 @@ if __name__ == '__main__':
         request = topic_pb2.GetPendingTopicsRequest(
                 lastUpdated=search_time_proto
         )
+
+        print('Requesting pending topics...')
 
         topicResponse: topic_pb2.TopicResponse
         for topicResponse in stub.GetPendingTopics(request):

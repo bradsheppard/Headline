@@ -24,6 +24,10 @@ backend:
 collector:
 	helm upgrade --install collector collector -f collector/prod_values.yaml
 
+.PHONY: orchestrator
+orchestrator:
+	helm upgrade --install orchestrator orchestrator -f orchestrator/prod_values.yaml
+
 .PHONY: kafka
 kafka:
 	helm upgrade --install kafka kafka

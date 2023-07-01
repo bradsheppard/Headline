@@ -41,8 +41,9 @@ spec:
               volumeMounts:
                 - name: flags
                   mountPath: /tmp/flags
-            - image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
-              name: collector
+            - image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              name: orchestrator
               env:
                 - name: BACKEND_URL
                   value: {{ .Values.backendUrl }}
@@ -50,6 +51,8 @@ spec:
                   value: {{ .Values.kafkaHost }}
                 - name: KAFKA_TOPIC
                   value: {{ .Values.kafkaTopic }}
+                - name: HOUR_OFFSET
+                  value: "{{ .Values.hourOffset }}"
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
               command:
