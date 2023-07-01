@@ -1,0 +1,23 @@
+image:
+  repository: dev.local/orchestrator
+  pullPolicy: IfNotPresent
+  version: 1.0.0
+
+cron:
+  backoffLimit: 3
+  schedule: "@every 6h"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+
+backendUrl: orchestrator:80
+kafkaHost: queue-kafka-bootstrap:9092
+kafkaTopic: start-collection
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
