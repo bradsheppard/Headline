@@ -43,26 +43,26 @@ export class ArticleServiceClient {
   methodDescriptorGetTopicArticles = new grpcWeb.MethodDescriptor(
     '/ArticleService/GetTopicArticles',
     grpcWeb.MethodType.UNARY,
-    proto_article_article_pb.GetTopicArticlesRequest,
+    proto_article_article_pb.TopicNames,
     proto_article_article_pb.TopicArticles,
-    (request: proto_article_article_pb.GetTopicArticlesRequest) => {
+    (request: proto_article_article_pb.TopicNames) => {
       return request.serializeBinary();
     },
     proto_article_article_pb.TopicArticles.deserializeBinary
   );
 
   getTopicArticles(
-    request: proto_article_article_pb.GetTopicArticlesRequest,
+    request: proto_article_article_pb.TopicNames,
     metadata: grpcWeb.Metadata | null): Promise<proto_article_article_pb.TopicArticles>;
 
   getTopicArticles(
-    request: proto_article_article_pb.GetTopicArticlesRequest,
+    request: proto_article_article_pb.TopicNames,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
                response: proto_article_article_pb.TopicArticles) => void): grpcWeb.ClientReadableStream<proto_article_article_pb.TopicArticles>;
 
   getTopicArticles(
-    request: proto_article_article_pb.GetTopicArticlesRequest,
+    request: proto_article_article_pb.TopicNames,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
                response: proto_article_article_pb.TopicArticles) => void) {
@@ -86,26 +86,26 @@ export class ArticleServiceClient {
   methodDescriptorSetTopicArticles = new grpcWeb.MethodDescriptor(
     '/ArticleService/SetTopicArticles',
     grpcWeb.MethodType.UNARY,
-    proto_article_article_pb.SetTopicArticlesRequest,
+    proto_article_article_pb.TopicArticles,
     google_protobuf_empty_pb.Empty,
-    (request: proto_article_article_pb.SetTopicArticlesRequest) => {
+    (request: proto_article_article_pb.TopicArticles) => {
       return request.serializeBinary();
     },
     google_protobuf_empty_pb.Empty.deserializeBinary
   );
 
   setTopicArticles(
-    request: proto_article_article_pb.SetTopicArticlesRequest,
+    request: proto_article_article_pb.TopicArticles,
     metadata: grpcWeb.Metadata | null): Promise<google_protobuf_empty_pb.Empty>;
 
   setTopicArticles(
-    request: proto_article_article_pb.SetTopicArticlesRequest,
+    request: proto_article_article_pb.TopicArticles,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
                response: google_protobuf_empty_pb.Empty) => void): grpcWeb.ClientReadableStream<google_protobuf_empty_pb.Empty>;
 
   setTopicArticles(
-    request: proto_article_article_pb.SetTopicArticlesRequest,
+    request: proto_article_article_pb.TopicArticles,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
                response: google_protobuf_empty_pb.Empty) => void) {
@@ -124,6 +124,92 @@ export class ArticleServiceClient {
     request,
     metadata || {},
     this.methodDescriptorSetTopicArticles);
+  }
+
+  methodDescriptorGetTrendingArticles = new grpcWeb.MethodDescriptor(
+    '/ArticleService/GetTrendingArticles',
+    grpcWeb.MethodType.UNARY,
+    google_protobuf_empty_pb.Empty,
+    proto_article_article_pb.Articles,
+    (request: google_protobuf_empty_pb.Empty) => {
+      return request.serializeBinary();
+    },
+    proto_article_article_pb.Articles.deserializeBinary
+  );
+
+  getTrendingArticles(
+    request: google_protobuf_empty_pb.Empty,
+    metadata: grpcWeb.Metadata | null): Promise<proto_article_article_pb.Articles>;
+
+  getTrendingArticles(
+    request: google_protobuf_empty_pb.Empty,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: proto_article_article_pb.Articles) => void): grpcWeb.ClientReadableStream<proto_article_article_pb.Articles>;
+
+  getTrendingArticles(
+    request: google_protobuf_empty_pb.Empty,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: proto_article_article_pb.Articles) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/ArticleService/GetTrendingArticles',
+        request,
+        metadata || {},
+        this.methodDescriptorGetTrendingArticles,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/ArticleService/GetTrendingArticles',
+    request,
+    metadata || {},
+    this.methodDescriptorGetTrendingArticles);
+  }
+
+  methodDescriptorSetTrendingArticles = new grpcWeb.MethodDescriptor(
+    '/ArticleService/SetTrendingArticles',
+    grpcWeb.MethodType.UNARY,
+    proto_article_article_pb.Articles,
+    google_protobuf_empty_pb.Empty,
+    (request: proto_article_article_pb.Articles) => {
+      return request.serializeBinary();
+    },
+    google_protobuf_empty_pb.Empty.deserializeBinary
+  );
+
+  setTrendingArticles(
+    request: proto_article_article_pb.Articles,
+    metadata: grpcWeb.Metadata | null): Promise<google_protobuf_empty_pb.Empty>;
+
+  setTrendingArticles(
+    request: proto_article_article_pb.Articles,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: google_protobuf_empty_pb.Empty) => void): grpcWeb.ClientReadableStream<google_protobuf_empty_pb.Empty>;
+
+  setTrendingArticles(
+    request: proto_article_article_pb.Articles,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: google_protobuf_empty_pb.Empty) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/ArticleService/SetTrendingArticles',
+        request,
+        metadata || {},
+        this.methodDescriptorSetTrendingArticles,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/ArticleService/SetTrendingArticles',
+    request,
+    metadata || {},
+    this.methodDescriptorSetTrendingArticles);
   }
 
 }

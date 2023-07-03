@@ -43,7 +43,7 @@ func Unwrap(m map[string]*article.Articles) TopicsWithArticles {
 	return topicsWithArticles
 }
 
-func (s *ArticleServer) GetTopicArticles(ctx context.Context, in *pb.GetTopicArticlesRequest) (*pb.TopicArticles, error) {
+func (s *ArticleServer) GetTopicArticles(ctx context.Context, in *pb.TopicNames) (*pb.TopicArticles, error) {
 	var articles []model.Article
 	topics := []model.Topic{}
 
@@ -61,7 +61,43 @@ func (s *ArticleServer) GetTopicArticles(ctx context.Context, in *pb.GetTopicArt
 	return grpcArticles, nil
 }
 
-func (s *ArticleServer) SetTopicArticles(ctx context.Context, in *pb.SetTopicArticlesRequest) (*empty.Empty, error) {
+func (s *ArticleServer) GetTrendingArticles(ctx context.Context, in *empty.Empty) (*pb.Articles, error) {
+        var articles []*model.Article
+
+        if err := db.Where("topic_name IS NULL").Find(&articles).Error; err != nil {
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
+        }
+
+        return &pb.Articles{
+                Articles: model.ToArticleProtos(articles),
+        }, nil
+}
+
+func (s *ArticleServer) SetTrendingArticles(ctx context.Context, in *pb.Articles) (*empty.Empty, error) {
+        articles := model.FromArticleProtos(in.Articles)
+
+        err := db.Transaction(func(tx *gorm.DB) error {
+                if err := db.Where("topic_name IS NULL").Delete(&model.Article{}).Error; err != nil {
+                        return err
+                }
+
+                if err := db.Create(articles).Error; err != nil {
+                        return err
+                }
+
+                return nil
+        }) 
+
+	if err != nil {
+		log.Printf(errDatabaseFormatString, err)
+		return nil, status.Error(codes.Internal, errDatabaseString)
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+func (s *ArticleServer) SetTopicArticles(ctx context.Context, in *pb.TopicArticles) (*empty.Empty, error) {
 	unwrapped := Unwrap(in.TopicArticles)
 
 	articles := []interface{}{}

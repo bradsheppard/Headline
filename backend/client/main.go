@@ -45,7 +45,7 @@ func runGetArticles(client article_pb.ArticleServiceClient, topic string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	req := &article_pb.GetTopicArticlesRequest{
+	req := &article_pb.TopicNames{
 		Topics: []string{
 			topic,
 		},

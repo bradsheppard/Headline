@@ -20,7 +20,7 @@ class ArticleGrpcService(ArticleService):
                     articles=articles
             )
 
-        request = article_pb2.SetTopicArticlesRequest(
+        request = article_pb2.TopicArticles(
                 topicArticles=topic_articles_proto
         )
 
@@ -29,7 +29,7 @@ class ArticleGrpcService(ArticleService):
             stub.SetTopicArticles(request)
 
     def get_topic_articles(self, topic_name: str) -> List[article_pb2.Article]:
-        request = article_pb2.GetTopicArticlesRequest(
+        request = article_pb2.TopicNames(
                 topics=[topic_name]
         )
 

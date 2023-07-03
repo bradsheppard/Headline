@@ -12,6 +12,7 @@ import (
 	article_pb "headline/proto/article"
 	topic_pb "headline/proto/topic"
 
+	"google.golang.org/protobuf/types/known/emptypb"
 	"gorm.io/gorm"
 )
 
@@ -29,7 +30,7 @@ func TestMain(m *testing.M) {
 	os.Exit(exitVal)
 }
 
-type articleExpectation struct {
+type topicArticlesExpectation struct {
 	out *article_pb.TopicArticles
 	err error
 }
@@ -87,7 +88,7 @@ func TestArticle_GetTopicArticles_Empty(t *testing.T) {
 
 	client := *setup.articleClient
 
-	req := &article_pb.GetTopicArticlesRequest{
+	req := &article_pb.TopicNames{
 		Topics: []string{"Topic 1", "Topic 2"},
 	}
 
@@ -98,7 +99,7 @@ func TestArticle_GetTopicArticles_Empty(t *testing.T) {
 		t.FailNow()
 	}
 
-	expected := articleExpectation{
+	expected := topicArticlesExpectation{
 		out: &article_pb.TopicArticles{},
 		err: nil,
 	}
@@ -108,6 +109,128 @@ func TestArticle_GetTopicArticles_Empty(t *testing.T) {
 		t.Errorf("Expected Length: %d", len(expected.out.TopicArticles))
 		t.Errorf("Actual length: %d", len(topicArticles.TopicArticles))
 		t.FailNow()
+	}
+}
+
+func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) {
+	ctx := context.Background()
+	setup, err := setupArticles(ctx)
+
+	defer setup.closer()
+
+	if err != nil {
+		t.Errorf("Setup error: %v", err)
+		t.FailNow()
+	}
+
+	articleClient := *setup.articleClient
+        topicClient := *setup.topicClient
+
+	_, err = articleClient.SetTrendingArticles(ctx, &article_pb.Articles{
+                Articles: []*article_pb.Article{
+                        &article_pb.Article{
+                                Title:       "Trending Title 1",
+                                Description: "Trending Description 1",
+                                Url:         "Trending Url 1",
+                                ImageUrl:    "Trending Image Url 1",
+                                Source:      "Trending Source 1",
+                        },
+                        &article_pb.Article{
+                                Title:       "Trending Title 2",
+                                Description: "Trending Description 2",
+                                Url:         "Trending Url 2",
+                                ImageUrl:    "Trending Image Url 2",
+                                Source:      "Trending Source 2",
+                        },
+                },
+        })
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	_, err = topicClient.AddTopics(ctx, &topic_pb.AddTopicsRequest{
+		Topics: []*topic_pb.Topic{
+			&topic_pb.Topic{
+				Name: "Unrelated Topic",
+			},
+		},
+		UserId: 1,
+	})
+        
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	_, err = articleClient.SetTopicArticles(ctx, &article_pb.TopicArticles{
+		TopicArticles: map[string]*article_pb.Articles{
+			"Unrelated Topic": &article_pb.Articles{
+				Articles: []*article_pb.Article{
+					&article_pb.Article{
+						Title:       "New Title 1",
+						Description: "New Description 1",
+						Url:         "New Url 1",
+						ImageUrl:    "New Image Url 1",
+						Source:      "New Source 1",
+					},
+					&article_pb.Article{
+						Title:       "New Title 2",
+						Description: "New Description 2",
+						Url:         "New Url 2",
+						ImageUrl:    "New Image Url 2",
+						Source:      "New Source 2",
+					},
+				},
+			},
+		},
+	})
+        
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+        articles, err := articleClient.GetTrendingArticles(ctx, &emptypb.Empty{})
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+        expected := []*article_pb.Article{
+                &article_pb.Article{
+                        Title:       "Trending Title 1",
+                        Description: "Trending Description 1",
+                        Url:         "Trending Url 1",
+                        ImageUrl:    "Trending Image Url 1",
+                        Source:      "Trending Source 1",
+                },
+                &article_pb.Article{
+                        Title:       "Trending Title 2",
+                        Description: "Trending Description 2",
+                        Url:         "Trending Url 2",
+                        ImageUrl:    "Trending Image Url 2",
+                        Source:      "Trending Source 2",
+                },
+        }
+
+	if len(expected) != len(articles.Articles) {
+		t.Errorf("Inequal length for articles")
+		t.Errorf("Expected Length: %d", len(expected))
+		t.Errorf("Actual length: %d", len(articles.Articles))
+		t.FailNow()
+	}
+
+	for i := range expected {
+		exp := expected[i]
+		actual := articles.Articles[i]
+
+		if !reflect.DeepEqual(exp, actual) {
+			t.Errorf("Expected -> %q\nGot: %q", exp, actual)
+			t.FailNow()
+		}
 	}
 }
 
@@ -142,7 +265,7 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 		t.FailNow()
 	}
 
-	_, err = articleClient.SetTopicArticles(ctx, &article_pb.SetTopicArticlesRequest{
+	_, err = articleClient.SetTopicArticles(ctx, &article_pb.TopicArticles{
 		TopicArticles: map[string]*article_pb.Articles{
 			"Topic 3": &article_pb.Articles{
 				Articles: []*article_pb.Article{
@@ -188,14 +311,14 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 		t.FailNow()
 	}
 
-	articles, err := articleClient.GetTopicArticles(ctx, &article_pb.GetTopicArticlesRequest{Topics: []string{"Topic 3"}})
+	articles, err := articleClient.GetTopicArticles(ctx, &article_pb.TopicNames{Topics: []string{"Topic 3"}})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
 		t.FailNow()
 	}
 
-	expected := articleExpectation{
+	expected := topicArticlesExpectation{
 		out: &article_pb.TopicArticles{
 			TopicArticles: map[string]*article_pb.Articles{
 				"Topic 3": &article_pb.Articles{

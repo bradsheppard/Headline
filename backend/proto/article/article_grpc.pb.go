@@ -23,8 +23,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArticleServiceClient interface {
-	GetTopicArticles(ctx context.Context, in *GetTopicArticlesRequest, opts ...grpc.CallOption) (*TopicArticles, error)
-	SetTopicArticles(ctx context.Context, in *SetTopicArticlesRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	GetTopicArticles(ctx context.Context, in *TopicNames, opts ...grpc.CallOption) (*TopicArticles, error)
+	SetTopicArticles(ctx context.Context, in *TopicArticles, opts ...grpc.CallOption) (*empty.Empty, error)
+	GetTrendingArticles(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Articles, error)
+	SetTrendingArticles(ctx context.Context, in *Articles, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type articleServiceClient struct {
@@ -35,7 +37,7 @@ func NewArticleServiceClient(cc grpc.ClientConnInterface) ArticleServiceClient {
 	return &articleServiceClient{cc}
 }
 
-func (c *articleServiceClient) GetTopicArticles(ctx context.Context, in *GetTopicArticlesRequest, opts ...grpc.CallOption) (*TopicArticles, error) {
+func (c *articleServiceClient) GetTopicArticles(ctx context.Context, in *TopicNames, opts ...grpc.CallOption) (*TopicArticles, error) {
 	out := new(TopicArticles)
 	err := c.cc.Invoke(ctx, "/ArticleService/GetTopicArticles", in, out, opts...)
 	if err != nil {
@@ -44,9 +46,27 @@ func (c *articleServiceClient) GetTopicArticles(ctx context.Context, in *GetTopi
 	return out, nil
 }
 
-func (c *articleServiceClient) SetTopicArticles(ctx context.Context, in *SetTopicArticlesRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *articleServiceClient) SetTopicArticles(ctx context.Context, in *TopicArticles, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/ArticleService/SetTopicArticles", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) GetTrendingArticles(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*Articles, error) {
+	out := new(Articles)
+	err := c.cc.Invoke(ctx, "/ArticleService/GetTrendingArticles", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) SetTrendingArticles(ctx context.Context, in *Articles, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/ArticleService/SetTrendingArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +77,10 @@ func (c *articleServiceClient) SetTopicArticles(ctx context.Context, in *SetTopi
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility
 type ArticleServiceServer interface {
-	GetTopicArticles(context.Context, *GetTopicArticlesRequest) (*TopicArticles, error)
-	SetTopicArticles(context.Context, *SetTopicArticlesRequest) (*empty.Empty, error)
+	GetTopicArticles(context.Context, *TopicNames) (*TopicArticles, error)
+	SetTopicArticles(context.Context, *TopicArticles) (*empty.Empty, error)
+	GetTrendingArticles(context.Context, *empty.Empty) (*Articles, error)
+	SetTrendingArticles(context.Context, *Articles) (*empty.Empty, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -66,11 +88,17 @@ type ArticleServiceServer interface {
 type UnimplementedArticleServiceServer struct {
 }
 
-func (UnimplementedArticleServiceServer) GetTopicArticles(context.Context, *GetTopicArticlesRequest) (*TopicArticles, error) {
+func (UnimplementedArticleServiceServer) GetTopicArticles(context.Context, *TopicNames) (*TopicArticles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTopicArticles not implemented")
 }
-func (UnimplementedArticleServiceServer) SetTopicArticles(context.Context, *SetTopicArticlesRequest) (*empty.Empty, error) {
+func (UnimplementedArticleServiceServer) SetTopicArticles(context.Context, *TopicArticles) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetTopicArticles not implemented")
+}
+func (UnimplementedArticleServiceServer) GetTrendingArticles(context.Context, *empty.Empty) (*Articles, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTrendingArticles not implemented")
+}
+func (UnimplementedArticleServiceServer) SetTrendingArticles(context.Context, *Articles) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetTrendingArticles not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 
@@ -86,7 +114,7 @@ func RegisterArticleServiceServer(s grpc.ServiceRegistrar, srv ArticleServiceSer
 }
 
 func _ArticleService_GetTopicArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTopicArticlesRequest)
+	in := new(TopicNames)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -98,13 +126,13 @@ func _ArticleService_GetTopicArticles_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/ArticleService/GetTopicArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).GetTopicArticles(ctx, req.(*GetTopicArticlesRequest))
+		return srv.(ArticleServiceServer).GetTopicArticles(ctx, req.(*TopicNames))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ArticleService_SetTopicArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetTopicArticlesRequest)
+	in := new(TopicArticles)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -116,7 +144,43 @@ func _ArticleService_SetTopicArticles_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/ArticleService/SetTopicArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArticleServiceServer).SetTopicArticles(ctx, req.(*SetTopicArticlesRequest))
+		return srv.(ArticleServiceServer).SetTopicArticles(ctx, req.(*TopicArticles))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_GetTrendingArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetTrendingArticles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticleService/GetTrendingArticles",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetTrendingArticles(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_SetTrendingArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Articles)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).SetTrendingArticles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticleService/SetTrendingArticles",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).SetTrendingArticles(ctx, req.(*Articles))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -135,6 +199,14 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetTopicArticles",
 			Handler:    _ArticleService_SetTopicArticles_Handler,
+		},
+		{
+			MethodName: "GetTrendingArticles",
+			Handler:    _ArticleService_GetTrendingArticles_Handler,
+		},
+		{
+			MethodName: "SetTrendingArticles",
+			Handler:    _ArticleService_SetTrendingArticles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -82,39 +82,21 @@ export namespace Article {
   }
 }
 
-export class SetTopicArticlesRequest extends jspb.Message {
-  getTopicarticlesMap(): jspb.Map<string, Articles>;
-  clearTopicarticlesMap(): SetTopicArticlesRequest;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): SetTopicArticlesRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: SetTopicArticlesRequest): SetTopicArticlesRequest.AsObject;
-  static serializeBinaryToWriter(message: SetTopicArticlesRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): SetTopicArticlesRequest;
-  static deserializeBinaryFromReader(message: SetTopicArticlesRequest, reader: jspb.BinaryReader): SetTopicArticlesRequest;
-}
-
-export namespace SetTopicArticlesRequest {
-  export type AsObject = {
-    topicarticlesMap: Array<[string, Articles.AsObject]>,
-  }
-}
-
-export class GetTopicArticlesRequest extends jspb.Message {
+export class TopicNames extends jspb.Message {
   getTopicsList(): Array<string>;
-  setTopicsList(value: Array<string>): GetTopicArticlesRequest;
-  clearTopicsList(): GetTopicArticlesRequest;
-  addTopics(value: string, index?: number): GetTopicArticlesRequest;
+  setTopicsList(value: Array<string>): TopicNames;
+  clearTopicsList(): TopicNames;
+  addTopics(value: string, index?: number): TopicNames;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetTopicArticlesRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetTopicArticlesRequest): GetTopicArticlesRequest.AsObject;
-  static serializeBinaryToWriter(message: GetTopicArticlesRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetTopicArticlesRequest;
-  static deserializeBinaryFromReader(message: GetTopicArticlesRequest, reader: jspb.BinaryReader): GetTopicArticlesRequest;
+  toObject(includeInstance?: boolean): TopicNames.AsObject;
+  static toObject(includeInstance: boolean, msg: TopicNames): TopicNames.AsObject;
+  static serializeBinaryToWriter(message: TopicNames, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TopicNames;
+  static deserializeBinaryFromReader(message: TopicNames, reader: jspb.BinaryReader): TopicNames;
 }
 
-export namespace GetTopicArticlesRequest {
+export namespace TopicNames {
   export type AsObject = {
     topicsList: Array<string>,
   }

@@ -29,25 +29,6 @@ class Articles(_message.Message):
     articles: _containers.RepeatedCompositeFieldContainer[Article]
     def __init__(self, articles: _Optional[_Iterable[_Union[Article, _Mapping]]] = ...) -> None: ...
 
-class GetTopicArticlesRequest(_message.Message):
-    __slots__ = ["topics"]
-    TOPICS_FIELD_NUMBER: _ClassVar[int]
-    topics: _containers.RepeatedScalarFieldContainer[str]
-    def __init__(self, topics: _Optional[_Iterable[str]] = ...) -> None: ...
-
-class SetTopicArticlesRequest(_message.Message):
-    __slots__ = ["topicArticles"]
-    class TopicArticlesEntry(_message.Message):
-        __slots__ = ["key", "value"]
-        KEY_FIELD_NUMBER: _ClassVar[int]
-        VALUE_FIELD_NUMBER: _ClassVar[int]
-        key: str
-        value: Articles
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[Articles, _Mapping]] = ...) -> None: ...
-    TOPICARTICLES_FIELD_NUMBER: _ClassVar[int]
-    topicArticles: _containers.MessageMap[str, Articles]
-    def __init__(self, topicArticles: _Optional[_Mapping[str, Articles]] = ...) -> None: ...
-
 class TopicArticles(_message.Message):
     __slots__ = ["topicArticles"]
     class TopicArticlesEntry(_message.Message):
@@ -60,3 +41,9 @@ class TopicArticles(_message.Message):
     TOPICARTICLES_FIELD_NUMBER: _ClassVar[int]
     topicArticles: _containers.MessageMap[str, Articles]
     def __init__(self, topicArticles: _Optional[_Mapping[str, Articles]] = ...) -> None: ...
+
+class TopicNames(_message.Message):
+    __slots__ = ["topics"]
+    TOPICS_FIELD_NUMBER: _ClassVar[int]
+    topics: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, topics: _Optional[_Iterable[str]] = ...) -> None: ...

@@ -17,12 +17,22 @@ class ArticleServiceStub(object):
         """
         self.GetTopicArticles = channel.unary_unary(
                 '/ArticleService/GetTopicArticles',
-                request_serializer=article_dot_article__pb2.GetTopicArticlesRequest.SerializeToString,
+                request_serializer=article_dot_article__pb2.TopicNames.SerializeToString,
                 response_deserializer=article_dot_article__pb2.TopicArticles.FromString,
                 )
         self.SetTopicArticles = channel.unary_unary(
                 '/ArticleService/SetTopicArticles',
-                request_serializer=article_dot_article__pb2.SetTopicArticlesRequest.SerializeToString,
+                request_serializer=article_dot_article__pb2.TopicArticles.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                )
+        self.GetTrendingArticles = channel.unary_unary(
+                '/ArticleService/GetTrendingArticles',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=article_dot_article__pb2.Articles.FromString,
+                )
+        self.SetTrendingArticles = channel.unary_unary(
+                '/ArticleService/SetTrendingArticles',
+                request_serializer=article_dot_article__pb2.Articles.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 )
 
@@ -42,17 +52,39 @@ class ArticleServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetTrendingArticles(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetTrendingArticles(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ArticleServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetTopicArticles': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTopicArticles,
-                    request_deserializer=article_dot_article__pb2.GetTopicArticlesRequest.FromString,
+                    request_deserializer=article_dot_article__pb2.TopicNames.FromString,
                     response_serializer=article_dot_article__pb2.TopicArticles.SerializeToString,
             ),
             'SetTopicArticles': grpc.unary_unary_rpc_method_handler(
                     servicer.SetTopicArticles,
-                    request_deserializer=article_dot_article__pb2.SetTopicArticlesRequest.FromString,
+                    request_deserializer=article_dot_article__pb2.TopicArticles.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'GetTrendingArticles': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTrendingArticles,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=article_dot_article__pb2.Articles.SerializeToString,
+            ),
+            'SetTrendingArticles': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTrendingArticles,
+                    request_deserializer=article_dot_article__pb2.Articles.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
@@ -77,7 +109,7 @@ class ArticleService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ArticleService/GetTopicArticles',
-            article_dot_article__pb2.GetTopicArticlesRequest.SerializeToString,
+            article_dot_article__pb2.TopicNames.SerializeToString,
             article_dot_article__pb2.TopicArticles.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -94,7 +126,41 @@ class ArticleService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/ArticleService/SetTopicArticles',
-            article_dot_article__pb2.SetTopicArticlesRequest.SerializeToString,
+            article_dot_article__pb2.TopicArticles.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetTrendingArticles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ArticleService/GetTrendingArticles',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            article_dot_article__pb2.Articles.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetTrendingArticles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/ArticleService/SetTrendingArticles',
+            article_dot_article__pb2.Articles.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

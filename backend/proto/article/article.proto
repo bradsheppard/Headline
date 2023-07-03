@@ -23,15 +23,13 @@ message Article {
 }
 
 service ArticleService {
-        rpc GetTopicArticles(GetTopicArticlesRequest) returns (TopicArticles);
-        rpc SetTopicArticles(SetTopicArticlesRequest) returns (google.protobuf.Empty);
+        rpc GetTopicArticles(TopicNames) returns (TopicArticles);
+        rpc SetTopicArticles(TopicArticles) returns (google.protobuf.Empty);
+        rpc GetTrendingArticles(google.protobuf.Empty) returns (Articles);
+        rpc SetTrendingArticles(Articles) returns (google.protobuf.Empty);
 }
 
-message SetTopicArticlesRequest {
-        map<string, Articles> topicArticles = 1;
-}
-
-message GetTopicArticlesRequest {
+message TopicNames {
         repeated string topics = 1;
 }
 
