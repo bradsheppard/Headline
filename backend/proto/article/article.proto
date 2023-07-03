@@ -22,14 +22,14 @@ message Article {
         google.protobuf.Timestamp date = 6;
 }
 
+message TopicNames {
+        repeated string topics = 1;
+}
+
 service ArticleService {
         rpc GetTopicArticles(TopicNames) returns (TopicArticles);
         rpc SetTopicArticles(TopicArticles) returns (google.protobuf.Empty);
         rpc GetTrendingArticles(google.protobuf.Empty) returns (Articles);
         rpc SetTrendingArticles(Articles) returns (google.protobuf.Empty);
-}
-
-message TopicNames {
-        repeated string topics = 1;
 }
 
