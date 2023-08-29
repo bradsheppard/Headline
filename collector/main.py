@@ -1,5 +1,5 @@
 import os
-from collector.article.article_contextual_web_collector import ArticleContextualWebCollector
+from collector.article.article_bing_collector import ArticleBingCollector
 from collector.article.article_grpc_service import ArticleGrpcService
 
 from collector.messaging.main_consumer import MainConsumer
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     api_key = os.environ['API_KEY']
 
     article_service = ArticleGrpcService(backend_url)
-    article_collector = ArticleContextualWebCollector(api_key)
+    article_collector = ArticleBingCollector(api_key)
 
     producer = Producer(article_service, article_collector)
     main_consumer = MainConsumer(host, listener_topic)
