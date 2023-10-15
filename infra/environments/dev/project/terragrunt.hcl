@@ -4,7 +4,7 @@ terraform {
 
 inputs = {
   billing_account = "01BED7-340A56-12F88F"
-  name = "headline-infra"
+  name = "headline-inf"
 }
 
 remote_state {

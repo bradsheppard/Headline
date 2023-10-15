@@ -14,7 +14,7 @@ enable-inject:
 
 .PHONY: strimzi
 strimzi:
-	helm install strimzi-operator strimzi/strimzi-kafka-operator
+	helm install strimzi-operator oci://quay.io/strimzi-helm/strimzi-kafka-operator
 
 .PHONY: backend
 backend:

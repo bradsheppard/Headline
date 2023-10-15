@@ -5,9 +5,9 @@ remote_state {
     if_exists = "overwrite_terragrunt"
   }
   config = {
-    bucket = "headline-infra-remote-state"
+    bucket = "headline-inf-remote-state"
     prefix = "${path_relative_to_include()}"
-    project = "headline-infrae012d38d"
+    project = "headline-inf624ade82"
     location = "us-central1"
   }
 }
@@ -18,10 +18,10 @@ generate "provider" {
 
   contents = <<EOF
 provider google {
-  project = "headline-infrae012d38d"
+  project = "headline-inf624ade82"
 }
 provider google-beta {
-  project = "headline-infrae012d38d"
+  project = "headline-inf624ade82"
 }
 EOF
 }
