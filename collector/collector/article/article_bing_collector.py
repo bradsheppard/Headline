@@ -6,7 +6,7 @@ from proto.article import article_pb2
 
 
 class ArticleBingCollector(ArticleCollector):
-    _url = "https://bing-news-search1.p.rapidapi.com/news"
+    _url = "https://bing-news-search1.p.rapidapi.com/news/search"
 
     def __init__(self, api_key: str):
         self._api_key = api_key
@@ -14,7 +14,13 @@ class ArticleBingCollector(ArticleCollector):
     def collect_articles(self, topic: str) -> List[article_pb2.Article]:
         articles = []
 
-        querystring = {'textFormat': 'Raw', 'safeSearch': 'Off'}
+        querystring = {
+                'textFormat': 'Raw', 
+                'safeSearch': 'Off',
+                'q': topic,
+                'originalImg': True,
+                'freshness': 'Day'
+        }
 
         headers = {
             "X-BingApis-SDK": "true",
@@ -30,7 +36,7 @@ class ArticleBingCollector(ArticleCollector):
         for entry in entries:
             article = article_pb2.Article(
                     description=entry["description"],
-                    imageUrl=entry["image"]["thumbnail"]["contentUrl"] \
+                    imageUrl=entry["image"]["contentUrl"] \
                         if "image" in entry else None,
                     title=entry["name"],
                     source=entry["provider"][0]["name"] if len(entry["provider"]) > 0 else None,
