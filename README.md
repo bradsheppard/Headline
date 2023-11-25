@@ -24,4 +24,4 @@ on a schedule, to ensure articles are up-to-date.
 
 ## Architecture
 
-![architecture](docs/Headline.svg "Architecture")
+![architecture](docs/Headline.png "Architecture")
