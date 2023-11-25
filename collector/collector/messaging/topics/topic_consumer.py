@@ -3,10 +3,10 @@ from collections.abc import Iterator
 from typing import List
 from collector.collection import collection_pb2
 
-from collector.messaging.producer import Producer
+from collector.messaging.topics.topic_producer import TopicProducer
 
 
-class Consumer(ABC):
+class TopicConsumer(ABC):
 
     @property
     @abstractmethod
@@ -16,7 +16,7 @@ class Consumer(ABC):
     def __init__(self) -> None:
         self._producer = None
 
-    def attach(self, producer: Producer):
+    def attach(self, producer: TopicProducer):
         self._producer = producer
 
     def __next__(self):

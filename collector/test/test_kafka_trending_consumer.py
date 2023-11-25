@@ -2,14 +2,14 @@ from unittest.mock import MagicMock
 
 from kafka import KafkaProducer
 from collector.collection import collection_pb2
-from collector.messaging.main_consumer import MainConsumer
+from collector.messaging.trending.kafka_trending_consumer import KafkaTrendingConsumer
 
 
 def test_notify():
     host = 'queue-kafka-bootstrap:9092'
     topic = 'test-topic'
 
-    main_consumer = MainConsumer(host, topic)
+    main_consumer = KafkaTrendingConsumer(host, topic)
     kafka_producer = KafkaProducer(bootstrap_servers=host)
 
     main_consumer.notify = MagicMock()
@@ -24,4 +24,4 @@ def test_notify():
     kafka_producer.send(topic, collection_bytes)
     next(main_consumer)
 
-    main_consumer.notify.assert_called_with(topics)
+    main_consumer.notify.assert_called()

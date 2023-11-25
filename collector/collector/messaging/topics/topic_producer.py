@@ -3,7 +3,7 @@ from typing import List
 from collector.article.article_collector import ArticleCollector
 from collector.article.article_service import ArticleService
 
-class Producer:
+class TopicProducer:
 
     def __init__(self, article_service: ArticleService, article_collector: ArticleCollector):
         self._article_service = article_service

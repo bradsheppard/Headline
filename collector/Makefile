@@ -1,5 +1,5 @@
 service := collector
-tag := 1.0.0
+tag := 1.1.1
 
 .PHONY: build
 build:

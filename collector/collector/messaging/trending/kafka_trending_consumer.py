@@ -1,10 +1,9 @@
 from collections.abc import Iterator
-from typing import List
 from kafka import KafkaConsumer
-from collector.messaging.consumer import Consumer
+from collector.messaging.trending.trending_consumer import TrendingConsumer
 
 
-class MainConsumer(Consumer):
+class KafkaTrendingConsumer(TrendingConsumer):
 
     @property
     def consumer(self) -> Iterator:
@@ -15,8 +14,8 @@ class MainConsumer(Consumer):
         self._consumer = KafkaConsumer(topic, bootstrap_servers=host, group_id='collector')
         self._consumer.poll()
 
-    def notify(self, topics: List[str]):
+    def notify(self):
         if not self._producer:
             return
 
-        self._producer.update(topics)
+        self._producer.update()

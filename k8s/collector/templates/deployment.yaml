@@ -36,8 +36,10 @@ spec:
           env:
             - name: KAFKA_HOST
               value: "{{ .Values.kafka.host }}"
-            - name: KAFKA_TOPIC
-              value: "{{ .Values.kafka.topic }}"
+            - name: KAFKA_TOPIC_TOPIC
+              value: "{{ .Values.kafka.topicTopic }}"
+            - name: KAFKA_TRENDING_TOPIC
+              value: "{{ .Values.kafka.trendingTopic }}"
             - name: BACKEND_URL
               value: "{{ .Values.backendUrl }}"
             - name: API_KEY
