@@ -62,32 +62,32 @@ func (s *ArticleServer) GetTopicArticles(ctx context.Context, in *pb.TopicNames)
 }
 
 func (s *ArticleServer) GetTrendingArticles(ctx context.Context, in *empty.Empty) (*pb.Articles, error) {
-        var articles []*model.Article
+	var articles []*model.Article
 
-        if err := db.Where("topic_name IS NULL").Find(&articles).Error; err != nil {
+	if err := db.Where("topic_name IS NULL").Find(&articles).Error; err != nil {
 		log.Printf(errDatabaseFormatString, err)
 		return nil, status.Error(codes.Internal, errDatabaseString)
-        }
+	}
 
-        return &pb.Articles{
-                Articles: model.ToArticleProtos(articles),
-        }, nil
+	return &pb.Articles{
+		Articles: model.ToArticleProtos(articles),
+	}, nil
 }
 
 func (s *ArticleServer) SetTrendingArticles(ctx context.Context, in *pb.Articles) (*empty.Empty, error) {
-        articles := model.FromArticleProtos(in.Articles)
+	articles := model.FromArticleProtos(in.Articles)
 
-        err := db.Transaction(func(tx *gorm.DB) error {
-                if err := db.Where("topic_name IS NULL").Delete(&model.Article{}).Error; err != nil {
-                        return err
-                }
+	err := db.Transaction(func(tx *gorm.DB) error {
+		if err := db.Where("topic_name IS NULL").Delete(&model.Article{}).Error; err != nil {
+			return err
+		}
 
-                if err := db.Create(articles).Error; err != nil {
-                        return err
-                }
+		if err := db.Create(articles).Error; err != nil {
+			return err
+		}
 
-                return nil
-        }) 
+		return nil
+	})
 
 	if err != nil {
 		log.Printf(errDatabaseFormatString, err)

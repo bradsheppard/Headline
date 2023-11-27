@@ -124,26 +124,26 @@ func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) 
 	}
 
 	articleClient := *setup.articleClient
-        topicClient := *setup.topicClient
+	topicClient := *setup.topicClient
 
 	_, err = articleClient.SetTrendingArticles(ctx, &article_pb.Articles{
-                Articles: []*article_pb.Article{
-                        &article_pb.Article{
-                                Title:       "Trending Title 1",
-                                Description: "Trending Description 1",
-                                Url:         "Trending Url 1",
-                                ImageUrl:    "Trending Image Url 1",
-                                Source:      "Trending Source 1",
-                        },
-                        &article_pb.Article{
-                                Title:       "Trending Title 2",
-                                Description: "Trending Description 2",
-                                Url:         "Trending Url 2",
-                                ImageUrl:    "Trending Image Url 2",
-                                Source:      "Trending Source 2",
-                        },
-                },
-        })
+		Articles: []*article_pb.Article{
+			&article_pb.Article{
+				Title:       "Trending Title 1",
+				Description: "Trending Description 1",
+				Url:         "Trending Url 1",
+				ImageUrl:    "Trending Image Url 1",
+				Source:      "Trending Source 1",
+			},
+			&article_pb.Article{
+				Title:       "Trending Title 2",
+				Description: "Trending Description 2",
+				Url:         "Trending Url 2",
+				ImageUrl:    "Trending Image Url 2",
+				Source:      "Trending Source 2",
+			},
+		},
+	})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
@@ -158,7 +158,7 @@ func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) 
 		},
 		UserId: 1,
 	})
-        
+
 	if err != nil {
 		t.Errorf("Error: %v", err)
 		t.FailNow()
@@ -186,35 +186,35 @@ func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) 
 			},
 		},
 	})
-        
-	if err != nil {
-		t.Errorf("Error: %v", err)
-		t.FailNow()
-	}
-
-        articles, err := articleClient.GetTrendingArticles(ctx, &emptypb.Empty{})
 
 	if err != nil {
 		t.Errorf("Error: %v", err)
 		t.FailNow()
 	}
 
-        expected := []*article_pb.Article{
-                &article_pb.Article{
-                        Title:       "Trending Title 1",
-                        Description: "Trending Description 1",
-                        Url:         "Trending Url 1",
-                        ImageUrl:    "Trending Image Url 1",
-                        Source:      "Trending Source 1",
-                },
-                &article_pb.Article{
-                        Title:       "Trending Title 2",
-                        Description: "Trending Description 2",
-                        Url:         "Trending Url 2",
-                        ImageUrl:    "Trending Image Url 2",
-                        Source:      "Trending Source 2",
-                },
-        }
+	articles, err := articleClient.GetTrendingArticles(ctx, &emptypb.Empty{})
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+		t.FailNow()
+	}
+
+	expected := []*article_pb.Article{
+		&article_pb.Article{
+			Title:       "Trending Title 1",
+			Description: "Trending Description 1",
+			Url:         "Trending Url 1",
+			ImageUrl:    "Trending Image Url 1",
+			Source:      "Trending Source 1",
+		},
+		&article_pb.Article{
+			Title:       "Trending Title 2",
+			Description: "Trending Description 2",
+			Url:         "Trending Url 2",
+			ImageUrl:    "Trending Image Url 2",
+			Source:      "Trending Source 2",
+		},
+	}
 
 	if len(expected) != len(articles.Articles) {
 		t.Errorf("Inequal length for articles")

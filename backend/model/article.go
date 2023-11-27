@@ -21,11 +21,11 @@ func ToConverter(articles []Article) *pb.TopicArticles {
 	topicArticles.TopicArticles = map[string]*pb.Articles{}
 
 	for _, article := range articles {
-                if article.TopicName == nil {
-                        continue
-                }
+		if article.TopicName == nil {
+			continue
+		}
 
-                topicName := *article.TopicName
+		topicName := *article.TopicName
 
 		if _, ok := topicArticles.TopicArticles[topicName]; !ok {
 			topicArticles.TopicArticles[topicName] = &pb.Articles{}
@@ -88,9 +88,9 @@ func FromArticleProtos(protoArticles []*pb.Article) []*Article {
 }
 
 func ToArticleProtos(articles []*Article) []*pb.Article {
-        var protoArticles []*pb.Article
+	var protoArticles []*pb.Article
 
-        for _, article := range articles {
+	for _, article := range articles {
 		protoArticle := &pb.Article{
 			Title:       article.Title,
 			Description: article.Description,
@@ -99,7 +99,7 @@ func ToArticleProtos(articles []*Article) []*pb.Article {
 			Source:      article.Source,
 		}
 		protoArticles = append(protoArticles, protoArticle)
-        }
+	}
 
-        return protoArticles
+	return protoArticles
 }
