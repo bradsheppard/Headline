@@ -13,7 +13,10 @@ import (
 	"gorm.io/gorm/clause"
 
 	"github.com/golang/protobuf/ptypes/empty"
+
+	"google.golang.org/api/idtoken"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -21,27 +24,66 @@ type TopicServer struct {
 	pb.UnimplementedTopicServiceServer
 }
 
-func repeated(str uint64, n int) []interface{} {
+func repeated(str *string, n int) []interface{} {
 	arr := make([]interface{}, n)
 
 	for i := 0; i < n; i++ {
 		arr[i] = &model.User{
-			Id: int(str),
+			Id: *str,
 		}
 	}
 
 	return arr
 }
 
+func getUserId(ctx context.Context) (*string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+
+	if !ok {
+		return nil, status.Errorf(codes.DataLoss, "Failed to get metadata")
+	}
+
+	token, ok := md["id_token"]
+	token_string := ""
+
+	if !ok {
+		return nil, status.Errorf(codes.Unauthenticated, "Failed to get ID token")
+	}
+
+	for _, e := range token {
+		token_string += e
+	}
+
+	payload, err := idtoken.Validate(context.Background(), token_string, "")
+
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "Failed to authenticate token")
+	}
+
+	user_id, ok := payload.Claims["email"]
+
+	if !ok {
+		return nil, status.Errorf(codes.Unauthenticated, "cannot retrieve email from token")
+	}
+
+	return user_id.(*string), nil
+}
+
 func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsRequest) (*pb.TopicResponse, error) {
 	topics := model.FromTopicProtos(in.Topics)
 
-	err := db.Transaction(func(tx *gorm.DB) error {
+	user_id, err := getUserId(ctx)
+
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, err.Error())
+	}
+
+	err = db.Transaction(func(tx *gorm.DB) error {
 		if err := db.Clauses(clause.OnConflict{UpdateAll: true, Columns: []clause.Column{{Name: "name"}}}).Create(topics).Error; err != nil {
 			return err
 		}
 
-		if err := db.Model(topics).Association("Users").Append(repeated(in.UserId, len(topics))...); err != nil {
+		if err := db.Model(topics).Association("Users").Append(repeated(user_id, len(topics))...); err != nil {
 			return err
 		}
 
@@ -78,7 +120,13 @@ func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsR
 func (topicServer *TopicServer) GetTopics(ctx context.Context, in *pb.GetTopicsRequest) (*pb.TopicResponse, error) {
 	var topics []*model.Topic
 
-	if err := db.Table("topics").Joins("join user_topics on topics.name = user_topics.topic_name").Joins("join users on user_topics.user_id = users.id").Where("users.id = ?", in.UserId).Select("topics.*").Scan(&topics).Error; err != nil {
+	user_id, err := getUserId(ctx)
+
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, err.Error())
+	}
+
+	if err := db.Table("topics").Joins("join user_topics on topics.name = user_topics.topic_name").Joins("join users on user_topics.user_id = users.id").Where("users.id = ?", user_id).Select("topics.*").Scan(&topics).Error; err != nil {
 		log.Printf(errDatabaseFormatString, err)
 		return nil, status.Error(codes.Internal, errDatabaseString)
 	}
@@ -101,7 +149,13 @@ func (topicServer *TopicServer) RemoveTopics(ctx context.Context, in *pb.RemoveT
 		topics = append(topics, topic)
 	}
 
-	err := db.Model(topics).Association("Users").Delete(repeated(in.UserId, len(topics))...)
+	user_id, err := getUserId(ctx)
+
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, err.Error())
+	}
+
+	err = db.Model(topics).Association("Users").Delete(repeated(user_id, len(topics))...)
 
 	if err != nil {
 		log.Printf(errMessagingFormatString, err)
