@@ -76,7 +76,7 @@ func setupArticles(ctx context.Context) (*SetupArticleResult, error) {
 }
 
 func TestArticle_GetTopicArticles_Empty(t *testing.T) {
-	ctx := context.Background()
+    ctx := getContext()
 	setup, err := setupArticles(ctx)
 
 	if err != nil {
@@ -113,7 +113,7 @@ func TestArticle_GetTopicArticles_Empty(t *testing.T) {
 }
 
 func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) {
-	ctx := context.Background()
+    ctx := getContext()
 	setup, err := setupArticles(ctx)
 
 	defer setup.closer()
@@ -156,7 +156,6 @@ func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) 
 				Name: "Unrelated Topic",
 			},
 		},
-		UserId: 1,
 	})
 
 	if err != nil {
@@ -235,7 +234,7 @@ func TestArticle_SetTrendingArticles_GetTrendingArticles_NotEmpty(t *testing.T) 
 }
 
 func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
-	ctx := context.Background()
+    ctx := getContext()
 	setup, err := setupArticles(ctx)
 
 	defer setup.closer()
@@ -257,7 +256,6 @@ func TestArticle_SetTopicArticles_GetTopicArticles_NotEmpty(t *testing.T) {
 				Name: "Topic 4",
 			},
 		},
-		UserId: 1,
 	})
 
 	if err != nil {

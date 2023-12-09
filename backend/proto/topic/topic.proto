@@ -15,27 +15,21 @@ message TopicResponse {
         repeated Topic topics = 1;
 }
 
-message GetTopicsRequest {
-        uint64 userId = 1; 
-}
-
 message GetPendingTopicsRequest {
         google.protobuf.Timestamp lastUpdated = 1;
 }
 
 message AddTopicsRequest {
         repeated Topic topics = 1;
-        uint64 userId = 2;
 }
 
 message RemoveTopicsRequest {
         repeated string topicNames = 1;
-        uint64 userId = 2;
 }
 
 service TopicService {
         rpc AddTopics(AddTopicsRequest) returns (TopicResponse);
-        rpc GetTopics(GetTopicsRequest) returns (TopicResponse);
+        rpc GetTopics(google.protobuf.Empty) returns (TopicResponse);
         rpc RemoveTopics(RemoveTopicsRequest) returns (google.protobuf.Empty);
         rpc GetPendingTopics(GetPendingTopicsRequest) returns (stream TopicResponse);
 }

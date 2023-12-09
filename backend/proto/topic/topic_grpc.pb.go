@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TopicServiceClient interface {
 	AddTopics(ctx context.Context, in *AddTopicsRequest, opts ...grpc.CallOption) (*TopicResponse, error)
-	GetTopics(ctx context.Context, in *GetTopicsRequest, opts ...grpc.CallOption) (*TopicResponse, error)
+	GetTopics(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*TopicResponse, error)
 	RemoveTopics(ctx context.Context, in *RemoveTopicsRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	GetPendingTopics(ctx context.Context, in *GetPendingTopicsRequest, opts ...grpc.CallOption) (TopicService_GetPendingTopicsClient, error)
 }
@@ -46,7 +46,7 @@ func (c *topicServiceClient) AddTopics(ctx context.Context, in *AddTopicsRequest
 	return out, nil
 }
 
-func (c *topicServiceClient) GetTopics(ctx context.Context, in *GetTopicsRequest, opts ...grpc.CallOption) (*TopicResponse, error) {
+func (c *topicServiceClient) GetTopics(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*TopicResponse, error) {
 	out := new(TopicResponse)
 	err := c.cc.Invoke(ctx, "/TopicService/GetTopics", in, out, opts...)
 	if err != nil {
@@ -101,7 +101,7 @@ func (x *topicServiceGetPendingTopicsClient) Recv() (*TopicResponse, error) {
 // for forward compatibility
 type TopicServiceServer interface {
 	AddTopics(context.Context, *AddTopicsRequest) (*TopicResponse, error)
-	GetTopics(context.Context, *GetTopicsRequest) (*TopicResponse, error)
+	GetTopics(context.Context, *empty.Empty) (*TopicResponse, error)
 	RemoveTopics(context.Context, *RemoveTopicsRequest) (*empty.Empty, error)
 	GetPendingTopics(*GetPendingTopicsRequest, TopicService_GetPendingTopicsServer) error
 	mustEmbedUnimplementedTopicServiceServer()
@@ -114,7 +114,7 @@ type UnimplementedTopicServiceServer struct {
 func (UnimplementedTopicServiceServer) AddTopics(context.Context, *AddTopicsRequest) (*TopicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddTopics not implemented")
 }
-func (UnimplementedTopicServiceServer) GetTopics(context.Context, *GetTopicsRequest) (*TopicResponse, error) {
+func (UnimplementedTopicServiceServer) GetTopics(context.Context, *empty.Empty) (*TopicResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTopics not implemented")
 }
 func (UnimplementedTopicServiceServer) RemoveTopics(context.Context, *RemoveTopicsRequest) (*empty.Empty, error) {
@@ -155,7 +155,7 @@ func _TopicService_AddTopics_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _TopicService_GetTopics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTopicsRequest)
+	in := new(empty.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func _TopicService_GetTopics_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/TopicService/GetTopics",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TopicServiceServer).GetTopics(ctx, req.(*GetTopicsRequest))
+		return srv.(TopicServiceServer).GetTopics(ctx, req.(*empty.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -60,13 +60,13 @@ func getUserId(ctx context.Context) (*string, error) {
 		return nil, status.Errorf(codes.Unauthenticated, "Failed to authenticate token")
 	}
 
-	user_id, ok := payload.Claims["email"]
+	user_id, ok := payload.Claims["sub"].(string)
 
 	if !ok {
-		return nil, status.Errorf(codes.Unauthenticated, "cannot retrieve email from token")
+		return nil, status.Errorf(codes.Unauthenticated, "cannot retrieve subject from token")
 	}
 
-	return user_id.(*string), nil
+	return &user_id, nil
 }
 
 func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsRequest) (*pb.TopicResponse, error) {
@@ -117,7 +117,7 @@ func (topicServer *TopicServer) AddTopics(ctx context.Context, in *pb.AddTopicsR
 	}, nil
 }
 
-func (topicServer *TopicServer) GetTopics(ctx context.Context, in *pb.GetTopicsRequest) (*pb.TopicResponse, error) {
+func (topicServer *TopicServer) GetTopics(ctx context.Context, in *empty.Empty) (*pb.TopicResponse, error) {
 	var topics []*model.Topic
 
 	user_id, err := getUserId(ctx)
@@ -126,7 +126,7 @@ func (topicServer *TopicServer) GetTopics(ctx context.Context, in *pb.GetTopicsR
 		return nil, status.Errorf(codes.Unauthenticated, err.Error())
 	}
 
-	if err := db.Table("topics").Joins("join user_topics on topics.name = user_topics.topic_name").Joins("join users on user_topics.user_id = users.id").Where("users.id = ?", user_id).Select("topics.*").Scan(&topics).Error; err != nil {
+	if err := db.Model(&model.Topic{}).Joins("join user_topics on topics.name = user_topics.topic_name").Joins("join users on user_topics.user_id = users.id").Where("users.id = ?", user_id).Select("topics.*").Scan(&topics).Error; err != nil {
 		log.Printf(errDatabaseFormatString, err)
 		return nil, status.Error(codes.Internal, errDatabaseString)
 	}

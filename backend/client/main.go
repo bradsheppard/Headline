@@ -10,6 +10,7 @@ import (
 	article_pb "headline/proto/article"
 	topic_pb "headline/proto/topic"
 
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -65,7 +66,7 @@ func runGetTopics(client topic_pb.TopicServiceClient) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	req := &topic_pb.GetTopicsRequest{UserId: 1}
+	req := &empty.Empty{}
 
 	res, err := client.GetTopics(ctx, req)
 
@@ -86,7 +87,6 @@ func runCreateTopic(client topic_pb.TopicServiceClient, interest string) {
 				Name: interest,
 			},
 		},
-		UserId: 1,
 	}
 
 	_, err := client.AddTopics(ctx, req)

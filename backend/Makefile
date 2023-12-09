@@ -17,8 +17,8 @@ push:
 protoc:
 	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/article/article.proto
 	protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/topic/topic.proto
-	python -m grpc_tools.protoc --proto_path=proto --python_out=proto/python --pyi_out=proto/python --grpc_python_out=proto/python proto/article/article.proto
-	python -m grpc_tools.protoc --proto_path=proto --python_out=proto/python --pyi_out=proto/python --grpc_python_out=proto/python proto/topic/topic.proto
+	python3 -m grpc_tools.protoc --proto_path=proto --python_out=proto/python --pyi_out=proto/python --grpc_python_out=proto/python proto/article/article.proto
+	python3 -m grpc_tools.protoc --proto_path=proto --python_out=proto/python --pyi_out=proto/python --grpc_python_out=proto/python proto/topic/topic.proto
 	protoc --js_out=import_style=commonjs,binary:. --grpc-web_out=import_style=typescript,mode=grpcweb:. proto/article/article.proto
 	protoc --js_out=import_style=commonjs,binary:. --grpc-web_out=import_style=typescript,mode=grpcweb:. proto/topic/topic.proto
 
@@ -29,7 +29,7 @@ load:
 .PHONY: test
 test:
 	go clean -testcache
-	go test ./...
+	go test -v ./...
 
 .PHONY: fmt
 fmt:

@@ -22,7 +22,7 @@ class TopicServiceStub(object):
                 )
         self.GetTopics = channel.unary_unary(
                 '/TopicService/GetTopics',
-                request_serializer=topic_dot_topic__pb2.GetTopicsRequest.SerializeToString,
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=topic_dot_topic__pb2.TopicResponse.FromString,
                 )
         self.RemoveTopics = channel.unary_unary(
@@ -74,7 +74,7 @@ def add_TopicServiceServicer_to_server(servicer, server):
             ),
             'GetTopics': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTopics,
-                    request_deserializer=topic_dot_topic__pb2.GetTopicsRequest.FromString,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=topic_dot_topic__pb2.TopicResponse.SerializeToString,
             ),
             'RemoveTopics': grpc.unary_unary_rpc_method_handler(
@@ -126,7 +126,7 @@ class TopicService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/TopicService/GetTopics',
-            topic_dot_topic__pb2.GetTopicsRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             topic_dot_topic__pb2.TopicResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

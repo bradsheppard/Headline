@@ -1,7 +1,7 @@
 import * as jspb from 'google-protobuf'
 
-import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb';
-import * as google_protobuf_timestamp_pb from 'google-protobuf/google/protobuf/timestamp_pb';
+import * as google_protobuf_empty_pb from 'google-protobuf/google/protobuf/empty_pb'; // proto import: "google/protobuf/empty.proto"
+import * as google_protobuf_timestamp_pb from 'google-protobuf/google/protobuf/timestamp_pb'; // proto import: "google/protobuf/timestamp.proto"
 
 
 export class Topic extends jspb.Message {
@@ -48,24 +48,6 @@ export namespace TopicResponse {
   }
 }
 
-export class GetTopicsRequest extends jspb.Message {
-  getUserid(): number;
-  setUserid(value: number): GetTopicsRequest;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetTopicsRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetTopicsRequest): GetTopicsRequest.AsObject;
-  static serializeBinaryToWriter(message: GetTopicsRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetTopicsRequest;
-  static deserializeBinaryFromReader(message: GetTopicsRequest, reader: jspb.BinaryReader): GetTopicsRequest;
-}
-
-export namespace GetTopicsRequest {
-  export type AsObject = {
-    userid: number,
-  }
-}
-
 export class GetPendingTopicsRequest extends jspb.Message {
   getLastupdated(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setLastupdated(value?: google_protobuf_timestamp_pb.Timestamp): GetPendingTopicsRequest;
@@ -92,9 +74,6 @@ export class AddTopicsRequest extends jspb.Message {
   clearTopicsList(): AddTopicsRequest;
   addTopics(value?: Topic, index?: number): Topic;
 
-  getUserid(): number;
-  setUserid(value: number): AddTopicsRequest;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AddTopicsRequest.AsObject;
   static toObject(includeInstance: boolean, msg: AddTopicsRequest): AddTopicsRequest.AsObject;
@@ -106,7 +85,6 @@ export class AddTopicsRequest extends jspb.Message {
 export namespace AddTopicsRequest {
   export type AsObject = {
     topicsList: Array<Topic.AsObject>,
-    userid: number,
   }
 }
 
@@ -115,9 +93,6 @@ export class RemoveTopicsRequest extends jspb.Message {
   setTopicnamesList(value: Array<string>): RemoveTopicsRequest;
   clearTopicnamesList(): RemoveTopicsRequest;
   addTopicnames(value: string, index?: number): RemoveTopicsRequest;
-
-  getUserid(): number;
-  setUserid(value: number): RemoveTopicsRequest;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RemoveTopicsRequest.AsObject;
@@ -130,7 +105,6 @@ export class RemoveTopicsRequest extends jspb.Message {
 export namespace RemoveTopicsRequest {
   export type AsObject = {
     topicnamesList: Array<string>,
-    userid: number,
   }
 }
 

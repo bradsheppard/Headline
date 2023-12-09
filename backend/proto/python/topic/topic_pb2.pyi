@@ -7,44 +7,34 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class AddTopicsRequest(_message.Message):
-    __slots__ = ["topics", "userId"]
+class Topic(_message.Message):
+    __slots__ = ("name", "lastUpdated")
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    LASTUPDATED_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    lastUpdated: _timestamp_pb2.Timestamp
+    def __init__(self, name: _Optional[str] = ..., lastUpdated: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+
+class TopicResponse(_message.Message):
+    __slots__ = ("topics",)
     TOPICS_FIELD_NUMBER: _ClassVar[int]
-    USERID_FIELD_NUMBER: _ClassVar[int]
     topics: _containers.RepeatedCompositeFieldContainer[Topic]
-    userId: int
-    def __init__(self, topics: _Optional[_Iterable[_Union[Topic, _Mapping]]] = ..., userId: _Optional[int] = ...) -> None: ...
+    def __init__(self, topics: _Optional[_Iterable[_Union[Topic, _Mapping]]] = ...) -> None: ...
 
 class GetPendingTopicsRequest(_message.Message):
-    __slots__ = ["lastUpdated"]
+    __slots__ = ("lastUpdated",)
     LASTUPDATED_FIELD_NUMBER: _ClassVar[int]
     lastUpdated: _timestamp_pb2.Timestamp
     def __init__(self, lastUpdated: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
-class GetTopicsRequest(_message.Message):
-    __slots__ = ["userId"]
-    USERID_FIELD_NUMBER: _ClassVar[int]
-    userId: int
-    def __init__(self, userId: _Optional[int] = ...) -> None: ...
-
-class RemoveTopicsRequest(_message.Message):
-    __slots__ = ["topicNames", "userId"]
-    TOPICNAMES_FIELD_NUMBER: _ClassVar[int]
-    USERID_FIELD_NUMBER: _ClassVar[int]
-    topicNames: _containers.RepeatedScalarFieldContainer[str]
-    userId: int
-    def __init__(self, topicNames: _Optional[_Iterable[str]] = ..., userId: _Optional[int] = ...) -> None: ...
-
-class Topic(_message.Message):
-    __slots__ = ["lastUpdated", "name"]
-    LASTUPDATED_FIELD_NUMBER: _ClassVar[int]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    lastUpdated: _timestamp_pb2.Timestamp
-    name: str
-    def __init__(self, name: _Optional[str] = ..., lastUpdated: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
-
-class TopicResponse(_message.Message):
-    __slots__ = ["topics"]
+class AddTopicsRequest(_message.Message):
+    __slots__ = ("topics",)
     TOPICS_FIELD_NUMBER: _ClassVar[int]
     topics: _containers.RepeatedCompositeFieldContainer[Topic]
     def __init__(self, topics: _Optional[_Iterable[_Union[Topic, _Mapping]]] = ...) -> None: ...
+
+class RemoveTopicsRequest(_message.Message):
+    __slots__ = ("topicNames",)
+    TOPICNAMES_FIELD_NUMBER: _ClassVar[int]
+    topicNames: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, topicNames: _Optional[_Iterable[str]] = ...) -> None: ...
