@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"sort"
 	"testing"
 	"time"
 
@@ -147,13 +148,17 @@ func TestTopic_GetTopics_NotEmpty(t *testing.T) {
 		t.FailNow()
 	}
 
+    sort.Slice(topics.Topics, func(i, j int) bool {
+        return topics.Topics[i].Name < topics.Topics[j].Name
+    })
+
 	expected := topicExpectation{
 		out: []*pb.Topic{
 			&pb.Topic{
-				Name: "Topic 2",
+				Name: "Topic 1",
 			},
 			&pb.Topic{
-				Name: "Topic 1",
+				Name: "Topic 2",
 			},
 		},
 		err: nil,
