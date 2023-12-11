@@ -29,7 +29,7 @@ func repeated(str *string, n int) []interface{} {
 
 	for i := 0; i < n; i++ {
 		arr[i] = &model.User{
-			Id: *str,
+			ID: *str,
 		}
 	}
 

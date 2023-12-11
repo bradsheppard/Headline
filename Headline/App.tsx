@@ -22,8 +22,8 @@ const Tab = createBottomTabNavigator<RootStackParamList>();
 
 function App(): JSX.Element {
     const [token, setToken, userInfo] = useStore((state) => [
-        state.token,
-        state.setToken,
+        state.accessToken,
+        state.setAccessToken,
         state.userInfo,
     ]);
 

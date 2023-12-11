@@ -14,9 +14,10 @@ WebBrowser.maybeCompleteAuthSession();
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function Login(props: Props): JSX.Element {
-    const [token, setToken, setUserInfo] = useStore((state) => [
-        state.token,
-        state.setToken,
+    const [token, setAccessToken, setIdToken, setUserInfo] = useStore((state) => [
+        state.accessToken,
+        state.setAccessToken,
+        state.setIdToken,
         state.setUserInfo,
     ]);
 
@@ -28,20 +29,17 @@ export default function Login(props: Props): JSX.Element {
     React.useEffect(() => {
         if (response?.type === 'success') {
             const accessToken = response.authentication?.accessToken;
+            const idToken = response.authentication?.idToken;
 
-            if (accessToken === undefined) return;
+            if (accessToken === undefined || idToken === undefined) return;
 
-            void getUserInfo(accessToken);
+            void getUserInfo(accessToken, idToken);
         }
     }, [response, token]);
 
-    const getUserInfo = async (token: string): Promise<void> => {
-        if (token === null) {
-            return;
-        }
-
+    const getUserInfo = async (accessToken: string, idToken: string): Promise<void> => {
         const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const user = await response.json();
@@ -52,7 +50,8 @@ export default function Login(props: Props): JSX.Element {
         };
 
         setUserInfo(userInfo);
-        setToken(token);
+        setAccessToken(accessToken);
+        setIdToken(idToken);
     };
 
     return (

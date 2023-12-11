@@ -1,5 +1,5 @@
 service := backend
-tag := 1.0.0
+tag := 1.2.0
 
 .PHONY: build
 build:

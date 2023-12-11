@@ -41,7 +41,7 @@ export default function Main(props: Props): JSX.Element {
 
     const fetchData = async (): Promise<void> => {
         setIsLoading(true);
-        await fetchTopics(1);
+        await fetchTopics();
         await fetchArticles(topics.map(x => x.getName()))
         setIsLoading(false);
     };
