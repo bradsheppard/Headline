@@ -49,8 +49,10 @@ spec:
                   value: {{ .Values.backendUrl }}
                 - name: KAFKA_HOST
                   value: {{ .Values.kafkaHost }}
-                - name: KAFKA_TOPIC
-                  value: {{ .Values.kafkaTopic }}
+                - name: KAFKA_TOPIC_TOPIC
+                  value: {{ .Values.kafkaTopicTopic }}
+                - name: KAFKA_TRENDING_TOPIC
+                  value: {{ .Values.kafkaTrendingTopic }}
                 - name: HOUR_OFFSET
                   value: "{{ .Values.hourOffset }}"
               resources:

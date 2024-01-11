@@ -12,7 +12,7 @@ class KafkaTopicConsumer(TopicConsumer):
 
     def __init__(self, host: str, topic: str):
         super().__init__()
-        self._consumer = KafkaConsumer(topic, bootstrap_servers=host, group_id='collector')
+        self._consumer = KafkaConsumer(topic, bootstrap_servers=host, group_id='topic-consumer')
         self._consumer.poll()
 
     def notify(self, topics: List[str]):

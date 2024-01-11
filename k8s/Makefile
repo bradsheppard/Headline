@@ -28,6 +28,10 @@ collector:
 orchestrator:
 	helm upgrade --install orchestrator orchestrator -f orchestrator/prod_values.yaml
 
+.PHONY: run-orchestrator
+run-orchestrator:
+	kubectl create job manual-orchestrator --from=cronjob/orchestrator
+
 .PHONY: kafka
 kafka:
 	helm upgrade --install kafka kafka

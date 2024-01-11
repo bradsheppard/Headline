@@ -8,6 +8,7 @@ import { useStore } from '../store';
 import { type Article as ArticleProto } from '../proto/article/article_pb';
 import type { RootStackParamList } from '../App';
 import Article from '../components/Article';
+import {SpecialTopics} from '../api/constants';
 
 const styles = {
     container: {
@@ -25,9 +26,15 @@ const styles = {
 type Props = NativeStackScreenProps<RootStackParamList, 'Feed'>;
 
 export default function Main(props: Props): JSX.Element {
-    const [articles, topics, selectedTopic] = useStore((state) => [state.articles, state.topics, state.selectedTopic]);
-    const [fetchArticles, fetchTopics] = useStore((state) => [
-        state.fetchArticles,
+    const [topicArticles, trendingArticles, topics, selectedTopic] = useStore((state) => [
+        state.topicArticles, 
+        state.trendingArticles, 
+        state.topics, 
+        state.selectedTopic
+    ]);
+    const [fetchArticles, fetchTrendingArticles, fetchTopics] = useStore((state) => [
+        state.fetchTopicArticles,
+        state.fetchTrendingArticles,
         state.fetchTopics,
     ]);
 
@@ -41,14 +48,17 @@ export default function Main(props: Props): JSX.Element {
 
     const fetchData = async (): Promise<void> => {
         setIsLoading(true);
-        await fetchTopics();
-        await fetchArticles(topics.map(x => x.getName()))
+        await Promise.all([
+            fetchTopics(),
+            fetchArticles(topics.map(x => x.getName())),
+            fetchTrendingArticles()
+        ])
         setIsLoading(false);
     };
 
     const filterArticles = (): void => {
-        if (selectedTopic !== null) {
-            const selectedArticles = articles.get(selectedTopic);
+        if (selectedTopic !== null && selectedTopic !== SpecialTopics.Trending) {
+            const selectedArticles = topicArticles.get(selectedTopic);
 
             if (selectedArticles === undefined) {
                 setFilteredArticles([])
@@ -57,13 +67,7 @@ export default function Main(props: Props): JSX.Element {
 
             setFilteredArticles(selectedArticles);
         } else {
-            let allArticles: ArticleProto[] = []
-            
-            for(const [, value] of articles) {
-                allArticles = allArticles.concat(value)
-            }
-
-            setFilteredArticles(allArticles);
+            setFilteredArticles(trendingArticles);
         }
     };
 

@@ -28,13 +28,16 @@ class ArticleBingCollector(ArticleCollector):
         response = requests.get(self._url + '/search', headers=headers, params=querystring, timeout=5)
         response_json = response.json()
 
+        if "value" not in response_json:
+            raise Exception("Value not in response: ", response_json)
+
         entries = response_json["value"]
 
         for entry in entries:
             article = article_pb2.Article(
                     description=entry["description"],
                     imageUrl=entry["image"]["contentUrl"] \
-                        if "image" in entry else None,
+                        if "image" in entry and "contentUrl" in entry["image"] else None,
                     title=entry["name"],
                     source=entry["provider"][0]["name"] if len(entry["provider"]) > 0 else None,
                     url=entry["url"]
@@ -61,13 +64,16 @@ class ArticleBingCollector(ArticleCollector):
         response = requests.get(self._url, headers=headers, params=querystring, timeout=5)
         response_json = response.json()
 
+        if "value" not in response_json:
+            raise Exception("Value not in response: ", response_json)
+
         entries = response_json["value"]
 
         for entry in entries:
             article = article_pb2.Article(
                     description=entry["description"],
                     imageUrl=entry["image"]["contentUrl"] \
-                        if "image" in entry else None,
+                        if "image" in entry and "contentUrl" in entry["image"] else None,
                     title=entry["name"],
                     source=entry["provider"][0]["name"] if len(entry["provider"]) > 0 else None,
                     url=entry["url"]

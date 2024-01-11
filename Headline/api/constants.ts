@@ -1,1 +1,6 @@
-export const API_HOST = '34.66.85.171';
+export const API_HOST = '35.224.96.143';
+
+export enum SpecialTopics {
+    Trending = 'Trending'
+}
+

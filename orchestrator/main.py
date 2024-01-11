@@ -13,7 +13,8 @@ from collection import collection_pb2, collection_pb2_grpc
 if __name__ == '__main__':
     backend_url = os.environ['BACKEND_URL']
     kafka_host = os.environ['KAFKA_HOST']
-    kafka_topic = os.environ['KAFKA_TOPIC']
+    kafka_topic_topic = os.environ['KAFKA_TOPIC_TOPIC']
+    kafka_trending_topic = os.environ['KAFKA_TRENDING_TOPIC']
 
     hour_offset = int(os.environ['HOUR_OFFSET'])
 
@@ -46,6 +47,11 @@ if __name__ == '__main__':
 
             message = collection.SerializeToString()
 
-            future = kafka_producer.send(kafka_topic, value=message)
+            future = kafka_producer.send(kafka_topic_topic, value=message)
             future.get(timeout=60)
+
+        print('Orchestrating trending articles')
+
+        future = kafka_producer.send(kafka_trending_topic, value=b'N/A')
+        future.get(timeout=60)
 

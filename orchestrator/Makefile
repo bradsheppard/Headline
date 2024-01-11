@@ -1,5 +1,5 @@
 service := orchestrator
-tag := 1.0.0
+tag := 1.3.0
 
 .PHONY: build
 build:
@@ -20,4 +20,8 @@ lint:
 .PHONY: load
 load:
 	minikube image load $(DOCKER_REGISTRY)/$(service):$(tag) --overwrite=true
+
+.PHONY: run
+run:
+	kubectl create job orchestrator-manual --from=cronjobs/orchestrator
 

@@ -9,9 +9,11 @@ cron:
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 2
 
-backendUrl: orchestrator:80
+backendUrl: backend:80
 kafkaHost: queue-kafka-bootstrap:9092
-kafkaTopic: start-collection
+kafkaTopicTopic: topic
+kafkaTrendingTopic: trending
+hourOffset: 2
 
 resources:
   requests:

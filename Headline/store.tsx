@@ -1,5 +1,5 @@
 import { StoreApi, create } from 'zustand';
-import { type Article, TopicNames, TopicArticles } from './proto/article/article_pb';
+import { type Article, TopicNames, TopicArticles, Articles } from './proto/article/article_pb';
 import {TopicServiceClient} from './proto/topic/TopicServiceClientPb';
 import { API_HOST } from './api/constants';
 import empty from 'google-protobuf/google/protobuf/empty_pb';
@@ -15,7 +15,8 @@ export interface UserInfo {
 
 interface State {
     topics: Topic[];
-    articles: Map<string, Article[]>
+    topicArticles: Map<string, Article[]>;
+    trendingArticles: Article[];
 
     userInfo: UserInfo | null;
     accessToken: string | null;
@@ -32,7 +33,8 @@ interface State {
     createTopic: (topic: string) => Promise<void>;
 
     fetchTopics: () => Promise<void>;
-    fetchArticles: (topics: string[]) => Promise<void>;
+    fetchTopicArticles: (topics: string[]) => Promise<void>;
+    fetchTrendingArticles: () => Promise<void>;
 
     deleteTopic: (topic: string, userId: number) => Promise<void>;
 }
@@ -53,7 +55,8 @@ const getMetadata = (token: string) => {
 
 const useStore = create<State>((set, get) => ({
     topics: [],
-    articles: new Map<string, Article[]>(),
+    topicArticles: new Map<string, Article[]>(),
+    trendingArticles: [],
     selectedTopic: null,
     accessToken: null,
     idToken: null,
@@ -109,7 +112,7 @@ const useStore = create<State>((set, get) => ({
         const response = await topicServiceClient.getTopics(new empty.Empty(), metadata);
         set({ topics: response.getTopicsList() });
     },
-    fetchArticles: async (topics: string[]) => {
+    fetchTopicArticles: async (topics: string[]) => {
         const idToken = get().idToken;
 
         if (idToken === null)
@@ -131,7 +134,21 @@ const useStore = create<State>((set, get) => ({
             result.set(key, value.getArticlesList())
         }
 
-        set({ articles: result });
+        set({ topicArticles: result });
+    },
+    fetchTrendingArticles: async () => {
+        const idToken = get().idToken;
+
+        if (idToken === null)
+            return;
+            
+        const articleServiceClient = getArticleClient();
+
+        const metadata = getMetadata(idToken);
+
+        const response: Articles = await articleServiceClient.getTrendingArticles(new empty.Empty(), metadata);
+
+        set({trendingArticles: response.getArticlesList()});
     },
     deleteTopic: async (topicName: string, userId: number) => {
         const idToken = get().idToken;

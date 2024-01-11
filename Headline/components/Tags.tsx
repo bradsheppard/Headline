@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { type ListRenderItemInfo, StyleSheet, FlatList } from 'react-native';
 import Tag from './Tag';
+import {SpecialTopics} from '../api/constants';
 
 interface Props {
     topics: string[];
@@ -18,6 +19,8 @@ const style = StyleSheet.create({
 });
 
 const Tags: React.FC<Props> = (props: Props) => {
+    props.topics.push(SpecialTopics.Trending.toString());
+
     return (
         <FlatList
             horizontal

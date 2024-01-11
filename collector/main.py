@@ -33,8 +33,27 @@ def topic_loop(consumer: TopicConsumer):
         print(f'Collection run complete for {list(result.topics)}', flush=True)
 
 
+def print_exception(ex: BaseException):
+    trace = []
+    trace_back = ex.__traceback__
+    while trace_back is not None:
+        trace.append({
+            "filename": trace_back.tb_frame.f_code.co_filename,
+            "name": trace_back.tb_frame.f_code.co_name,
+            "lineno": trace_back.tb_lineno
+        })
+        trace_back = trace_back.tb_next
+    print(str({
+        'type': type(ex).__name__,
+        'message': str(ex),
+        'trace': trace
+    }))
+
+
 
 if __name__ == '__main__':
+    print('Starting collector...')
+
     host = os.environ['KAFKA_HOST']
 
     topic_topic = os.environ['KAFKA_TOPIC_TOPIC']
@@ -61,3 +80,15 @@ if __name__ == '__main__':
         futures = [trending_future, topic_future]
 
         done, not_done = wait(futures, return_when=FIRST_EXCEPTION)
+
+        for future in done:
+            exception = future.exception()
+            if exception is not None:
+                print_exception(exception)
+
+        for future in not_done:
+            exception = future.exception()
+            if exception is not None:
+                print_exception(exception)
+
+
