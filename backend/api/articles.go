@@ -107,7 +107,7 @@ func (s *ArticleServer) SetTopicArticles(ctx context.Context, in *pb.TopicArticl
 	}
 
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := db.Unscoped().Model(unwrapped.topics).Association("Articles").Clear(); err != nil {
+		if err := db.Unscoped().Model(unwrapped.topics).Association("Articles").Delete(); err != nil {
 			return err
 		}
 
