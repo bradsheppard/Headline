@@ -22,6 +22,12 @@ on a schedule, to ensure articles are up-to-date.
 - k8s: Contains the Kubernetes deployment YAML files.
 - infra: Contains the Terraform code responsible for deploying the GCP infrastructure (Kubernetes cluster, Artifact Registry, Networking, etc.)
 
+## Screen Shots
+![Login](images/login.png)
+![Feed](images/feed.png)
+![Topics](images/topics.png)
+
+
 ## Architecture
 
 ![architecture](docs/Headline.png "Architecture")
