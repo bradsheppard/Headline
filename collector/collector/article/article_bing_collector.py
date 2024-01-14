@@ -53,7 +53,6 @@ class ArticleBingCollector(ArticleCollector):
         querystring = {
                 'textFormat': 'Raw', 
                 'safeSearch': 'Off',
-                'originalImg': True,
                 'freshness': 'Day'
         }
 
@@ -72,8 +71,8 @@ class ArticleBingCollector(ArticleCollector):
         for entry in entries:
             article = article_pb2.Article(
                     description=entry["description"],
-                    imageUrl=entry["image"]["contentUrl"] \
-                        if "image" in entry and "contentUrl" in entry["image"] else None,
+                    imageUrl=entry["image"]["thumbnail"]["contentUrl"] \
+                        if "image" in entry and "thumbnail" in entry["image"] and "contentUrl" in entry["image"]["thumbnail"] else None,
                     title=entry["name"],
                     source=entry["provider"][0]["name"] if len(entry["provider"]) > 0 else None,
                     url=entry["url"]
