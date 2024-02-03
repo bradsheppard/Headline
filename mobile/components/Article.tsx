@@ -1,6 +1,7 @@
 import React from 'react';
-import { Image, Platform, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { Image, Platform, Text, TouchableOpacity, StyleSheet, Linking, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import {useTheme} from 'native-base';
 
 interface ArticleProp {
     title: string;
@@ -28,57 +29,68 @@ const boxShadow: any = Platform.select({
     android: { elevation: 6 },
 });
 
-const styles = StyleSheet.create({
-    image: {
-        flex: 1,
-        borderRadius: 24,
-        height: 300,
-    },
-    container: {
-        height: 240,
-        marginBottom: 18,
-        backgroundColor: '#eee',
-        borderRadius: 24,
-        marginHorizontal: 16,
-        ...boxShadow,
-    },
-    title: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        borderBottomLeftRadius: 24,
-        borderBottomRightRadius: 24,
-        height: 160,
-        paddingLeft: 16,
-        paddingRight: 10,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start',
-    },
-    text: {
-        fontSize: 18,
-        lineHeight: 24,
-        color: '#fff',
-        paddingBottom: 32,
-    },
-    timestamp: {
-        position: 'absolute',
-        color: '#eee',
-        fontSize: 12,
-        fontWeight: '300',
-        right: 16,
-        bottom: 8,
-    },
-    source: {
-        position: 'absolute',
-        color: '#eee',
-        fontSize: 12,
-        fontWeight: '300',
-        left: 16,
-        bottom: 8,
-    },
-});
+const createStyles = (color: string): StyleSheet.NamedStyles<any> =>
+    StyleSheet.create({
+        image: {
+            flex: 1,
+            borderRadius: 24,
+            height: 300,
+        },
+        container: {
+            height: 240,
+            marginBottom: 18,
+            backgroundColor: color,
+            borderRadius: 24,
+            marginHorizontal: 16,
+            ...boxShadow,
+        },
+        title: {
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            borderBottomLeftRadius: 24,
+            borderBottomRightRadius: 24,
+            paddingLeft: 16,
+            paddingRight: 10,
+            justifyContent: 'flex-end',
+            alignItems: 'flex-start',
+        },
+        text: {
+            fontSize: 18,
+            lineHeight: 24,
+            color: '#fff',
+            paddingBottom: 32,
+        },
+        timestamp: {
+            position: 'absolute',
+            color: '#eee',
+            fontSize: 12,
+            fontWeight: '300',
+            right: 16,
+            bottom: 8,
+        },
+        source: {
+            position: 'absolute',
+            color: '#eee',
+            fontSize: 12,
+            fontWeight: '300',
+            left: 16,
+            bottom: 8,
+        },
+    });
 
 const Article: React.FC<Props> = (props: Props) => {
+    const { colors } = useTheme();
+    const styles = createStyles(colors.info[400]);
+
+    const contents = (
+        <React.Fragment>
+            <Text style={styles.text}>{props.article.title}</Text>
+            <Text style={styles.source}>{props.article.source}</Text>
+            <Text style={styles.timestamp}>{props.article.date.toDateString()}</Text>
+        </React.Fragment>
+    );
+
     return (
         <TouchableOpacity
             activeOpacity={1}
@@ -88,17 +100,21 @@ const Article: React.FC<Props> = (props: Props) => {
             }}
         >
             {props.article.imageUrl !== null && props.article.imageUrl !== '' ? (
-                <Image
-                    source={{ uri: props.article.imageUrl }}
-                    resizeMode={'cover'}
-                    style={styles.image}
-                />
-            ) : null}
-            <LinearGradient colors={['#0000', '#000A', '#000']} style={styles.title}>
-                <Text style={styles.text}>{props.article.title}</Text>
-                <Text style={styles.source}>{props.article.source}</Text>
-                <Text style={styles.timestamp}>{props.article.date.toDateString()}</Text>
-            </LinearGradient>
+                <React.Fragment>
+                    <Image
+                        source={{ uri: props.article.imageUrl }}
+                        resizeMode={'cover'}
+                        style={styles.image}
+                    />
+                    <LinearGradient colors={['#0000', '#000A', '#000']} style={styles.title}>
+                        {contents}
+                    </LinearGradient>
+                </React.Fragment>
+            ) : 
+                <View style={styles.title}>
+                    {contents}
+                </View>
+            }
         </TouchableOpacity>
     );
 };
