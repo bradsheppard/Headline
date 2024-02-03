@@ -1,6 +1,11 @@
 # Headline
 
 ## Introduction
+
+<p align="center">
+  <img src="/mobile/assets/HL.png" alt="Logo"/>
+</p>
+
 Headline is a news article aggregation mobile app that allows a user to specify certain
 topics of interest and get articles on those topics. Article collection is done in the following
 situations:
