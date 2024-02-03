@@ -23,9 +23,15 @@ on a schedule, to ensure articles are up-to-date.
 - infra: Contains the Terraform code responsible for deploying the GCP infrastructure (Kubernetes cluster, Artifact Registry, Networking, etc.)
 
 ## Screen Shots
-![Login](images/login.png)
-![Feed](images/feed.png)
-![Topics](images/topics.png)
+<p align="center">
+  <img src="/images/login.png" alt="Login"/>
+</p>
+<p align="center">
+  <img src="/images/feed.png" alt="Feed"/>
+</p>
+<p align="center">
+  <img src="/images/topics.png" alt="Topics"/>
+</p>
 
 
 ## Architecture
